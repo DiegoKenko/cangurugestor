@@ -179,15 +179,6 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
                 Center(
                   child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: (50),
-                        backgroundColor: Colors.transparent,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(60),
-                          child:
-                              const Image(image: AssetImage('assets/user.png')),
-                        ),
-                      ),
                       widget.responsavel != null
                           ? HeaderCadastro(
                               texto:

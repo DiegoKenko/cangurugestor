@@ -60,7 +60,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '783192734543',
     projectId: 'canguru-6bca1',
     storageBucket: 'canguru-6bca1.appspot.com',
-    androidClientId: '783192734543-j82n1qpb6uvjritk9g32unmm6fijog4s.apps.googleusercontent.com',
+    androidClientId: '783192734543-47lqmr9jgsa1rqll6ump2t3slusd6o4h.apps.googleusercontent.com',
     iosClientId: '783192734543-cum9599ijjhos3qs3q5vi1g3qdcecija.apps.googleusercontent.com',
     iosBundleId: 'com.example.cangurugestor',
   );
@@ -71,7 +71,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '783192734543',
     projectId: 'canguru-6bca1',
     storageBucket: 'canguru-6bca1.appspot.com',
-    androidClientId: '783192734543-j82n1qpb6uvjritk9g32unmm6fijog4s.apps.googleusercontent.com',
+    androidClientId: '783192734543-47lqmr9jgsa1rqll6ump2t3slusd6o4h.apps.googleusercontent.com',
     iosClientId: '783192734543-cum9599ijjhos3qs3q5vi1g3qdcecija.apps.googleusercontent.com',
     iosBundleId: 'com.example.cangurugestor',
   );

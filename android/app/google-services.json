@@ -7,42 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:783192734543:android:e2f106ccf1c8bc83afa33a",
-        "android_client_info": {
-          "package_name": "com.cangurugestor"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "783192734543-rh289u5feccc2mbrpnll1ebueis87tqv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBY7UgP133vR5D6KVg2k1zALUdezskyr48"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "783192734543-rh289u5feccc2mbrpnll1ebueis87tqv.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "783192734543-7df2kiiaur0abifnut5reg9omal3qlbo.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.canguru"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:783192734543:android:5aa1ace41b4717b3afa33a",
         "android_client_info": {
           "package_name": "com.example.canguru"
@@ -93,6 +57,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "783192734543-75tvdpb04of43s0dntdc8hm2jb20ttu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cangurugestor",
+            "certificate_hash": "64832479524dfb0620eb5e7364e6750971ac0337"
+          }
+        },
         {
           "client_id": "783192734543-rh289u5feccc2mbrpnll1ebueis87tqv.apps.googleusercontent.com",
           "client_type": 3

@@ -22,6 +22,7 @@ class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: corPad1,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
@@ -47,6 +48,10 @@ class _TelaLoginState extends State<TelaLogin> {
                       backgroundColor: MaterialStateProperty.all(corPad1),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
+                          side: const BorderSide(
+                            color: Colors.white,
+                            width: 5,
+                          ),
                           borderRadius: BorderRadius.circular(40),
                         ),
                       ),
@@ -87,7 +92,7 @@ class _TelaLoginState extends State<TelaLogin> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: corPad1,
+        color: corPad3,
         child: Container(
           height: 20,
         ),

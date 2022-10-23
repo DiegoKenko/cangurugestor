@@ -165,18 +165,6 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
                   padding: const EdgeInsets.only(left: 30, bottom: 20, top: 10),
                   child: Row(
                     children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: CircleAvatar(
-                          radius: (52),
-                          backgroundColor: Colors.white,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: const Image(
-                                image: AssetImage('assets/user.png')),
-                          ),
-                        ),
-                      ),
                       widget.cuidador != null
                           ? HeaderCadastro(texto: widget.cuidador!.nome)
                           : HeaderCadastro(),
