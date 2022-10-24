@@ -68,3 +68,4 @@ flutter_icons:
   ios: true
   image_path: "assets/imagemLogo01.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
+  # to update the icon is needed to run -> flutter pub run flutter_launcher_icons:main

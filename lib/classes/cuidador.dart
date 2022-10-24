@@ -40,7 +40,7 @@ class Cuidador extends Pessoa {
     ativo = map['ativo'];
     cpf = map['cpf'];
     nome = map['nome'];
-    sobrenome = map['nome'];
+    sobrenome = map['sobrenome'];
     email = map['email'];
     senha = map['senha'];
     telefone = map['telefone'];

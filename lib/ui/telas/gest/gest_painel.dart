@@ -71,10 +71,11 @@ class _PainelGestorState extends State<PainelGestor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
+      /*  drawer: Drawer(
         backgroundColor: corPad1.withOpacity(0.8),
-      ),
+      ), */
       appBar: AppBar(
+        leading: Container(),
         actions: const [],
         backgroundColor: corPad1,
       ),

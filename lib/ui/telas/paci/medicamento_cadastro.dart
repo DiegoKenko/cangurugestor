@@ -50,6 +50,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
 
   @override
   void initState() {
+    super.initState();
     widget.medicamento ??= Medicamento();
     dataInicioController =
         TextEditingController(text: widget.medicamento?.dataInicio);
@@ -67,8 +68,6 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         TextEditingController(text: widget.medicamento?.observacao);
     TextEditingController(text: widget.medicamento?.observacao);
     buscaMedicamentos();
-
-    super.initState();
   }
 
   @override
@@ -97,24 +96,6 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
           ),
         ),
         actions: [
-          widget.edit && widget.medicamento!.id.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: IconButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        addMedicamento();
-                        Navigator.pop(context);
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.save,
-                      size: 30,
-                    ),
-                  ),
-                )
-              : Container(),
           widget.delete
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -282,8 +263,29 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: corPad1,
-        child: Container(
+        child: SizedBox(
           height: 50,
+          child: widget.edit && widget.medicamento!.id.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          addMedicamento();
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.save,
+                        size: 30,
+                        color: corPad3,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ),
     );

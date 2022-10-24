@@ -1,4 +1,5 @@
 import 'package:cangurugestor/firebase_options.dart';
+import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/ui/telas/login.dart';
@@ -7,7 +8,12 @@ import 'global.dart' as global;
 
 void main() async {
   global.idGestorGlobal = '';
-  ErrorWidget.builder = (details) => Text(details.exceptionAsString());
+  ErrorWidget.builder = (details) => Text(
+        details.exceptionAsString(),
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -27,6 +33,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        primaryColor: corPad1,
+        hoverColor: corPad3,
+        errorColor: Color.fromARGB(255, 236, 20, 0),
         fontFamily: GoogleFonts.raleway().fontFamily,
         primarySwatch: Colors.blue,
       ),

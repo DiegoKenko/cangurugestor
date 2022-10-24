@@ -128,29 +128,17 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
           },
         ),
         actions: [
-          widget.edit
-              ? IconButton(
-                  onPressed: () {
-                    if (_formKeyDadosPessoais.currentState!.validate() &&
-                        _formKeyEndereco.currentState!.validate()) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      addCuidador();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.save,
-                    size: 30,
-                  ),
-                )
-              : Container(),
           widget.delete
-              ? IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: (() {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    excluirCuidador();
-                    Navigator.pop(context);
-                  }),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: (() {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      excluirCuidador();
+                      Navigator.pop(context);
+                    }),
+                  ),
                 )
               : Container(),
         ],
@@ -161,12 +149,13 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
           child: Center(
             child: ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 30, bottom: 20, top: 10),
-                  child: Row(
+                Center(
+                  child: Column(
                     children: [
                       widget.cuidador != null
-                          ? HeaderCadastro(texto: widget.cuidador!.nome)
+                          ? HeaderCadastro(
+                              texto:
+                                  '${widget.cuidador!.nome} ${widget.cuidador!.sobrenome}')
                           : HeaderCadastro(),
                     ],
                   ),
@@ -178,6 +167,30 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: corPad1,
+        child: SizedBox(
+          height: 50,
+          child: widget.edit
+              ? Center(
+                  child: IconButton(
+                    onPressed: () {
+                      if (_formKeyDadosPessoais.currentState!.validate() &&
+                          _formKeyEndereco.currentState!.validate()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        addCuidador();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.save,
+                      size: 30,
+                      color: corPad3,
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ),
     );

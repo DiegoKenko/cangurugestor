@@ -82,29 +82,17 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
           },
         ),
         actions: [
-          widget.edit
-              ? IconButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      addAtividade();
-                      Navigator.pop(context);
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.save,
-                    size: 30,
-                  ),
-                )
-              : Container(),
           widget.delete
-              ? IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: (() {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    excluirAtividade();
-                    Navigator.pop(context);
-                  }),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: (() {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      excluirAtividade();
+                      Navigator.pop(context);
+                    }),
+                  ),
                 )
               : Container(),
         ],
@@ -253,8 +241,26 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: corPad1,
-        child: Container(
+        child: SizedBox(
           height: 50,
+          child: widget.edit
+              ? Center(
+                  child: IconButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        addAtividade();
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.save,
+                      size: 30,
+                      color: corPad3,
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ),
     );

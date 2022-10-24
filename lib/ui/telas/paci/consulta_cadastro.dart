@@ -92,29 +92,17 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
           },
         ),
         actions: [
-          widget.edit
-              ? IconButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      addConsulta();
-                      Navigator.pop(context);
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.save,
-                    size: 30,
-                  ),
-                )
-              : Container(),
           widget.delete
-              ? IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: (() {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    excluirConsulta();
-                    Navigator.pop(context);
-                  }),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: (() {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      excluirConsulta();
+                      Navigator.pop(context);
+                    }),
+                  ),
                 )
               : Container(),
         ],
@@ -230,8 +218,26 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: corPad1,
-        child: Container(
+        child: SizedBox(
           height: 50,
+          child: widget.edit
+              ? Center(
+                  child: IconButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        addConsulta();
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.save,
+                      color: corPad3,
+                      size: 30,
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ),
     );

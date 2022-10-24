@@ -105,30 +105,19 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
           },
         ),
         actions: [
-          widget.edit
-              ? IconButton(
-                  onPressed: () {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    if (_formKeyDadosPessoais.currentState!.validate()) {
-                      addPaciente();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.save,
-                    size: 30,
-                  ),
-                )
-              : Container(),
-          widget.delete
-              ? IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: (() {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    excluirPaciente();
-                    Navigator.pop(context);
-                  }),
-                )
-              : Container(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: widget.delete
+                ? IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: (() {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      excluirPaciente();
+                      Navigator.pop(context);
+                    }),
+                  )
+                : Container(),
+          ),
         ],
       ),
       body: SafeArea(
@@ -169,8 +158,25 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: corPad1,
-        child: Container(
+        child: SizedBox(
           height: 50,
+          child: widget.edit
+              ? Center(
+                  child: IconButton(
+                    onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      if (_formKeyDadosPessoais.currentState!.validate()) {
+                        addPaciente();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.save,
+                      color: corPad3,
+                      size: 30,
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ),
     );
@@ -195,6 +201,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
         children: [
           widget.edit
               ? FormCadastro(
+                  obrigatorio: true,
                   enabled: widget.edit,
                   controller: cpfController,
                   labelText: 'CPF',
@@ -206,6 +213,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                 )
               : Container(),
           FormCadastro(
+            obrigatorio: true,
             enabled: widget.edit,
             controller: nomeController,
             labelText: 'Nome',
@@ -213,6 +221,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
           ),
           FormCadastroData(
             dataPrimeira: DateTime(DateTime.now().year - 100),
+            obrigatorio: true,
             dataInicial: DateTime(DateTime.now().year - 10),
             dataUltima: DateTime(DateTime.now().year),
             enabled: widget.edit,

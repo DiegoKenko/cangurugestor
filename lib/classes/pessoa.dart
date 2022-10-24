@@ -43,6 +43,7 @@ class Pessoa {
         nascimento = map['nascimento'];
       }
     }
+    nascimento = map['nascimento'] ?? '';
     sexo = map['sexo'] ?? '';
     cpf = map['cpf'] ?? '';
     rg = map['rg'] ?? '';

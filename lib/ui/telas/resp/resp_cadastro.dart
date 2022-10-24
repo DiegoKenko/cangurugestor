@@ -143,29 +143,20 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
           },
         ),
         actions: [
-          widget.edit
-              ? IconButton(
-                  onPressed: () {
-                    if (_formKeyDadosPessoais.currentState!.validate() &&
-                        _formKeyEndereco.currentState!.validate()) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      addResponsavel();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.save,
-                    size: 30,
-                  ),
-                )
-              : Container(),
           widget.delete
-              ? IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: (() {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    excluirResponsavel();
-                    Navigator.pop(context);
-                  }),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: corPad3,
+                    ),
+                    onPressed: (() {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      excluirResponsavel();
+                      Navigator.pop(context);
+                    }),
+                  ),
                 )
               : Container(),
         ],
@@ -203,8 +194,26 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: corPad1,
-        child: Container(
+        child: SizedBox(
           height: 50,
+          child: widget.edit
+              ? Center(
+                  child: IconButton(
+                    onPressed: () {
+                      if (_formKeyDadosPessoais.currentState!.validate() &&
+                          _formKeyEndereco.currentState!.validate()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        addResponsavel();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.save,
+                      size: 30,
+                      color: corPad3,
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ),
     );
@@ -270,7 +279,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
 
   AgrupadorCadastro configuracoesGroup() {
     return AgrupadorCadastro(
-      initiallyExpanded: false,
+      initiallyExpanded: true,
       leading: Container(
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
@@ -331,7 +340,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     return Form(
       key: _formKeyEndereco,
       child: AgrupadorCadastro(
-          initiallyExpanded: false,
+          initiallyExpanded: true,
           leading: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
@@ -397,7 +406,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     return Form(
       key: _formKeyDadosPessoais,
       child: AgrupadorCadastro(
-        initiallyExpanded: false,
+        initiallyExpanded: true,
         leading: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,

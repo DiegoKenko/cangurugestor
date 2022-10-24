@@ -58,11 +58,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "783192734543-75tvdpb04of43s0dntdc8hm2jb20ttu8.apps.googleusercontent.com",
+          "client_id": "783192734543-lc8h7v0026ipcctgpbmvkb0i36a05nt9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.cangurugestor",
-            "certificate_hash": "64832479524dfb0620eb5e7364e6750971ac0337"
+            "certificate_hash": "498327a3e7868546da7abcef252aa5fd1309726c"
           }
         },
         {
