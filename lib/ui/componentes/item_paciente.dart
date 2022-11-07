@@ -19,7 +19,7 @@ class _ItemPacienteState extends State<ItemPaciente> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        var res = Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) {
             return CadastroPaciente(
@@ -28,13 +28,12 @@ class _ItemPacienteState extends State<ItemPaciente> {
               opcao: global.opcaoAlteracao,
             );
           }),
-        );
-        res.then((value) {
-          if (value != null) {
-            setState(() {
+        ).then((value) {
+          setState(() {
+            if (value != null) {
               widget.paciente = value;
-            });
-          }
+            }
+          });
         });
       },
       child: ItemContainer(

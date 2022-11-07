@@ -10,7 +10,7 @@ void main() async {
   global.idGestorGlobal = '';
   ErrorWidget.builder = (details) => Text(
         details.exceptionAsString(),
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
         ),
       );
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         ),
         primaryColor: corPad1,
         hoverColor: corPad3,
-        errorColor: Color.fromARGB(255, 236, 20, 0),
+        errorColor: const Color.fromARGB(255, 236, 20, 0),
         fontFamily: GoogleFonts.raleway().fontFamily,
         primarySwatch: Colors.blue,
       ),

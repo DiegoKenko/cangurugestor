@@ -3,11 +3,12 @@
 import 'package:cangurugestor/classes/cuidador.dart';
 import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
-import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
+import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
+import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/ui/componentes/header_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/item_paciente.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';

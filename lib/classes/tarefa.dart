@@ -5,7 +5,7 @@ class Tarefa {
   String nome = '';
   String id = '';
   String idTipo = '';
-  EnumTarefa tipo = EnumTarefa.nenhuma;
+  EnumTarefa? tipo = EnumTarefa.nenhuma;
   String descricaoTipo = '';
   DateTime dateTime = DateTime.now();
   String date = '';
@@ -13,14 +13,18 @@ class Tarefa {
   String descricao = '';
   String observacao = '';
   bool concluida = false;
-  Tarefa(
-      {required this.nome,
-      required this.idTipo,
-      required this.tipo,
-      required this.dateTime,
-      this.descricao = '',
-      this.observacao = '',
-      this.concluida = false});
+  Tarefa({
+    this.nome = '',
+    this.idTipo = '',
+    this.tipo = EnumTarefa.nenhuma,
+    required this.dateTime,
+    this.descricao = '',
+    this.observacao = '',
+    this.concluida = false,
+  }) {
+    date = DateFormat('dd/MM/yyyy').format(dateTime);
+    time = DateFormat('HH:mm').format(dateTime);
+  }
 
   Tarefa.fromMap(Map<String, dynamic> json) {
     nome = json['nome'];
@@ -40,7 +44,7 @@ class Tarefa {
       'nome': nome,
       'id': id,
       'idTipo': idTipo,
-      'tipo': tipo.name,
+      'tipo': tipo!.name,
       'dateTime': dateTime,
       'date': DateFormat('dd/MM/yyyy').format(dateTime),
       'time': DateFormat('HH:mm').format(dateTime),

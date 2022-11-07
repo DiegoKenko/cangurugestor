@@ -1,14 +1,16 @@
 import 'package:cangurugestor/classes/medicamentos.dart';
+import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
-import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
-import 'package:cangurugestor/ui/componentes/form_cadastro_hora.dart';
+import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/global.dart' as global;
+import 'package:intl/intl.dart';
 
 class MedicamentoCadastro extends StatefulWidget {
   final int opcao;
@@ -34,29 +36,28 @@ class MedicamentoCadastro extends StatefulWidget {
 
 class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   var nomeController = TextEditingController();
-  var dataInicioController = TextEditingController();
-  var dataFimController = TextEditingController();
-  var horaController = TextEditingController();
+  List<TextEditingController> dataControllerList = [];
+  List<TextEditingController> horaControllerList = [];
+  List<TextEditingController> dataControllerListNova = [];
+  List<TextEditingController> horaControllerListNova = [];
   var quantidadeController = TextEditingController();
   var frequenciaQuantidadeController = TextEditingController();
-  var medicamentoController = TextEditingController();
   var observacaoController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String medicamento = 'item';
   String formaDeUso = 'item';
   global.EnumFrequencia frequenciaUmPad = global.EnumFrequencia.minutos;
   List<String> listaMedicamentos = [''];
+  List<Tarefa> tarefasSnap = [];
+  List<Tarefa> tarefas = [];
+  List<Tarefa> tarefasNovas = [];
   bool ativo = false;
 
   @override
   void initState() {
     super.initState();
+
     widget.medicamento ??= Medicamento();
-    dataInicioController =
-        TextEditingController(text: widget.medicamento?.dataInicio);
-    dataFimController =
-        TextEditingController(text: widget.medicamento?.dataFim);
-    horaController = TextEditingController(text: widget.medicamento?.hora);
     nomeController = TextEditingController(text: widget.medicamento?.nome);
     quantidadeController = TextEditingController(
         text: widget.medicamento?.quantidade.toString() ?? '0');
@@ -67,15 +68,13 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
     observacaoController =
         TextEditingController(text: widget.medicamento?.observacao);
     TextEditingController(text: widget.medicamento?.observacao);
+
     buscaMedicamentos();
   }
 
   @override
   void dispose() {
     nomeController.dispose();
-    dataInicioController.dispose();
-    dataFimController.dispose();
-    horaController.dispose();
     quantidadeController.dispose();
     frequenciaQuantidadeController.dispose();
     observacaoController.dispose();
@@ -138,44 +137,15 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                         enabled: widget.edit,
                         onTap: () {
                           showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return widgetListaMedicamentos();
-                              });
+                            context: context,
+                            builder: (context) {
+                              return widgetListaMedicamentos();
+                            },
+                          );
                         },
                         controller: nomeController,
                         labelText: 'Medicamento',
                       ),
-                      /*   FormDropDown(
-                        controller: formaDeUsoController,
-                        lista: listaFormasDeUso,
-                        value: formaDeUso,
-                        hintText: 'Forma de uso',
-                      ), */
-                      FormCadastroData(
-                          obrigatorio: true,
-                          controller: dataInicioController,
-                          labelText: 'Início',
-                          dataPrimeira: DateTime.now(),
-                          dataInicial: DateTime.now(),
-                          dataUltima: DateTime(DateTime.now().year + 10),
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
-                      FormCadastroData(
-                          obrigatorio: true,
-                          controller: dataFimController,
-                          dataPrimeira: DateTime.now(),
-                          dataInicial: DateTime.now(),
-                          dataUltima: DateTime(DateTime.now().year + 10),
-                          labelText: 'Fim',
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
-                      FormCadastroHora(
-                          obrigatorio: true,
-                          controller: horaController,
-                          labelText: 'Hora inicial',
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
                       Padding(
                         padding: const EdgeInsets.only(top: 20, bottom: 20),
                         child: Row(
@@ -255,6 +225,84 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                       ),
                     ],
                   ),
+                  AgrupadorCadastro(
+                    initiallyExpanded: true,
+                    leading: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.schedule,
+                        size: 40,
+                        color: Color.fromARGB(255, 10, 48, 88),
+                      ),
+                    ),
+                    titulo: 'Agenda',
+                    children: [
+                      FutureBuilder(
+                        future: buscaTarefasMedicamento(),
+                        builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
+                          if (snap.hasData) {
+                            tarefasSnap = snap.data!;
+                            tarefas = [...tarefasSnap, ...tarefasNovas];
+                            horaControllerList =
+                                List<TextEditingController>.generate(
+                              tarefas.length,
+                              (index) => TextEditingController(
+                                text: tarefas[index].time,
+                              ),
+                            );
+                            dataControllerList =
+                                List<TextEditingController>.generate(
+                              tarefas.length,
+                              (index) => TextEditingController(
+                                  text: tarefas[index].date),
+                            );
+                            for (var i = 0; i < tarefasSnap.length; i++) {
+                              dataControllerList.add(TextEditingController(
+                                  text: snap.data![i].date));
+                              horaControllerList.add(TextEditingController(
+                                  text: snap.data![i].time));
+                            }
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: tarefas.length,
+                              itemBuilder: (context, index) {
+                                return FormCadastroDataHora(
+                                  enabled:
+                                      tarefas[index].id.isEmpty ? true : false,
+                                  onDismissed: (DismissDirection direction) {
+                                    setState(() {
+                                      dataControllerList.removeAt(index);
+                                      horaControllerList.removeAt(index);
+                                      if (tarefas[index].id.isEmpty) {
+                                        tarefasNovas.remove(tarefas[index]);
+                                        tarefas.removeAt(index);
+                                      } else {
+                                        MeuFirestore.excluirTarefasMedicamento(
+                                          widget.medicamento!,
+                                          global.idPacienteGlobal,
+                                          tarefas[index].id,
+                                        );
+                                      }
+                                    });
+                                  },
+                                  key: UniqueKey(),
+                                  controllerData: dataControllerList[index],
+                                  controllerHora: horaControllerList[index],
+                                );
+                              },
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                      BotaoCadastroTarefa(
+                        onPressed: () => adicionarTarefa(),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -299,11 +347,13 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
     });
   }
 
+  Future<List<Tarefa>> buscaTarefasMedicamento() async {
+    return await MeuFirestore.tarefasMedicamento(
+        widget.medicamento!.id, global.idPacienteGlobal);
+  }
+
   Future<void> addMedicamento() async {
     widget.medicamento!.nome = nomeController.text;
-    widget.medicamento!.dataInicio = dataInicioController.text;
-    widget.medicamento!.dataFim = dataFimController.text;
-    widget.medicamento!.hora = horaController.text;
     widget.medicamento!.quantidade = double.parse(quantidadeController.text);
     widget.medicamento!.frequenciaQuantidade =
         double.parse(frequenciaQuantidadeController.text);
@@ -332,9 +382,15 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   void excluirMedicamento() {
     MeuFirestore.excluirMedicamento(
         widget.medicamento!.id, global.idPacienteGlobal);
+
+    MeuFirestore.excluirTodasTarefasMedicamento(
+        widget.medicamento!.id, global.idPacienteGlobal);
+  }
+
+  void excluirTarefaMedicametno(Tarefa tarefa) {
     // Exclui tarefas do medicamento
     MeuFirestore.excluirTarefasMedicamento(
-        widget.medicamento!, global.idPacienteGlobal);
+        widget.medicamento!, global.idPacienteGlobal, tarefa.id);
   }
 
   Widget widgetListaMedicamentos() {
@@ -382,5 +438,33 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         ],
       ),
     );
+  }
+
+  adicionarTarefa() {
+    DateTime proxTarefa = DateTime.now();
+    if (tarefas.isNotEmpty) {
+      DateTime ultTarefa = DateFormat('dd/MM/yyyy').parse(tarefas.last.date);
+      DateTime ultTarefaTime = DateFormat('HH:mm').parse(tarefas.last.time);
+      proxTarefa = DateTime(ultTarefa.year, ultTarefa.month, ultTarefa.day,
+          ultTarefaTime.hour, ultTarefaTime.minute);
+
+      proxTarefa = proxTarefa.add(Duration(
+          minutes: enumFrequenciaEmMinutos(widget.medicamento!.frequencia!,
+                  widget.medicamento!.frequenciaQuantidade)
+              .toInt()));
+    }
+    setState(() {
+      tarefasNovas.add(
+        Tarefa(dateTime: proxTarefa),
+      );
+      horaControllerListNova.clear();
+      dataControllerListNova.clear();
+      for (var i = 0; i < tarefasNovas.length; i++) {
+        dataControllerListNova
+            .add(TextEditingController(text: tarefasNovas[i].date));
+        horaControllerListNova
+            .add(TextEditingController(text: tarefasNovas[i].time));
+      }
+    });
   }
 }

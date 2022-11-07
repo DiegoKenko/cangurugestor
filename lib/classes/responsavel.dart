@@ -1,10 +1,6 @@
-import 'package:cangurugestor/classes/cuidador.dart';
-import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/classes/pessoa.dart';
 
 class Responsavel extends Pessoa {
-  List<Cuidador>? cuidadores;
-  List<Paciente>? pacientes;
   List<String>? idCuidadores;
   List<String>? idPacientes;
   String? idContrato;
@@ -28,8 +24,6 @@ class Responsavel extends Pessoa {
       String estado = '',
       this.id = '',
       this.idGestor = '',
-      this.cuidadores,
-      this.pacientes,
       this.senha = '',
       this.ativo = false,
       this.idContrato})
@@ -49,15 +43,8 @@ class Responsavel extends Pessoa {
         );
 
   Responsavel.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
-    if ((map['cuidadores'] as Map).isNotEmpty) {
-      cuidadores = map['cuidadores']?.map((e) => Cuidador.fromMap(e))?.toList();
-    }
-    if ((map['pacientes'] as Map).isNotEmpty) {
-      pacientes = map['pacientes']?.map((e) => Paciente.fromMap(e))?.toList();
-    }
-    if ((map['contrato'] as Map).isNotEmpty) {
-      idContrato = map['contrato'];
-    }
+    idCuidadores = map['idCuidadores'];
+    idPacientes = map['idPacientes'];
     senha = map['senha'];
     ativo = map['ativo'];
     nome = map['nome'];
@@ -85,9 +72,9 @@ class Responsavel extends Pessoa {
       'nascimento': nascimento,
       'email': email,
       'gestor': idGestor,
+      'idPacientes': idPacientes,
+      'idCuidadores': idCuidadores,
       'telefone': telefone,
-      'cuidadores': cuidadores ?? {},
-      'pacientes': pacientes ?? {},
       'contrato': idContrato ?? {},
       'ativo': ativo,
       'cep': cep,

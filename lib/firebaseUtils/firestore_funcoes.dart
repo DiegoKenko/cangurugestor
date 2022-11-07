@@ -91,6 +91,8 @@ class MeuFirestore {
         }
       }
       paciente.id = value.id;
+      // Adiciona paciente ao responsavel
+      adicionarPacienteResponsavel(paciente);
       return paciente;
     });
     return paciente;
@@ -105,13 +107,19 @@ class MeuFirestore {
       (snapshot) {
         if (snapshot.exists) {
           snapshot.reference.update(paciente.toMap());
+          // Adiciona paciente ao responsavel
+          adicionarPacienteResponsavel(paciente);
         }
       },
     );
   }
 
-  static excluirPaciente(String idPaciente) {
-    FirebaseFirestore.instance.collection('pacientes').doc(idPaciente).delete();
+  static excluirPaciente(Paciente paciente) {
+    FirebaseFirestore.instance
+        .collection('pacientes')
+        .doc(paciente.id)
+        .delete();
+    excluirPacienteResponsavel(paciente);
   }
 
   static Future<Cuidador> incluirCuidador(Cuidador cuidador) async {
@@ -548,20 +556,30 @@ class MeuFirestore {
     }
   }
 
-  static excluirTarefasMedicamento(Medicamento med, String idPaciente) async {
-    await FirebaseFirestore.instance
+  static excluirTarefasMedicamento(
+      Medicamento med, String idPaciente, String idTarefa) async {
+    FirebaseFirestore.instance
         .collection('pacientes')
         .doc(idPaciente)
         .collection('tarefas')
+        .doc(idTarefa)
+        .delete();
+  }
+
+  static excluirTodasTarefasMedicamento(String med, String idPaciente) {
+    FirebaseFirestore.instance
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('tarefas')
+        .where('medicamento', isEqualTo: med)
         .where('tipo', isEqualTo: 'medicamento')
-        .where('idTipo', isEqualTo: med.id)
-        .where('concluida', isEqualTo: false)
+        .where('data',
+            isGreaterThanOrEqualTo:
+                DateFormat('yyyy-MM-dd').format(DateTime.now()))
         .get()
         .then((value) {
-      if (value.docs.isNotEmpty) {
-        for (var element in value.docs) {
-          element.reference.delete();
-        }
+      for (var doc in value.docs) {
+        doc.reference.delete();
       }
     });
   }
@@ -606,6 +624,71 @@ class MeuFirestore {
         }
       }
     }); */
+    return tarefas;
+  }
+
+  static void adicionarPacienteResponsavel(Paciente paciente) {
+    // Adiciona paciente ao responsavel
+    FirebaseFirestore.instance
+        .collection('responsaveis')
+        .doc(paciente.idResponsavel)
+        .get()
+        .then(
+      (snapshotResp) {
+        if (snapshotResp.exists) {
+          var responsavel = Responsavel.fromMap(snapshotResp.data()!);
+          responsavel.idPacientes ??= [];
+          if (!responsavel.idPacientes!.contains(paciente.id)) {
+            responsavel.idPacientes!.add(paciente.id);
+            snapshotResp.reference.update(responsavel.toMap());
+          }
+        }
+      },
+    );
+  }
+
+  static void excluirPacienteResponsavel(Paciente paciente) {
+    FirebaseFirestore.instance
+        .collection('responsaveis')
+        .doc(paciente.idResponsavel)
+        .get()
+        .then(
+      (snapshotResp) {
+        if (snapshotResp.exists) {
+          var responsavel = Responsavel.fromMap(snapshotResp.data()!);
+          responsavel.idPacientes ??= [];
+          if (!responsavel.idPacientes!.contains(paciente.id)) {
+            responsavel.idPacientes!.remove(paciente.id);
+            snapshotResp.reference.update(responsavel.toMap());
+          }
+        }
+      },
+    );
+  }
+
+  static Future<List<Tarefa>> tarefasMedicamento(
+      String idMedicamento, String idPaciente,
+      {bool concluida = false}) async {
+    List<Tarefa> tarefas = [];
+    if (idMedicamento.isEmpty || idPaciente.isEmpty) return tarefas;
+    var value = await FirebaseFirestore.instance
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('tarefas')
+        .where('tipo', isEqualTo: 'medicamento')
+        .where('idTipo', isEqualTo: idMedicamento)
+        .where('concluida', isEqualTo: false)
+        .where('date',
+            isGreaterThanOrEqualTo:
+                DateFormat('dd/MM/yyyy').format(DateTime.now()))
+        .get();
+
+    if (value.docs.isNotEmpty) {
+      for (var element in value.docs) {
+        tarefas.add(Tarefa.fromMap(element.data()));
+        tarefas.last.id = element.id;
+      }
+    }
     return tarefas;
   }
 }

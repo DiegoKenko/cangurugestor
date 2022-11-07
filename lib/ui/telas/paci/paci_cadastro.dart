@@ -113,7 +113,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                     onPressed: (() {
                       FocusManager.instance.primaryFocus?.unfocus();
                       excluirPaciente();
-                      Navigator.pop(context);
+                      Navigator.pop(context, widget.paciente);
                     }),
                   )
                 : Container(),
@@ -518,6 +518,6 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
   }
 
   void excluirPaciente() {
-    MeuFirestore.excluirPaciente(widget.paciente!.id);
+    MeuFirestore.excluirPaciente(widget.paciente!);
   }
 }
