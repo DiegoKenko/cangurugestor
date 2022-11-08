@@ -8,10 +8,6 @@ class Medicamento {
   String duracao = '';
   double quantidade = 0;
   double frequenciaQuantidade = 0;
-  String data = '';
-  String dataInicio = '';
-  String dataFim = '';
-  String hora = '';
   String observacao = '';
   String status = '';
   String id = '';
@@ -24,12 +20,8 @@ class Medicamento {
     this.descricao = '',
     this.tipo = '',
     this.duracao = '',
-    this.dataInicio = '',
     this.formaDeUso = '',
-    this.dataFim = '',
-    this.data = '',
     this.quantidade = 0,
-    this.hora = '',
     this.observacao = '',
     this.status = '',
     this.ativo = false,
@@ -41,10 +33,7 @@ class Medicamento {
     descricao = map['descricao'];
     tipo = map['tipo'];
     duracao = map['duracao'];
-    data = map['data'] ?? '';
-    dataInicio = map['dataInicio'];
-    dataFim = map['dataFim'];
-    hora = map['hora'];
+
     observacao = map['observacao'];
     status = map['status'];
     ativo = map['ativo'];
@@ -52,7 +41,7 @@ class Medicamento {
     frequenciaQuantidade = double.parse(map['frequenciaQuantidade'].toString());
     frequencia = EnumFrequencia.values.firstWhere(
         (element) => element.name == map['frequencia'],
-        orElse: () => EnumFrequencia.nenhum);
+        orElse: () => EnumFrequencia.minutos);
   }
 
   Map<String, dynamic> toMap() {
@@ -61,10 +50,6 @@ class Medicamento {
       'descricao': descricao,
       'tipo': tipo,
       'duracao': duracao,
-      'data': data,
-      'dataFim': dataFim,
-      'dataInicio': dataInicio,
-      'hora': hora,
       'observacao': observacao,
       'status': status,
       'ativo': ativo,

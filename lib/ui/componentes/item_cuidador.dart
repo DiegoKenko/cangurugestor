@@ -42,9 +42,7 @@ class _ItemCuidadorState extends State<ItemCuidador> {
       },
       child: ItemContainer(
         titulo: widget.cuidador.nome,
-        subtitle: Text(widget.cuidador.sobrenome),
-        image: Image.network(
-            'https://ui-avatars.com/api/?background=0D8ABC&color=fff'),
+        subtitle: widget.cuidador.sobrenome,
       ),
     );
   }

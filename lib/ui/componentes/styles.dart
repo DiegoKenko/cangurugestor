@@ -39,9 +39,10 @@ final kLabelLogin = TextStyle(
 
 final kNameStyle = TextStyle(
   color: corPreto,
-  fontSize: 14,
+  fontSize: 15,
   wordSpacing: 2,
   letterSpacing: 3,
+  fontWeight: FontWeight.bold,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
 

@@ -19,7 +19,7 @@ class _ItemAtividadeState extends State<ItemAtividade> {
       onTap: widget.onTap,
       child: ItemContainer(
         titulo: widget.atividade.nome!,
-        subtitle: Text(widget.atividade.descricao),
+        subtitle: widget.atividade.descricao,
       ),
     );
   }

@@ -10,6 +10,7 @@ import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/global.dart' as global;
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class MedicamentoCadastro extends StatefulWidget {
@@ -161,7 +162,18 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                                       borderRadius: BorderRadius.circular(30)),
                                   controller: frequenciaQuantidadeController,
                                   labelText: 'a cada:',
-                                  textInputType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp("[.]")),
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp("[,]"))
+                                  ],
+                                  textInputType:
+                                      const TextInputType.numberWithOptions(
+                                    decimal: false,
+                                    signed: false,
+                                  ),
                                 ),
                               ),
                             ),
@@ -313,7 +325,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         color: corPad1,
         child: SizedBox(
           height: 50,
-          child: widget.edit && widget.medicamento!.id.isEmpty
+          child: widget.edit && tarefasNovas.isNotEmpty
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -359,23 +371,18 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         double.parse(frequenciaQuantidadeController.text);
     widget.medicamento!.frequencia = EnumFrequencia.values.firstWhere(
         (element) => element.name == frequenciaUmPad.name,
-        orElse: () => EnumFrequencia.nenhum);
+        orElse: () => EnumFrequencia.minutos);
 
-    if (widget.opcao == global.opcaoInclusao &&
-        widget.medicamento!.nome.isNotEmpty &&
-        widget.medicamento!.dataInicio.isNotEmpty &&
-        widget.medicamento!.id.isEmpty) {
-      var med = await MeuFirestore.novoMedicamentoPaciente(
-          widget.medicamento!, global.idPacienteGlobal);
-      // Cria tarefas do medicamento
-      await MeuFirestore.criaTarefasMedicamento(med, global.idPacienteGlobal);
-
-      setState(() {
-        widget.medicamento = med;
-      });
-    } else if (widget.medicamento!.id.isNotEmpty) {
-      MeuFirestore.atualizarMedicamentoPaciente(
-          widget.medicamento!, global.idPacienteGlobal);
+    if (widget.medicamento!.nome.isNotEmpty) {
+      if (widget.opcao == opcaoInclusao && widget.medicamento!.id.isEmpty) {
+        widget.medicamento = await MeuFirestore.novoMedicamentoPaciente(
+            widget.medicamento!, global.idPacienteGlobal);
+        await MeuFirestore.criaTarefasMedicamento(
+            widget.medicamento!, global.idPacienteGlobal, tarefasNovas);
+      } else {
+        await MeuFirestore.criaTarefasMedicamento(
+            widget.medicamento!, global.idPacienteGlobal, tarefasNovas);
+      }
     }
   }
 
@@ -455,7 +462,11 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
     }
     setState(() {
       tarefasNovas.add(
-        Tarefa(dateTime: proxTarefa),
+        Tarefa(
+          dateTime: proxTarefa,
+          idTipo: widget.medicamento!.id,
+          tipo: EnumTarefa.medicamento,
+        ),
       );
       horaControllerListNova.clear();
       dataControllerListNova.clear();

@@ -66,8 +66,7 @@ class _AgrupadorCadastroState extends State<AgrupadorCadastro> {
                       widget.titulo.toUpperCase(),
                       style: const TextStyle(
                         color: corPreto,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
                         letterSpacing: 2,
                       ),
                     ),

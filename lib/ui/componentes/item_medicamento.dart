@@ -19,7 +19,7 @@ class _ItemMedicamentoState extends State<ItemMedicamento> {
       onTap: widget.onTap,
       child: ItemContainer(
         titulo: widget.medicamento.nome,
-        subtitle: Text(widget.medicamento.descricao),
+        subtitle: widget.medicamento.descricao,
       ),
     );
   }

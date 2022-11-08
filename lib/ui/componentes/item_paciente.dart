@@ -37,8 +37,9 @@ class _ItemPacienteState extends State<ItemPaciente> {
         });
       },
       child: ItemContainer(
-          titulo: widget.paciente.nome,
-          subtitle: Text(widget.paciente.sobrenome)),
+        titulo: widget.paciente.nome,
+        subtitle: widget.paciente.sobrenome,
+      ),
     );
   }
 

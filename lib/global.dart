@@ -26,7 +26,6 @@ enum EnumFrequencia {
   dias,
   semanas,
   meses,
-  nenhum,
 }
 
 enum EnumClasse {

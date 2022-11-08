@@ -42,9 +42,7 @@ class _ItemResponsavelState extends State<ItemResponsavel> {
       },
       child: ItemContainer(
         titulo: widget.responsavel.nome,
-        subtitle: Text(widget.responsavel.sobrenome),
-        image: Image.network(
-            'https://ui-avatars.com/api/?background=0D8ABC&color=fff'),
+        subtitle: widget.responsavel.sobrenome,
       ),
     );
   }

@@ -14,7 +14,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/ui/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/global.dart' as global;
-import 'package:cangurugestor/utils/tarefa_utils.dart';
 import 'package:intl/intl.dart';
 
 class MeuFirestore {
@@ -545,8 +544,8 @@ class MeuFirestore {
   /*
   Grava todas tarefas de acordo com data inicial e final do medicamento
   */
-  static criaTarefasMedicamento(Medicamento med, String idPaciente) {
-    List<Tarefa> tarefas = tarefasFromMedicamento(med);
+  static criaTarefasMedicamento(
+      Medicamento med, String idPaciente, List<Tarefa> tarefas) {
     for (var tarefa in tarefas) {
       FirebaseFirestore.instance
           .collection('pacientes')

@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 
 class ItemContainer extends StatelessWidget {
   final String titulo;
-  final Widget? subtitle;
-  final Widget? leading;
-  final Image? image;
+  final String subtitle;
   const ItemContainer({
     Key? key,
     this.titulo = '',
-    this.subtitle,
-    this.leading,
-    this.image,
+    this.subtitle = '',
   }) : super(key: key);
 
   @override
@@ -26,14 +22,27 @@ class ItemContainer extends StatelessWidget {
         ),
         elevation: 20,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-          child: ListTile(
-            subtitle: subtitle,
-            leading: leading,
-            title: Text(
-              (titulo).toUpperCase(),
-              style: kNameStyle,
-            ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  (titulo).toUpperCase(),
+                  style: kNameStyle,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              subtitle != ''
+                  ? Center(
+                      child: Text(
+                        subtitle,
+                        style: kNameStyle,
+                      ),
+                    )
+                  : Container(),
+            ],
           ),
         ),
       ),
