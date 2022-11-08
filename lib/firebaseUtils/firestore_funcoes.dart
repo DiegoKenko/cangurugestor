@@ -396,7 +396,7 @@ class MeuFirestore {
                           a.nome.toUpperCase().compareTo(b.nome.toUpperCase()));
                       gestor.todosClientes(responsaveis);
                       // Painel gestor
-                      Navigator.push(context,
+                      Navigator.pushReplacement(context,
                           MyRoute().createRoute(PainelGestor(gestor: gestor)));
                     }),
                   }

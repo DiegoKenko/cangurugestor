@@ -14,6 +14,7 @@ class TelaLogin extends StatefulWidget {
 class _TelaLoginState extends State<TelaLogin> {
   final cpfController = TextEditingController();
   final senhaController = TextEditingController();
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -23,29 +24,26 @@ class _TelaLoginState extends State<TelaLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: corPad1,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Center(
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40.0,
-                vertical: 80.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Image(
-                    image: AssetImage('assets/reduxLogo01.png'),
-                    fit: BoxFit.fill,
-                  ),
-                  const SizedBox(height: 20.0),
-                  OutlinedButton(
+      body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 40.0,
+          vertical: 80.0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(
+              image: AssetImage('assets/reduxLogo01.png'),
+              height: MediaQuery.of(context).size.height * 0.6,
+              fit: BoxFit.fitWidth,
+            ),
+            const SizedBox(height: 20.0),
+            !isLoading
+                ? OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(corPad1),
+                      backgroundColor: MaterialStateProperty.all(corPad3),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
                           side: const BorderSide(
@@ -57,8 +55,8 @@ class _TelaLoginState extends State<TelaLogin> {
                       ),
                     ),
                     onPressed: () {
-                      _loading();
                       setState(() {
+                        isLoading = true;
                         SignIn().signInWithGoogle().then((result) {
                           MeuFirestore()
                               .autenticarUsuarioGoogle(context, result.user!);
@@ -71,12 +69,16 @@ class _TelaLoginState extends State<TelaLogin> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const <Widget>[
+                          Image(
+                            image: AssetImage("assets/google_icon.png"),
+                            height: 26.0,
+                          ),
                           Padding(
                             padding: EdgeInsets.only(left: 10),
                             child: Text(
                               'Entrar com Google',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                                 color: Colors.black,
                               ),
                             ),
@@ -84,11 +86,9 @@ class _TelaLoginState extends State<TelaLogin> {
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                  )
+                : CircularProgressIndicator(color: corPad3),
+          ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -97,23 +97,6 @@ class _TelaLoginState extends State<TelaLogin> {
           height: 20,
         ),
       ),
-    );
-  }
-
-  Future<void> _loading() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: Colors.transparent,
-            child: const Center(child: CircularProgressIndicator()),
-          ),
-        );
-      },
     );
   }
 }

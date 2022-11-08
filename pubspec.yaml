@@ -60,6 +60,7 @@ flutter:
     - assets/logo01.png
     - assets/imagemLogo01.png
     - assets/reduxLogo01.png
+    - assets/google_icon.png
   uses-material-design: true
 
 

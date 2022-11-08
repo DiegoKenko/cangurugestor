@@ -43,8 +43,6 @@ class Responsavel extends Pessoa {
         );
 
   Responsavel.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
-    idCuidadores = map['idCuidadores'];
-    idPacientes = map['idPacientes'];
     senha = map['senha'];
     ativo = map['ativo'];
     nome = map['nome'];
@@ -72,8 +70,6 @@ class Responsavel extends Pessoa {
       'nascimento': nascimento,
       'email': email,
       'gestor': idGestor,
-      'idPacientes': idPacientes,
-      'idCuidadores': idCuidadores,
       'telefone': telefone,
       'contrato': idContrato ?? {},
       'ativo': ativo,
