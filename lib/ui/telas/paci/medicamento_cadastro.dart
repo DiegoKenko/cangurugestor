@@ -57,7 +57,6 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   @override
   void initState() {
     super.initState();
-
     widget.medicamento ??= Medicamento();
     nomeController = TextEditingController(text: widget.medicamento?.nome);
     quantidadeController = TextEditingController(
@@ -185,6 +184,11 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                               child: SizedBox(
                                 height: 60,
                                 child: FormField<String>(
+                                  validator: (p0) {
+                                    if (p0!.isEmpty) {
+                                      return 'Campo obrigatório';
+                                    }
+                                  },
                                   enabled: widget.edit,
                                   builder: (FormFieldState<String> state) {
                                     return InputDecorator(
@@ -310,9 +314,11 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                           }
                         },
                       ),
-                      BotaoCadastroTarefa(
-                        onPressed: () => adicionarTarefa(),
-                      ),
+                      widget.medicamento!.id.isNotEmpty
+                          ? BotaoCadastroTarefa(
+                              onPressed: () => adicionarTarefa(),
+                            )
+                          : Container(),
                     ],
                   )
                 ],
@@ -325,7 +331,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         color: corPad1,
         child: SizedBox(
           height: 50,
-          child: widget.edit && tarefasNovas.isNotEmpty
+          child: widget.edit
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -334,7 +340,6 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                         if (_formKey.currentState!.validate()) {
                           FocusManager.instance.primaryFocus?.unfocus();
                           addMedicamento();
-                          Navigator.pop(context);
                         }
                       },
                       icon: const Icon(
@@ -387,11 +392,14 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   }
 
   void excluirMedicamento() {
-    MeuFirestore.excluirMedicamento(
-        widget.medicamento!.id, global.idPacienteGlobal);
+    if (widget.medicamento!.id.isNotEmpty &&
+        global.idPacienteGlobal.isNotEmpty) {
+      MeuFirestore.excluirMedicamento(
+          widget.medicamento!.id, global.idPacienteGlobal);
 
-    MeuFirestore.excluirTodasTarefasMedicamento(
-        widget.medicamento!.id, global.idPacienteGlobal);
+      MeuFirestore.excluirTodasTarefasMedicamento(
+          widget.medicamento!.id, global.idPacienteGlobal);
+    }
   }
 
   void excluirTarefaMedicametno(Tarefa tarefa) {
@@ -403,7 +411,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   Widget widgetListaMedicamentos() {
     return Container(
       height: 300,
-      color: Colors.white,
+      color: corPad1.withOpacity(0.1),
       child: Column(
         children: [
           const SizedBox(
@@ -416,16 +424,22 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
           const SizedBox(
             height: 20,
           ),
+          Container(
+            color: corPad1,
+            width: double.infinity,
+            height: 2,
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: listaMedicamentos.length,
               itemBuilder: (context, index) {
                 return Container(
                   decoration: kBoxDecorationSetMedicamento,
-                  margin: const EdgeInsets.only(left: 30, right: 30, top: 10),
+                  margin: const EdgeInsets.only(
+                      left: 30, right: 30, top: 10, bottom: 10),
                   child: ListTile(
                     title: Text(
-                      listaMedicamentos[index],
+                      listaMedicamentos[index].toUpperCase(),
                       style: const TextStyle(
                         color: Colors.black,
                       ),
@@ -464,6 +478,9 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
       tarefasNovas.add(
         Tarefa(
           dateTime: proxTarefa,
+          nome: widget.medicamento!.nome,
+          descricao: widget.medicamento!.descricao,
+          observacao: widget.medicamento!.observacao,
           idTipo: widget.medicamento!.id,
           tipo: EnumTarefa.medicamento,
         ),

@@ -16,7 +16,7 @@ class ItemContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Material(
         shadowColor: corPad1.withOpacity(0.3),
-        color: corPad1.withOpacity(0.7),
+        color: corPad1.withOpacity(0.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -31,9 +31,11 @@ class ItemContainer extends StatelessWidget {
                   style: kNameStyle,
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              subtitle != ''
+                  ? SizedBox(
+                      height: 10,
+                    )
+                  : Container(),
               subtitle != ''
                   ? Center(
                       child: Text(
