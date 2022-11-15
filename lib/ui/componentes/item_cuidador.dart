@@ -1,4 +1,5 @@
 import 'package:cangurugestor/classes/cuidador.dart';
+import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/item_container.dart';
 import 'package:cangurugestor/ui/telas/cuid/cuid_cadastro.dart';
 import 'package:flutter/material.dart';
@@ -22,15 +23,14 @@ class _ItemCuidadorState extends State<ItemCuidador> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        var res = Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return CadastroCuidador(
+        var res = Navigator.of(context).push(
+          AnimatedPageTransition(
+            page: CadastroCuidador(
               privilegio: widget.privilegio,
               cuidador: widget.cuidador,
               opcao: global.opcaoAlteracao,
-            );
-          }),
+            ),
+          ),
         );
         res.then((value) {
           if (value != null) {

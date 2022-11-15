@@ -1,3 +1,4 @@
+import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cangurugestor/global.dart';
 
 class Medicamento {
@@ -13,6 +14,7 @@ class Medicamento {
   String id = '';
   bool ativo = true;
   EnumFrequencia? frequencia;
+  List<Tarefa> tarefas = [];
 
   Medicamento({
     this.nome = '',

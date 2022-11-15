@@ -2,6 +2,9 @@
 
 import 'package:cangurugestor/classes/cuidador.dart';
 import 'package:cangurugestor/classes/paciente.dart';
+import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
+import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
+import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
@@ -14,8 +17,10 @@ import 'package:cangurugestor/ui/componentes/item_paciente.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:cangurugestor/ui/telas/paci/paci_cadastro.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/global.dart' as global;
+import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroCuidador extends StatefulWidget {
@@ -61,11 +66,14 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
   var estadoController = TextEditingController();
   final _formKeyDadosPessoais = GlobalKey<FormState>();
   final _formKeyEndereco = GlobalKey<FormState>();
-  bool ativo = false;
+  bool ativo = true;
   List<Widget> pacientesWidget = [];
+  final FirestoreResponsavel firestoreResponsavel = FirestoreResponsavel();
+  final FirestoreCuidador firestoreCuidador = FirestoreCuidador();
 
   @override
   void initState() {
+    ativo = widget.cuidador!.ativo;
     cpfController = TextEditingController(text: widget.cuidador?.cpf);
     nomeController = TextEditingController(text: widget.cuidador?.nome);
     nascimentoController =
@@ -119,7 +127,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     return Scaffold(
       appBar: AppBarCan(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: widget.cuidador!.id.isEmpty ? Colors.red : Colors.white,
+          ),
           onPressed: () {
             if (widget.cuidador!.id.isEmpty) {
               Navigator.pop(context);
@@ -260,7 +271,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     return Form(
       key: _formKeyEndereco,
       child: AgrupadorCadastro(
-          initiallyExpanded: false,
+          initiallyExpanded: true,
           leading: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
@@ -279,6 +290,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
               labelText: 'CEP',
               hintText: '000000-000',
               inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
                 MaskTextInputFormatter(
                     mask: "#####-###", filter: {"#": RegExp(r'[0-9]')})
               ],
@@ -322,7 +334,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     return Form(
       key: _formKeyDadosPessoais,
       child: AgrupadorCadastro(
-        initiallyExpanded: false,
+        initiallyExpanded: true,
         leading: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
@@ -383,7 +395,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
 
   FutureBuilder<List<Paciente>> pacienteGroup() {
     return FutureBuilder(
-        future: MeuFirestore().todosPacientesCuidador(
+        future: firestoreCuidador.todosPacientesCuidador(
             global.idResponsavelGlobal, widget.cuidador!.id),
         builder: (context, AsyncSnapshot<List<Paciente>> builder) {
           if (builder.hasData) {
@@ -422,11 +434,13 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
         Scaffold.of(context).showBottomSheet<void>(
           (BuildContext context) {
             return FutureBuilder(
-              future: MeuFirestore().todosPacientes(global.idResponsavelGlobal),
-              builder: (context, AsyncSnapshot<List<Paciente>> builder) {
-                if (builder.hasData) {
-                  List<Paciente>? pacientes = builder.data;
-                  if (pacientes != null || pacientes!.isNotEmpty) {
+              future: firestoreResponsavel
+                  .todosPacientesResponsavel(global.idResponsavelGlobal),
+              builder: (context, AsyncSnapshot<List<Paciente>> snapshot) {
+                if (snapshot.hasData) {
+                  List<Paciente>? pacientes = snapshot.data;
+
+                  if (pacientes!.isNotEmpty) {
                     return SizedBox(
                       height: MediaQuery.of(context).size.height * 0.7,
                       width: MediaQuery.of(context).size.width,
@@ -494,17 +508,17 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
         widget.cuidador!.nome.isNotEmpty &&
         widget.cuidador!.cpf.isNotEmpty &&
         widget.cuidador!.id == '') {
-      var cuid = await MeuFirestore.incluirCuidador(widget.cuidador!);
+      var cuid = await firestoreCuidador.incluirCuidador(widget.cuidador!);
       setState(() {
         widget.cuidador = cuid;
       });
     } else if (widget.cuidador!.id.isNotEmpty) {
-      MeuFirestore.atualizarCuidador(widget.cuidador!);
+      firestoreCuidador.atualizarCuidador(widget.cuidador!);
     }
   }
 
   void excluirCuidador() {
-    MeuFirestore.excluirCuidador(widget.cuidador!.id);
+    firestoreCuidador.excluirCuidador(widget.cuidador!.id);
   }
 
   listTilePaciente(Paciente paciente, Cuidador cuidador) {
@@ -519,10 +533,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
         onTap: () {
           setState(() {
             if (exists) {
-              MeuFirestore.incluirPacienteCuidador(
+              firestoreCuidador.incluirPacienteCuidador(
                   paciente.id, widget.cuidador!.id);
             } else {
-              MeuFirestore.excluirPacienteCuidador(
+              firestoreCuidador.excluirPacienteCuidador(
                   paciente.id, widget.cuidador!.id);
             }
           });

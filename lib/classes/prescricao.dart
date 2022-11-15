@@ -1,5 +1,5 @@
 import 'package:cangurugestor/classes/atividade.dart';
-import 'package:cangurugestor/classes/medicamentos.dart';
+import 'package:cangurugestor/classes/medicamento.dart';
 
 class Prescricao {
   List<Atividade>? atividades;

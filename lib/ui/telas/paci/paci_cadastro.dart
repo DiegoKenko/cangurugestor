@@ -1,10 +1,11 @@
 import 'package:cangurugestor/classes/atividade.dart';
 import 'package:cangurugestor/classes/consulta.dart';
-import 'package:cangurugestor/classes/medicamentos.dart';
+import 'package:cangurugestor/classes/medicamento.dart';
 import 'package:cangurugestor/classes/paciente.dart';
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
+import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
+import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
@@ -59,15 +60,16 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
   var telefoneController = TextEditingController();
   var senhaController = TextEditingController();
   final _formKeyDadosPessoais = GlobalKey<FormState>();
-
-  bool ativo = false;
+  bool ativo = true;
   bool editar = true;
   List<Widget> consultasWidget = [];
   List<Widget> medicamentosWidget = [];
   List<Widget> atividadesWidget = [];
+  final FirestorePaciente firestorePaciente = FirestorePaciente();
 
   @override
   void initState() {
+    ativo = widget.paciente!.ativo;
     cpfController = TextEditingController(text: widget.paciente?.cpf);
     nomeController = TextEditingController(text: widget.paciente?.nome);
     nascimentoController =
@@ -95,7 +97,10 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
     return Scaffold(
       appBar: AppBarCan(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: widget.paciente!.id.isEmpty ? Colors.red : Colors.white,
+          ),
           onPressed: () {
             if (widget.paciente!.id.isEmpty) {
               Navigator.pop(context);
@@ -289,23 +294,28 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
 
   FutureBuilder<List<Consulta>> consultaGroup() {
     return FutureBuilder(
-        future: MeuFirestore.todasConsultasPaciente(widget.paciente!.id),
+        future: firestorePaciente.todasConsultasPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Consulta>> builder) {
           if (builder.hasData) {
             consultasWidget = [];
             for (var consulta in builder.data!) {
-              consultasWidget.add(ItemConsulta(
-                consulta: consulta,
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ConsultaCadastro(
-                      privilegio: widget.privilegio,
-                      consulta: consulta,
-                      opcao: global.opcaoAlteracao,
+              consultasWidget.add(
+                ItemConsulta(
+                  consulta: consulta,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      AnimatedPageTransition(
+                        page: ConsultaCadastro(
+                          privilegio: widget.privilegio,
+                          consulta: consulta,
+                          opcao: global.opcaoAlteracao,
+                        ),
+                      ),
                     );
-                  }));
-                },
-              ));
+                    setState(() {});
+                  },
+                ),
+              );
             }
             widget.edit
                 ? consultasWidget.add(botaoAdicionarConsulta())
@@ -332,26 +342,33 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
 
   FutureBuilder<List<Atividade>> atividadeGroup() {
     return FutureBuilder(
-        future: MeuFirestore.todasAtividadesPaciente(widget.paciente!.id),
+        future: firestorePaciente.todasAtividadesPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Atividade>> builder) {
           if (builder.hasData) {
             atividadesWidget = [];
             for (var atividade in builder.data!) {
-              atividadesWidget.add(ItemAtividade(
-                atividade: atividade,
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return AtividadeCadastro(
-                      privilegio: widget.privilegio,
-                      atividade: atividade,
-                      opcao: global.opcaoAlteracao,
+              atividadesWidget.add(
+                ItemAtividade(
+                  atividade: atividade,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      AnimatedPageTransition(
+                        page: AtividadeCadastro(
+                          privilegio: widget.privilegio,
+                          atividade: atividade,
+                          opcao: global.opcaoAlteracao,
+                        ),
+                      ),
                     );
-                  }));
-                },
-              ));
+                    setState(() {});
+                  },
+                ),
+              );
             }
             widget.edit
-                ? atividadesWidget.add(botaoAdicionarAtividade())
+                ? atividadesWidget.add(
+                    botaoAdicionarAtividade(),
+                  )
                 : Container();
             return AgrupadorCadastro(
               leading: Container(
@@ -375,25 +392,29 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
 
   FutureBuilder<List<Medicamento>> medicamentoGroup() {
     return FutureBuilder(
-        future: MeuFirestore.todosMedicamentosPaciente(widget.paciente!.id),
+        future:
+            firestorePaciente.todosMedicamentosPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Medicamento>> builder) {
           if (builder.hasData) {
             medicamentosWidget = [];
             for (var medicamento in builder.data!) {
-              medicamentosWidget.add(ItemMedicamento(
-                medicamento: medicamento,
-                onTap: () async {
-                  await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                    return MedicamentoCadastro(
-                      privilegio: widget.privilegio,
-                      medicamento: medicamento,
-                      opcao: global.opcaoAlteracao,
+              medicamentosWidget.add(
+                ItemMedicamento(
+                  medicamento: medicamento,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      AnimatedPageTransition(
+                        page: MedicamentoCadastro(
+                          privilegio: widget.privilegio,
+                          medicamento: medicamento,
+                          opcao: global.opcaoAlteracao,
+                        ),
+                      ),
                     );
-                  }));
-                  setState(() {});
-                },
-              ));
+                    setState(() {});
+                  },
+                ),
+              );
             }
             widget.edit
                 ? medicamentosWidget.add(botaoAdicionarMedicamento())
@@ -421,73 +442,48 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
   Widget botaoAdicionarMedicamento() {
     return BotaoCadastro(
       onPressed: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return MedicamentoCadastro(
+        await Navigator.of(context).push(
+          AnimatedPageTransition(
+            page: MedicamentoCadastro(
               edit: true,
               privilegio: widget.privilegio,
               opcao: global.opcaoInclusao,
-            );
-          }),
+            ),
+          ),
         );
-        setState(() {
-          debugPrint('Medicamento adicionado');
-        });
+        setState(() {});
       },
     );
   }
 
   Widget botaoAdicionarConsulta() {
     return BotaoCadastro(
-      onPressed: () {
-        var consulta = Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return ConsultaCadastro(
+      onPressed: () async {
+        await Navigator.of(context).push(
+          AnimatedPageTransition(
+            page: ConsultaCadastro(
               privilegio: widget.privilegio,
               opcao: global.opcaoInclusao,
-            );
-          }),
+            ),
+          ),
         );
-        consulta.then((value) {
-          if (value != null) {
-            setState(() {
-              widget.paciente!.consultas!.add(value);
-              consultasWidget.insert(
-                0,
-                ItemConsulta(consulta: value),
-              );
-            });
-          }
-        });
+        setState(() {});
       },
     );
   }
 
   Widget botaoAdicionarAtividade() {
     return BotaoCadastro(
-      onPressed: () {
-        var atividade = Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return AtividadeCadastro(
+      onPressed: () async {
+        await Navigator.of(context).push(
+          AnimatedPageTransition(
+            page: AtividadeCadastro(
               privilegio: widget.privilegio,
               opcao: global.opcaoInclusao,
-            );
-          }),
+            ),
+          ),
         );
-        atividade.then((value) {
-          if (value != null) {
-            setState(() {
-              widget.paciente!.atividades!.add(value);
-              atividadesWidget.insert(
-                0,
-                ItemAtividade(atividade: value),
-              );
-            });
-          }
-        });
+        setState(() {});
       },
     );
   }
@@ -506,18 +502,17 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
         widget.paciente!.nome.isNotEmpty &&
         widget.paciente!.id.isEmpty &&
         widget.paciente!.cpf.isNotEmpty) {
-      MeuFirestore.incluirPaciente(widget.paciente!).then(
+      firestorePaciente.incluirPaciente(widget.paciente!).then(
         (value) {
           widget.paciente = value;
-          Navigator.pop(context, widget.paciente);
         },
       );
     } else if (widget.opcao == global.opcaoAlteracao) {
-      MeuFirestore.atualizarPaciente(widget.paciente!);
+      firestorePaciente.atualizarPaciente(widget.paciente!);
     } else {}
   }
 
   void excluirPaciente() {
-    MeuFirestore.excluirPaciente(widget.paciente!);
+    firestorePaciente.excluirPaciente(widget.paciente!);
   }
 }

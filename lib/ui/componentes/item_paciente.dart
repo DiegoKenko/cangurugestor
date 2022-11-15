@@ -1,4 +1,5 @@
 import 'package:cangurugestor/classes/paciente.dart';
+import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/item_container.dart';
 import 'package:cangurugestor/ui/telas/paci/paci_cadastro.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +20,17 @@ class _ItemPacienteState extends State<ItemPaciente> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return CadastroPaciente(
+        Navigator.of(context)
+            .push(
+          AnimatedPageTransition(
+            page: CadastroPaciente(
               privilegio: widget.privilegio,
               paciente: widget.paciente,
               opcao: global.opcaoAlteracao,
-            );
-          }),
-        ).then((value) {
+            ),
+          ),
+        )
+            .then((value) {
           setState(() {
             if (value != null) {
               widget.paciente = value;

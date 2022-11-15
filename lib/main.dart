@@ -38,9 +38,12 @@ class _MyAppState extends State<MyApp> {
         ),
         primaryColor: corPad1,
         hoverColor: corPad3,
-        errorColor: const Color.fromARGB(255, 236, 20, 0),
+        errorColor: const Color.fromARGB(248, 238, 136, 127),
+        canvasColor: corPad3,
+        splashColor: const Color(0xfffcb51c),
         fontFamily: GoogleFonts.raleway().fontFamily,
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
+            .copyWith(secondary: corPad1),
       ),
       home: const Scaffold(
         body: TelaLogin(),

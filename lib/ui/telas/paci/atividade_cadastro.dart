@@ -1,17 +1,22 @@
 import 'package:cangurugestor/classes/atividade.dart';
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
+import 'package:cangurugestor/classes/tarefa.dart';
+import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
+import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
+import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
-import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
-import 'package:cangurugestor/ui/componentes/form_cadastro_hora.dart';
+import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cangurugestor/global.dart' as global;
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class AtividadeCadastro extends StatefulWidget {
-  Atividade? atividade;
+  Atividade? atividade = Atividade();
   final int opcao;
   final int privilegio;
   bool edit;
@@ -39,24 +44,42 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
   var horaController = TextEditingController();
   var descricaoController = TextEditingController();
   var cuidadorController = TextEditingController();
-  var frequenciaController = TextEditingController();
+  var frequenciaQuantidadeController = TextEditingController();
+  var duracaoQuantidadeController = TextEditingController();
+  var observacaoController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   global.EnumFrequencia frequenciaPad = global.EnumFrequencia.minutos;
   List<String> listaAtividades = [];
   String atividade = '';
   bool ativo = false;
+  global.EnumFrequencia frequenciaUmPad = global.EnumFrequencia.minutos;
+  global.EnumFrequencia duracaoUmPad = global.EnumFrequencia.minutos;
+  List<Tarefa> tarefasSnap = [];
+  List<Tarefa> tarefas = [];
+  List<Tarefa> tarefasNovas = [];
+  List<TextEditingController> dataControllerList = [];
+  List<TextEditingController> horaControllerList = [];
+  List<TextEditingController> dataControllerListNova = [];
+  List<TextEditingController> horaControllerListNova = [];
+
+  FirestoreTarefa firestoreTarefa = FirestoreTarefa();
+  FirestoreAtividade firestoreAtividade = FirestoreAtividade();
 
   @override
   void initState() {
     widget.atividade ??= Atividade();
     dataInicioController = TextEditingController();
     dataFimController = TextEditingController();
-    frequenciaController =
-        TextEditingController(text: widget.atividade!.frequencia);
     horaController = TextEditingController(text: widget.atividade?.hora);
     nomeController = TextEditingController(text: widget.atividade?.nome);
     descricaoController =
         TextEditingController(text: widget.atividade?.descricao);
+    observacaoController =
+        TextEditingController(text: widget.atividade?.observacao);
+    duracaoQuantidadeController = TextEditingController(
+        text: widget.atividade?.duracaoQuantidade.toString());
+    frequenciaQuantidadeController = TextEditingController(
+        text: widget.atividade?.frequenciaQuantidade.toString() ?? '0');
     buscaAtividade();
     super.initState();
   }
@@ -68,6 +91,8 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
     nomeController.dispose();
     horaController.dispose();
     descricaoController.dispose();
+    duracaoQuantidadeController.dispose();
+    observacaoController.dispose();
     super.dispose();
   }
 
@@ -122,39 +147,16 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                         obrigatorio: true,
                         enabled: widget.edit,
                         controller: nomeController,
-                        labelText: 'Ativdade',
+                        labelText: 'Atividade',
                         onTap: () {
                           showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return widgetListaAtividades();
-                              });
+                            context: context,
+                            builder: (context) {
+                              return widgetListaAtividades();
+                            },
+                          );
                         },
                       ),
-                      FormCadastroData(
-                          obrigatorio: true,
-                          controller: dataInicioController,
-                          labelText: 'Início',
-                          dataPrimeira: DateTime.now(),
-                          dataInicial: DateTime.now(),
-                          dataUltima: DateTime(DateTime.now().year + 10),
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
-                      FormCadastroData(
-                          obrigatorio: true,
-                          controller: dataFimController,
-                          dataPrimeira: DateTime.now(),
-                          dataInicial: DateTime.now(),
-                          dataUltima: DateTime(DateTime.now().year + 10),
-                          labelText: 'Fim',
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
-                      FormCadastroHora(
-                          obrigatorio: true,
-                          controller: horaController,
-                          labelText: 'Hora inicial',
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
                       Padding(
                         padding: const EdgeInsets.only(top: 20, bottom: 20),
                         child: Row(
@@ -168,9 +170,20 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                                   enabled: widget.edit,
                                   borda: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30)),
-                                  controller: frequenciaController,
+                                  controller: frequenciaQuantidadeController,
                                   labelText: 'a cada:',
-                                  textInputType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp("[.]")),
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp("[,]"))
+                                  ],
+                                  textInputType:
+                                      const TextInputType.numberWithOptions(
+                                    decimal: false,
+                                    signed: false,
+                                  ),
                                 ),
                               ),
                             ),
@@ -182,6 +195,15 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                               child: SizedBox(
                                 height: 60,
                                 child: FormField<String>(
+                                  validator: (p0) {
+                                    if (p0 != null) {
+                                      if (double.parse(p0) == 0) {
+                                        return 'Campo obrigatório';
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                  enabled: widget.edit,
                                   builder: (FormFieldState<String> state) {
                                     return InputDecorator(
                                       decoration: InputDecoration(
@@ -192,11 +214,100 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton<
                                             global.EnumFrequencia>(
-                                          value: frequenciaPad,
+                                          value: frequenciaUmPad,
                                           isDense: true,
                                           onChanged: (x) {
                                             setState(() {
-                                              frequenciaPad = x!;
+                                              frequenciaUmPad = x!;
+                                            });
+                                          },
+                                          items: global.EnumFrequencia.values
+                                              .map((global.EnumFrequencia
+                                                  frequencia) {
+                                            return DropdownMenuItem<
+                                                global.EnumFrequencia>(
+                                              alignment: Alignment.centerLeft,
+                                              value: frequencia,
+                                              child: Text(
+                                                global
+                                                    .describeEnum(frequencia)
+                                                    .toUpperCase(),
+                                                style: kLabelStyle,
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 7,
+                              child: SizedBox(
+                                height: 80,
+                                child: FormCadastro(
+                                  obrigatorio: true,
+                                  enabled: widget.edit,
+                                  borda: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30)),
+                                  controller: duracaoQuantidadeController,
+                                  labelText: 'duração:',
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp("[.]")),
+                                    FilteringTextInputFormatter.deny(
+                                        RegExp("[,]"))
+                                  ],
+                                  textInputType:
+                                      const TextInputType.numberWithOptions(
+                                    decimal: false,
+                                    signed: false,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              flex: 8,
+                              child: SizedBox(
+                                height: 60,
+                                child: FormField<String>(
+                                  validator: (p0) {
+                                    if (p0 != null) {
+                                      if (double.parse(p0) == 0) {
+                                        return 'Campo obrigatório';
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                  enabled: widget.edit,
+                                  builder: (FormFieldState<String> state) {
+                                    return InputDecorator(
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30))),
+                                      isEmpty: false,
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<
+                                            global.EnumFrequencia>(
+                                          value: duracaoUmPad,
+                                          isDense: true,
+                                          onChanged: (x) {
+                                            setState(() {
+                                              duracaoUmPad = x!;
                                             });
                                           },
                                           items: global.EnumFrequencia.values
@@ -233,6 +344,85 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                       ),
                     ],
                   ),
+                  AgrupadorCadastro(
+                    initiallyExpanded: true,
+                    leading: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.schedule,
+                        size: 40,
+                        color: Color.fromARGB(255, 10, 48, 88),
+                      ),
+                    ),
+                    titulo: 'Agenda',
+                    children: [
+                      FutureBuilder(
+                        future: buscaTarefasAtividade(),
+                        builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
+                          if (snap.hasData) {
+                            tarefasSnap = snap.data!;
+                            tarefas = [...tarefasSnap, ...tarefasNovas];
+                            horaControllerList =
+                                List<TextEditingController>.generate(
+                              tarefas.length,
+                              (index) => TextEditingController(
+                                text: tarefas[index].time,
+                              ),
+                            );
+                            dataControllerList =
+                                List<TextEditingController>.generate(
+                              tarefas.length,
+                              (index) => TextEditingController(
+                                  text: tarefas[index].date),
+                            );
+                            for (var i = 0; i < tarefasSnap.length; i++) {
+                              dataControllerList.add(TextEditingController(
+                                  text: snap.data![i].date));
+                              horaControllerList.add(TextEditingController(
+                                  text: snap.data![i].time));
+                            }
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: tarefas.length,
+                              itemBuilder: (context, index) {
+                                return FormCadastroDataHora(
+                                  enabled:
+                                      tarefas[index].id.isEmpty ? true : false,
+                                  onDismissed: (DismissDirection direction) {
+                                    setState(() {
+                                      dataControllerList.removeAt(index);
+                                      horaControllerList.removeAt(index);
+                                      if (tarefas[index].id.isEmpty) {
+                                        tarefasNovas.remove(tarefas[index]);
+                                        tarefas.removeAt(index);
+                                      } else {
+                                        firestoreTarefa.excluirTarefa(
+                                          global.idPacienteGlobal,
+                                          tarefas[index].id,
+                                        );
+                                      }
+                                    });
+                                  },
+                                  key: UniqueKey(),
+                                  controllerData: dataControllerList[index],
+                                  controllerHora: horaControllerList[index],
+                                );
+                              },
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                      widget.atividade!.id.isNotEmpty
+                          ? BotaoCadastroTarefa(
+                              onPressed: () => adicionarTarefa(),
+                            )
+                          : Container(),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -250,7 +440,6 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                       if (_formKey.currentState!.validate()) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         addAtividade();
-                        Navigator.pop(context);
                       }
                     },
                     icon: const Icon(
@@ -268,31 +457,42 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
 
   Future<void> addAtividade() async {
     widget.atividade!.nome = nomeController.text;
+    widget.atividade!.descricao = descricaoController.text;
+    widget.atividade!.duracaoQuantidade = double.parse(
+      duracaoQuantidadeController.text,
+    );
+    widget.atividade!.duracaoMedida = duracaoUmPad;
+    widget.atividade!.observacao = observacaoController.text;
+    widget.atividade!.frequenciaMedida = frequenciaUmPad;
+    widget.atividade!.frequenciaQuantidade =
+        double.parse(frequenciaQuantidadeController.text);
+    widget.atividade!.duracaoMedida = duracaoUmPad;
+    widget.atividade!.duracaoQuantidade =
+        double.parse(duracaoQuantidadeController.text);
 
-    if (widget.opcao == global.opcaoInclusao &&
-        widget.atividade!.nome!.isNotEmpty &&
-        widget.atividade!.data.isNotEmpty &&
-        widget.atividade!.id == '') {
-      var med = await MeuFirestore.novaAtividadePaciente(widget.atividade!,
-          global.idResponsavelGlobal, global.idPacienteGlobal);
+    if (widget.opcao == global.opcaoInclusao && widget.atividade!.id.isEmpty) {
+      var med = await firestoreAtividade.novaAtividadePaciente(
+          widget.atividade!,
+          global.idResponsavelGlobal,
+          global.idPacienteGlobal);
       setState(() {
         widget.atividade = med;
       });
     } else if (widget.atividade!.id.isNotEmpty) {
-      MeuFirestore.atualizarAtividadePaciente(
+      firestoreAtividade.atualizarAtividadePaciente(
           widget.atividade!, global.idPacienteGlobal);
     }
   }
 
   void excluirAtividade() {
     if (widget.atividade!.id.isNotEmpty) {
-      MeuFirestore.excluirAtividadePaciente(
+      firestoreAtividade.excluirAtividadePaciente(
           widget.atividade!.id, global.idPacienteGlobal);
     }
   }
 
   buscaAtividade() async {
-    await MeuFirestore.todasAtividades().then((value) {
+    await firestoreAtividade.todasAtividades().then((value) {
       setState(() {
         listaAtividades = value;
       });
@@ -344,5 +544,45 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
         ],
       ),
     );
+  }
+
+  Future<List<Tarefa>> buscaTarefasAtividade() async {
+    return await firestoreTarefa.getTarefasAtividade(
+        widget.atividade!.id, global.idPacienteGlobal);
+  }
+
+  adicionarTarefa() {
+    DateTime proxTarefa = DateTime.now();
+    if (tarefas.isNotEmpty) {
+      DateTime ultTarefa = DateFormat('dd/MM/yyyy').parse(tarefas.last.date);
+      DateTime ultTarefaTime = DateFormat('HH:mm').parse(tarefas.last.time);
+      proxTarefa = DateTime(ultTarefa.year, ultTarefa.month, ultTarefa.day,
+          ultTarefaTime.hour, ultTarefaTime.minute);
+
+      proxTarefa = proxTarefa.add(Duration(
+          minutes: enumFrequenciaEmMinutos(widget.atividade!.frequenciaMedida,
+                  widget.atividade!.frequenciaQuantidade)
+              .toInt()));
+    }
+    setState(() {
+      tarefasNovas.add(
+        Tarefa(
+          dateTime: proxTarefa,
+          nome: widget.atividade!.nome,
+          descricao: widget.atividade!.descricao,
+          observacao: widget.atividade!.observacao,
+          idTipo: widget.atividade!.id,
+          tipo: EnumTarefa.medicamento,
+        ),
+      );
+      horaControllerListNova.clear();
+      dataControllerListNova.clear();
+      for (var i = 0; i < tarefasNovas.length; i++) {
+        dataControllerListNova
+            .add(TextEditingController(text: tarefasNovas[i].date));
+        horaControllerListNova
+            .add(TextEditingController(text: tarefasNovas[i].time));
+      }
+    });
   }
 }

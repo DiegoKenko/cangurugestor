@@ -1,62 +1,69 @@
+import 'package:cangurugestor/global.dart';
+
 class Atividade {
-  String? nome;
+  String nome = '';
   String id = '';
   String descricao = '';
   String tipo = '';
-  String duracao = '';
   String data = '';
   String hora = '';
   String local = '';
   String observacao = '';
   String status = '';
-  String frequencia = '';
   String? intensidade;
-  double? unidadeMedida;
+  double duracaoQuantidade = 0;
+  double frequenciaQuantidade = 0;
+  EnumFrequencia frequenciaMedida = EnumFrequencia.dias;
+  EnumFrequencia duracaoMedida = EnumFrequencia.minutos;
+  bool ativo = true;
 
   Atividade({
     this.nome = '',
     this.descricao = '',
     this.tipo = '',
-    this.duracao = '',
-    this.data = '',
-    this.hora = '',
+    this.duracaoQuantidade = 0,
     this.local = '',
     this.observacao = '',
     this.status = '',
-    this.frequencia = '',
     this.intensidade,
-    this.unidadeMedida,
+    this.duracaoMedida = EnumFrequencia.minutos,
+    this.frequenciaQuantidade = 0,
+    this.frequenciaMedida = EnumFrequencia.minutos,
   });
 
   Atividade.fromMap(Map<String, dynamic> map) {
     nome = map['nome'];
     descricao = map['descricao'];
     tipo = map['tipo'];
-    duracao = map['duracao'];
+    duracaoQuantidade = map['duracaoQuantidade'];
     data = map['data'];
     hora = map['hora'];
-    local = map['local'];
     observacao = map['observacao'];
     status = map['status'];
-    frequencia = map['frequencia'];
     intensidade = map['intensidade'];
-    unidadeMedida = map['unidadeMedida'];
+    frequenciaQuantidade = map['frequenciaQuantidade'];
+    duracaoMedida = EnumFrequencia.values.firstWhere(
+        (element) => element.name == map['duracaoMedida'],
+        orElse: () => EnumFrequencia.minutos);
+    frequenciaMedida = EnumFrequencia.values.firstWhere(
+        (element) => element.name == map['frequenciaMedida'],
+        orElse: () => EnumFrequencia.minutos);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'nome': nome ?? '',
+      'nome': nome,
       'descricao': descricao,
-      'tipo': tipo,
-      'duracao': duracao,
       'data': data,
       'hora': hora,
-      'local': local,
       'observacao': observacao,
       'status': status,
-      'frequencia': frequencia,
       'intensidade': intensidade ?? '',
-      'unidadeMedida': unidadeMedida ?? '',
+      'tipo': tipo,
+      'duracaoQuantidade': duracaoQuantidade,
+      'frequenciaQuantidade': frequenciaQuantidade,
+      'duracaoMedida': duracaoMedida.toString().split(".").last,
+      'frequenciaMedida': frequenciaMedida.toString().split(".").last,
     };
   }
 }

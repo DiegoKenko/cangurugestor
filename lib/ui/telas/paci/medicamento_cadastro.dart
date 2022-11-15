@@ -1,6 +1,7 @@
-import 'package:cangurugestor/classes/medicamentos.dart';
+import 'package:cangurugestor/classes/medicamento.dart';
 import 'package:cangurugestor/classes/tarefa.dart';
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
+import 'package:cangurugestor/firebaseUtils/fire_medicamento.dart';
+import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
@@ -18,7 +19,7 @@ class MedicamentoCadastro extends StatefulWidget {
   final int privilegio;
   bool edit;
   bool delete;
-  Medicamento? medicamento;
+  Medicamento? medicamento = Medicamento();
   MedicamentoCadastro({
     Key? key,
     this.edit = false,
@@ -53,6 +54,9 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   List<Tarefa> tarefas = [];
   List<Tarefa> tarefasNovas = [];
   bool ativo = false;
+  final FirestoreTarefa fireTarefa = FirestoreTarefa();
+
+  final FirestoreMedicamento firestoreMedicamento = FirestoreMedicamento();
 
   @override
   void initState() {
@@ -184,9 +188,12 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                               child: SizedBox(
                                 height: 60,
                                 child: FormField<String>(
+                                  // ignore: body_might_complete_normally_nullable
                                   validator: (p0) {
-                                    if (p0!.isEmpty) {
-                                      return 'Campo obrigatório';
+                                    if (p0 != null) {
+                                      if (double.parse(p0) == 0) {
+                                        return 'Campo obrigatório';
+                                      }
                                     }
                                   },
                                   enabled: widget.edit,
@@ -295,8 +302,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                                         tarefasNovas.remove(tarefas[index]);
                                         tarefas.removeAt(index);
                                       } else {
-                                        MeuFirestore.excluirTarefasMedicamento(
-                                          widget.medicamento!,
+                                        fireTarefa.excluirTarefa(
                                           global.idPacienteGlobal,
                                           tarefas[index].id,
                                         );
@@ -357,7 +363,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   }
 
   buscaMedicamentos() async {
-    await MeuFirestore.todosMedicamentos().then((value) {
+    await firestoreMedicamento.todosMedicamentos().then((value) {
       setState(() {
         listaMedicamentos = value;
       });
@@ -365,8 +371,12 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
   }
 
   Future<List<Tarefa>> buscaTarefasMedicamento() async {
-    return await MeuFirestore.tarefasMedicamento(
-        widget.medicamento!.id, global.idPacienteGlobal);
+    List<Tarefa> tarefas = [];
+    if (widget.medicamento!.id.isNotEmpty) {
+      return await fireTarefa.getTarefasMedicamento(
+          widget.medicamento!.id, global.idPacienteGlobal);
+    }
+    return tarefas;
   }
 
   Future<void> addMedicamento() async {
@@ -380,32 +390,30 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
 
     if (widget.medicamento!.nome.isNotEmpty) {
       if (widget.opcao == opcaoInclusao && widget.medicamento!.id.isEmpty) {
-        widget.medicamento = await MeuFirestore.novoMedicamentoPaciente(
+        widget.medicamento = await firestoreMedicamento.novoMedicamentoPaciente(
             widget.medicamento!, global.idPacienteGlobal);
-        await MeuFirestore.criaTarefasMedicamento(
-            widget.medicamento!, global.idPacienteGlobal, tarefasNovas);
+        await fireTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
       } else {
-        await MeuFirestore.criaTarefasMedicamento(
-            widget.medicamento!, global.idPacienteGlobal, tarefasNovas);
+        await fireTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
       }
+      setState(() {});
     }
   }
 
   void excluirMedicamento() {
     if (widget.medicamento!.id.isNotEmpty &&
         global.idPacienteGlobal.isNotEmpty) {
-      MeuFirestore.excluirMedicamento(
+      firestoreMedicamento.excluirMedicamentoPaciente(
           widget.medicamento!.id, global.idPacienteGlobal);
 
-      MeuFirestore.excluirTodasTarefasMedicamento(
+      firestoreMedicamento.excluirTodasTarefasMedicamento(
           widget.medicamento!.id, global.idPacienteGlobal);
     }
   }
 
   void excluirTarefaMedicametno(Tarefa tarefa) {
     // Exclui tarefas do medicamento
-    MeuFirestore.excluirTarefasMedicamento(
-        widget.medicamento!, global.idPacienteGlobal, tarefa.id);
+    fireTarefa.excluirTarefa(global.idPacienteGlobal, tarefa.id);
   }
 
   Widget widgetListaMedicamentos() {

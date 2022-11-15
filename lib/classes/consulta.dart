@@ -14,6 +14,7 @@ class Consulta {
   String responsavel = '';
   String medico = '';
   Local? local;
+  bool ativo = true;
 
   Consulta(
       {this.data = '',

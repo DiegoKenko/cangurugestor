@@ -5,9 +5,9 @@ class Responsavel extends Pessoa {
   List<String>? idPacientes;
   String? idContrato;
   String? senha;
-  bool ativo = false;
+  bool ativo = true;
   String? idGestor;
-  String? id;
+  String id = '';
 
   Responsavel(
       {String cpf = '',
@@ -60,6 +60,7 @@ class Responsavel extends Pessoa {
     complementoRua = map['complementoRua'];
     numeroRua = map['complementoRua'];
     rua = map['rua'];
+    senha = map['senha'];
   }
 
   Map<String, dynamic> toMap() {
@@ -79,6 +80,7 @@ class Responsavel extends Pessoa {
       'bairro': bairro,
       'cidade': cidade,
       'estado': estado,
+      'senha': senha,
     };
   }
 

@@ -22,19 +22,19 @@ class FormCadastroDataHora extends StatelessWidget {
       background: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
+          const Padding(
+            padding: EdgeInsets.only(left: 20),
             child: Icon(
               Icons.delete,
               color: Colors.red,
             ),
           ),
           Expanded(
-            child: Container(),
             flex: 20,
+            child: Container(),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
+          const Padding(
+            padding: EdgeInsets.only(right: 20),
             child: Icon(
               Icons.delete,
               color: Colors.red,

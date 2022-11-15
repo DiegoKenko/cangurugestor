@@ -1,4 +1,5 @@
 import 'package:cangurugestor/classes/responsavel.dart';
+import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/item_container.dart';
 import 'package:cangurugestor/ui/telas/resp/resp_cadastro.dart';
 import 'package:flutter/material.dart';
@@ -22,15 +23,14 @@ class _ItemResponsavelState extends State<ItemResponsavel> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        var res = Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return CadastroResponsavel(
+        var res = Navigator.of(context).push(
+          AnimatedPageTransition(
+            page: CadastroResponsavel(
               privilegio: widget.privilegio,
               responsavel: widget.responsavel,
               opcao: global.opcaoAlteracao,
-            );
-          }),
+            ),
+          ),
         );
         res.then((value) {
           if (value != null) {

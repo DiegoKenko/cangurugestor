@@ -1,8 +1,7 @@
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
+import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/firebaseUtils/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
-import 'package:flutter/services.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({Key? key}) : super(key: key);
@@ -14,6 +13,7 @@ class TelaLogin extends StatefulWidget {
 class _TelaLoginState extends State<TelaLogin> {
   final cpfController = TextEditingController();
   final senhaController = TextEditingController();
+  final FirestoreLogin firestoreLogin = FirestoreLogin();
   bool isLoading = false;
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _TelaLoginState extends State<TelaLogin> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(
-              image: AssetImage('assets/reduxLogo01.png'),
+              image: const AssetImage('assets/reduxLogo01.png'),
               height: MediaQuery.of(context).size.height * 0.6,
               fit: BoxFit.fitWidth,
             ),
@@ -58,8 +58,8 @@ class _TelaLoginState extends State<TelaLogin> {
                       setState(() {
                         isLoading = true;
                         SignIn().signInWithGoogle().then((result) {
-                          MeuFirestore()
-                              .autenticarUsuarioGoogle(context, result.user!);
+                          firestoreLogin.autenticarUsuarioGoogle(
+                              context, result.user!);
                         });
                       });
                     },
@@ -87,7 +87,7 @@ class _TelaLoginState extends State<TelaLogin> {
                       ),
                     ),
                   )
-                : CircularProgressIndicator(color: corPad3),
+                : const CircularProgressIndicator(color: corPad3),
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:cangurugestor/classes/consulta.dart';
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
+import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
@@ -47,6 +47,7 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
   TextEditingController cidadeController = TextEditingController();
   TextEditingController estadoController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FirestoreConsulta firestoreConsulta = FirestoreConsulta();
 
   @override
   void initState() {
@@ -250,19 +251,19 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
         widget.consulta!.nome.isNotEmpty &&
         widget.consulta!.data.isNotEmpty &&
         widget.consulta!.id == '') {
-      var med = await MeuFirestore.novaConsultaPaciente(widget.consulta!,
+      var med = await firestoreConsulta.novaConsultaPaciente(widget.consulta!,
           global.idResponsavelGlobal, global.idPacienteGlobal);
       setState(() {
         widget.consulta = med;
       });
     } else if (widget.consulta!.id.isNotEmpty) {
-      MeuFirestore.atualizarConsultaPaciente(
+      firestoreConsulta.atualizarConsultaPaciente(
           widget.consulta!, global.idPacienteGlobal);
     }
   }
 
   void excluirConsulta() {
-    MeuFirestore.excluirConsultaPaciente(widget.consulta!.id,
+    firestoreConsulta.excluirConsultaPaciente(widget.consulta!.id,
         global.idResponsavelGlobal, global.idPacienteGlobal);
   }
 }

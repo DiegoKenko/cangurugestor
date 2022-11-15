@@ -30,11 +30,11 @@ class _BotaoCadastroState extends State<BotaoCadastro> {
             ),
             width: 50,
             height: 35,
-            child: const Center(
+            child: Center(
               child: Icon(
                 Icons.add,
                 size: 30,
-                color: corPad2,
+                color: Theme.of(context).splashColor,
               ),
             ),
           ),

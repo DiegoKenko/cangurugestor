@@ -1,4 +1,4 @@
-import 'package:cangurugestor/classes/medicamentos.dart';
+import 'package:cangurugestor/classes/medicamento.dart';
 import 'package:cangurugestor/ui/componentes/item_container.dart';
 import 'package:flutter/material.dart';
 

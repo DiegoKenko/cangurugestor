@@ -1,13 +1,13 @@
 import 'package:cangurugestor/classes/atividade.dart';
 import 'package:cangurugestor/classes/consulta.dart';
-import 'package:cangurugestor/classes/medicamentos.dart';
+import 'package:cangurugestor/classes/medicamento.dart';
 import 'package:cangurugestor/classes/pessoa.dart';
 import 'package:cangurugestor/classes/diagnostico.dart';
 import 'package:cangurugestor/classes/prescricao.dart';
 import 'package:cangurugestor/classes/responsavel.dart';
 
 class Paciente extends Pessoa {
-  bool ativo = false;
+  bool ativo = true;
   String id = '';
   String? dataCadastro;
   String idResponsavel = '';

@@ -18,7 +18,7 @@ class _ItemAtividadeState extends State<ItemAtividade> {
     return GestureDetector(
       onTap: widget.onTap,
       child: ItemContainer(
-        titulo: widget.atividade.nome!,
+        titulo: widget.atividade.nome,
         subtitle: widget.atividade.descricao,
       ),
     );

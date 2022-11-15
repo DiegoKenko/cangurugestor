@@ -7,7 +7,7 @@ class Cuidador extends Pessoa {
   List<Paciente>? pacientes;
   List<String>? idPacientes;
   DateTime? dataCadastro;
-  bool ativo = false;
+  bool ativo = true;
   String? senha;
   Responsavel? responsavel;
   String? idResponsavel;

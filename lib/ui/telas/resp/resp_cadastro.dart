@@ -1,10 +1,11 @@
 import 'package:cangurugestor/classes/cuidador.dart';
 import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/classes/responsavel.dart';
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
+import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
+import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
@@ -38,7 +39,7 @@ class CadastroResponsavel extends StatefulWidget {
     if (opcao == opcaoInclusao) {
       responsavel = Responsavel();
     } else {
-      global.idResponsavelGlobal = responsavel!.id ?? '';
+      global.idResponsavelGlobal = responsavel!.id;
     }
   }
 
@@ -62,13 +63,15 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
   var estadoController = TextEditingController();
   final _formKeyDadosPessoais = GlobalKey<FormState>();
   final _formKeyEndereco = GlobalKey<FormState>();
-  bool ativo = false;
+  bool ativo = true;
   List<Widget> pacientesWidget = [];
   List<Widget> cuidadoresWidget = [];
+  FirestoreResponsavel fireStoreResponsavel = FirestoreResponsavel();
 
   @override
   void initState() {
     // Controladores para editar ou não os campos do formulário
+    ativo = widget.responsavel!.ativo;
     cpfController = TextEditingController(text: widget.responsavel?.cpf);
     nomeController = TextEditingController(text: widget.responsavel?.nome);
     nascimentoController =
@@ -88,11 +91,12 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
             cidadeController.text = '';
             estadoController.text = '';
             return;
+          } else {
+            ruaController.text = value['logradouro'];
+            bairroController.text = value['bairro'];
+            cidadeController.text = value['localidade'];
+            estadoController.text = value['uf'];
           }
-          ruaController.text = value['logradouro'];
-          bairroController.text = value['bairro'];
-          cidadeController.text = value['localidade'];
-          estadoController.text = value['uf'];
         });
       }
     });
@@ -133,9 +137,12 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     return Scaffold(
       appBar: AppBarCan(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: widget.responsavel!.id.isEmpty ? Colors.red : Colors.white,
+          ),
           onPressed: () {
-            if (widget.responsavel!.id!.isEmpty) {
+            if (widget.responsavel!.id.isEmpty) {
               Navigator.pop(context);
             } else {
               Navigator.pop(context, widget.responsavel);
@@ -147,7 +154,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.delete,
                       color: corPad3,
                     ),
@@ -162,34 +169,29 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 30),
-          child: Center(
-            child: ListView(
-              children: [
-                Center(
-                  child: Column(
-                    children: [
-                      widget.responsavel != null
-                          ? HeaderCadastro(
-                              texto:
-                                  '${widget.responsavel!.nome} ${widget.responsavel!.sobrenome}')
-                          : HeaderCadastro(),
-                    ],
-                  ),
-                ),
-                global.idResponsavelGlobal.isNotEmpty
-                    ? pacienteGroup()
-                    : Container(),
-                global.idResponsavelGlobal.isNotEmpty
-                    ? cuidadorGroup()
-                    : Container(),
-                dadosPessoaisGroup(),
-                enderecoGroup(),
-                configuracoesGroup(),
-              ],
+        child: ListView(
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  widget.responsavel != null
+                      ? HeaderCadastro(
+                          texto:
+                              '${widget.responsavel!.nome} ${widget.responsavel!.sobrenome}')
+                      : HeaderCadastro(),
+                ],
+              ),
             ),
-          ),
+            global.idResponsavelGlobal.isNotEmpty
+                ? pacienteGroup()
+                : Container(),
+            global.idResponsavelGlobal.isNotEmpty
+                ? cuidadorGroup()
+                : Container(),
+            dadosPessoaisGroup(),
+            enderecoGroup(),
+            configuracoesGroup(),
+          ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -223,14 +225,13 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     return widget.privilegio == global.privilegioGestor
         ? BotaoCadastro(
             onPressed: () {
-              final result = Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return CadastroPaciente(
+              final result = Navigator.of(context).push(
+                AnimatedPageTransition(
+                  page: CadastroPaciente(
                     privilegio: widget.privilegio,
                     opcao: global.opcaoInclusao,
-                  );
-                }),
+                  ),
+                ),
               );
               result.then((value) {
                 if (value != null) {
@@ -238,7 +239,9 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
                     pacientesWidget.insert(
                       0,
                       ItemPaciente(
-                          privilegio: widget.privilegio, paciente: value),
+                        privilegio: widget.privilegio,
+                        paciente: value,
+                      ),
                     );
                   });
                 }
@@ -251,10 +254,9 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
   Widget botaoAdicionarCuidador() {
     return widget.privilegio == global.privilegioGestor
         ? BotaoCadastro(onPressed: () {
-            final result = Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CadastroCuidador(
+            final result = Navigator.of(context).push(
+              AnimatedPageTransition(
+                page: CadastroCuidador(
                   privilegio: widget.privilegio,
                   opcao: global.opcaoInclusao,
                 ),
@@ -290,7 +292,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
           color: Color.fromARGB(255, 10, 48, 88),
         ),
       ),
-      titulo: 'Configurações do App',
+      titulo: 'Configurações',
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -469,7 +471,8 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
 
   FutureBuilder<List<Cuidador>> cuidadorGroup() {
     return FutureBuilder(
-        future: MeuFirestore().todosCuidadores(widget.responsavel!.id!),
+        future: fireStoreResponsavel
+            .todosCuidadoresResponsavel(widget.responsavel!.id),
         builder:
             (BuildContext buildcontext, AsyncSnapshot<List<Cuidador>> snap) {
           if (snap.hasData) {
@@ -504,10 +507,11 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
         });
   }
 
-  FutureBuilder<List<Paciente>> pacienteGroup() {
+  pacienteGroup() {
     return FutureBuilder(
-      future: MeuFirestore().todosPacientes(widget.responsavel!.id!),
-      builder: (BuildContext context, AsyncSnapshot<List<Paciente>> snapshot) {
+      future: fireStoreResponsavel
+          .todosPacientesResponsavel(widget.responsavel!.id),
+      builder: (context, AsyncSnapshot<List<Paciente>> snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
             resetarBotao();
@@ -565,17 +569,18 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
         widget.responsavel!.nome.isNotEmpty &&
         widget.responsavel!.cpf.isNotEmpty &&
         widget.responsavel!.id == '') {
-      var resp = await MeuFirestore.incluirResponsavel(widget.responsavel!);
+      var resp =
+          await fireStoreResponsavel.incluirResponsavel(widget.responsavel!);
       setState(() {
         widget.responsavel = resp;
-        idResponsavelGlobal = resp.id!;
+        idResponsavelGlobal = resp.id;
       });
-    } else if (widget.responsavel!.id!.isNotEmpty) {
-      MeuFirestore.atualizarResponavel(widget.responsavel!);
+    } else if (widget.responsavel!.id.isNotEmpty) {
+      fireStoreResponsavel.atualizarResponavel(widget.responsavel!);
     }
   }
 
   void excluirResponsavel() {
-    MeuFirestore.excluirResponsavel(widget.responsavel!.id!);
+    fireStoreResponsavel.excluirResponsavel(widget.responsavel!.id);
   }
 }

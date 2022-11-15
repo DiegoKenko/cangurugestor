@@ -1,6 +1,7 @@
 import 'package:cangurugestor/classes/gestor.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
+import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/header_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/item_responsavel.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
@@ -39,14 +40,13 @@ class _PainelGestorState extends State<PainelGestor> {
     clienteWidget.add(
       BotaoCadastro(
         onPressed: () {
-          final result = Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return CadastroResponsavel(
+          final result = Navigator.of(context).push(
+            AnimatedPageTransition(
+              page: CadastroResponsavel(
                 privilegio: global.privilegioGestor,
                 opcao: global.opcaoInclusao,
-              );
-            }),
+              ),
+            ),
           );
           result.then((value) {
             if (value != null) {
