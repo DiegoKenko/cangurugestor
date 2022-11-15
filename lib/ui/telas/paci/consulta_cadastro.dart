@@ -1,12 +1,19 @@
 import 'package:cangurugestor/classes/consulta.dart';
+import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
+import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
+import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
+import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
+import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_hora.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import 'package:cangurugestor/global.dart' as global;
@@ -47,7 +54,15 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
   TextEditingController cidadeController = TextEditingController();
   TextEditingController estadoController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FirestoreTarefa firestoreTarefa = FirestoreTarefa();
   final FirestoreConsulta firestoreConsulta = FirestoreConsulta();
+  List<Tarefa> tarefasSnap = [];
+  List<Tarefa> tarefas = [];
+  List<Tarefa> tarefasNovas = [];
+  List<TextEditingController> dataControllerList = [];
+  List<TextEditingController> horaControllerList = [];
+  List<TextEditingController> dataControllerListNova = [];
+  List<TextEditingController> horaControllerListNova = [];
 
   @override
   void initState() {
@@ -138,21 +153,87 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
                         enabled: widget.edit,
                         controller: nomeController,
                         labelText: 'Descrição',
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.text,
                       ),
-                      FormCadastroData(
-                          controller: dataController,
-                          labelText: 'Data',
-                          dataPrimeira: DateTime.now(),
-                          dataInicial: DateTime.now(),
-                          dataUltima: DateTime(DateTime.now().year + 10),
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
-                      FormCadastroHora(
-                          controller: horaController,
-                          labelText: 'Hora',
-                          enabled: widget.edit,
-                          textInputType: TextInputType.none),
+                    ],
+                  ),
+                  AgrupadorCadastro(
+                    initiallyExpanded: true,
+                    leading: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.schedule,
+                        size: 40,
+                        color: Color.fromARGB(255, 10, 48, 88),
+                      ),
+                    ),
+                    titulo: 'Agenda',
+                    children: [
+                      FutureBuilder(
+                        future: buscaTarefasConsulta(),
+                        builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
+                          if (snap.hasData) {
+                            tarefasSnap = snap.data!;
+                            tarefas = [...tarefasSnap, ...tarefasNovas];
+                            horaControllerList =
+                                List<TextEditingController>.generate(
+                              tarefas.length,
+                              (index) => TextEditingController(
+                                text: tarefas[index].time,
+                              ),
+                            );
+                            dataControllerList =
+                                List<TextEditingController>.generate(
+                              tarefas.length,
+                              (index) => TextEditingController(
+                                  text: tarefas[index].date),
+                            );
+                            for (var i = 0; i < tarefasSnap.length; i++) {
+                              dataControllerList.add(TextEditingController(
+                                  text: snap.data![i].date));
+                              horaControllerList.add(TextEditingController(
+                                  text: snap.data![i].time));
+                            }
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: tarefas.length,
+                              itemBuilder: (context, index) {
+                                return FormCadastroDataHora(
+                                  enabled:
+                                      tarefas[index].id.isEmpty ? true : false,
+                                  onDismissed: (DismissDirection direction) {
+                                    setState(() {
+                                      dataControllerList.removeAt(index);
+                                      horaControllerList.removeAt(index);
+                                      if (tarefas[index].id.isEmpty) {
+                                        tarefasNovas.remove(tarefas[index]);
+                                        tarefas.removeAt(index);
+                                      } else {
+                                        firestoreTarefa.excluirTarefa(
+                                          global.idPacienteGlobal,
+                                          tarefas[index].id,
+                                        );
+                                      }
+                                    });
+                                  },
+                                  key: UniqueKey(),
+                                  controllerData: dataControllerList[index],
+                                  controllerHora: horaControllerList[index],
+                                );
+                              },
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                      widget.consulta!.id.isNotEmpty
+                          ? BotaoCadastroTarefa(
+                              onPressed: () => adicionarTarefa(),
+                            )
+                          : Container(),
                     ],
                   ),
                   AgrupadorCadastro(
@@ -228,7 +309,6 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
                       if (_formKey.currentState!.validate()) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         addConsulta();
-                        Navigator.pop(context);
                       }
                     },
                     icon: const Icon(
@@ -247,23 +327,65 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
   Future<void> addConsulta() async {
     widget.consulta!.nome = nomeController.text;
 
-    if (widget.opcao == global.opcaoInclusao &&
-        widget.consulta!.nome.isNotEmpty &&
-        widget.consulta!.data.isNotEmpty &&
-        widget.consulta!.id == '') {
-      var med = await firestoreConsulta.novaConsultaPaciente(widget.consulta!,
-          global.idResponsavelGlobal, global.idPacienteGlobal);
-      setState(() {
-        widget.consulta = med;
-      });
-    } else if (widget.consulta!.id.isNotEmpty) {
-      firestoreConsulta.atualizarConsultaPaciente(
-          widget.consulta!, global.idPacienteGlobal);
+    if (widget.consulta!.nome.isNotEmpty) {
+      if (widget.opcao == opcaoInclusao && widget.consulta!.id.isEmpty) {
+        widget.consulta = await firestoreConsulta.novaConsultaPaciente(
+            widget.consulta!, global.idPacienteGlobal);
+        await firestoreTarefa.criaTarefas(
+            global.idPacienteGlobal, tarefasNovas);
+        tarefasNovas = [];
+      } else {
+        await firestoreTarefa.criaTarefas(
+            global.idPacienteGlobal, tarefasNovas);
+        tarefasNovas = [];
+      }
+      setState(() {});
     }
   }
 
   void excluirConsulta() {
     firestoreConsulta.excluirConsultaPaciente(widget.consulta!.id,
         global.idResponsavelGlobal, global.idPacienteGlobal);
+  }
+
+  adicionarTarefa() {
+    DateTime proxTarefa = DateTime.now();
+    if (tarefas.isNotEmpty) {
+      DateTime ultTarefa = DateFormat('dd/MM/yyyy').parse(tarefas.last.date);
+      DateTime ultTarefaTime = DateFormat('HH:mm').parse(tarefas.last.time);
+      proxTarefa = DateTime(ultTarefa.year, ultTarefa.month, ultTarefa.day,
+          ultTarefaTime.hour, ultTarefaTime.minute);
+
+      proxTarefa = proxTarefa.add(
+        Duration(
+          minutes: enumFrequenciaEmMinutos(EnumFrequencia.dias, 7).toInt(),
+        ),
+      );
+    }
+    setState(() {
+      tarefasNovas.add(
+        Tarefa(
+          dateTime: proxTarefa,
+          nome: widget.consulta!.nome,
+          descricao: widget.consulta!.descricao,
+          observacao: widget.consulta!.observacao,
+          idTipo: widget.consulta!.id,
+          tipo: EnumTarefa.consulta,
+        ),
+      );
+      horaControllerListNova.clear();
+      dataControllerListNova.clear();
+      for (var i = 0; i < tarefasNovas.length; i++) {
+        dataControllerListNova
+            .add(TextEditingController(text: tarefasNovas[i].date));
+        horaControllerListNova
+            .add(TextEditingController(text: tarefasNovas[i].time));
+      }
+    });
+  }
+
+  Future<List<Tarefa>> buscaTarefasConsulta() async {
+    return await firestoreTarefa.getTarefasAtividade(
+        widget.consulta!.id, global.idPacienteGlobal);
   }
 }

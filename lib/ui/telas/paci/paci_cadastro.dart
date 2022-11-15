@@ -504,7 +504,9 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
         widget.paciente!.cpf.isNotEmpty) {
       firestorePaciente.incluirPaciente(widget.paciente!).then(
         (value) {
-          widget.paciente = value;
+          setState(() {
+            widget.paciente = value;
+          });
         },
       );
     } else if (widget.opcao == global.opcaoAlteracao) {

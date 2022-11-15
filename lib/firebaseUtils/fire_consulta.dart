@@ -20,7 +20,7 @@ class FirestoreConsulta {
   }
 
   Future<Consulta> novaConsultaPaciente(
-      Consulta consulta, String idReponsavel, String idPaciente) async {
+      Consulta consulta, String idPaciente) async {
     var con = await firestore
         .collection('pacientes')
         .doc(idPaciente)

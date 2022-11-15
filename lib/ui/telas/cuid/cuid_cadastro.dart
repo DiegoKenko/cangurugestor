@@ -423,7 +423,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
                   color: Color.fromARGB(255, 10, 48, 88),
                 ),
               ),
-              titulo: 'Pacientes',
+              titulo: 'Responsável por:',
               children: pacientesWidget);
         });
   }
@@ -450,18 +450,18 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
                           Container(
                             margin: const EdgeInsets.only(bottom: 30),
                             height: 20,
-                            color: corPad1,
+                            color: corPad1.withOpacity(0.8),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  color: corPad1,
+                                  color: corPad1.withOpacity(0.2),
                                 )
                               ],
                             ),
                           ),
                           Container(
-                            height: MediaQuery.of(context).size.height * 0.3,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             color: corPad3,
                             child: ListView.builder(
                               shrinkWrap: true,
@@ -542,9 +542,18 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
           });
           Navigator.pop(context);
         },
-        title: Text(paciente.nome),
+        title: Text(
+          paciente.nome,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),
+        ),
         subtitle: Text(paciente.cpf),
-        trailing: exists ? const Icon(Icons.check) : const Icon(Icons.add),
+        trailing: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }

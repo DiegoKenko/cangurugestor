@@ -470,17 +470,19 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
     widget.atividade!.duracaoQuantidade =
         double.parse(duracaoQuantidadeController.text);
 
-    if (widget.opcao == global.opcaoInclusao && widget.atividade!.id.isEmpty) {
-      var med = await firestoreAtividade.novaAtividadePaciente(
-          widget.atividade!,
-          global.idResponsavelGlobal,
-          global.idPacienteGlobal);
-      setState(() {
-        widget.atividade = med;
-      });
-    } else if (widget.atividade!.id.isNotEmpty) {
-      firestoreAtividade.atualizarAtividadePaciente(
-          widget.atividade!, global.idPacienteGlobal);
+    if (widget.atividade!.nome.isNotEmpty) {
+      if (widget.opcao == opcaoInclusao && widget.atividade!.id.isEmpty) {
+        widget.atividade = await firestoreAtividade.novaAtividadePaciente(
+            widget.atividade!, global.idPacienteGlobal);
+        await firestoreTarefa.criaTarefas(
+            global.idPacienteGlobal, tarefasNovas);
+        tarefasNovas = [];
+      } else {
+        await firestoreTarefa.criaTarefas(
+            global.idPacienteGlobal, tarefasNovas);
+        tarefasNovas = [];
+      }
+      setState(() {});
     }
   }
 
@@ -572,7 +574,7 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
           descricao: widget.atividade!.descricao,
           observacao: widget.atividade!.observacao,
           idTipo: widget.atividade!.id,
-          tipo: EnumTarefa.medicamento,
+          tipo: EnumTarefa.atividade,
         ),
       );
       horaControllerListNova.clear();

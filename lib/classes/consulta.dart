@@ -4,7 +4,6 @@ class Consulta {
   String data = '';
   String id = '';
   String hora = '';
-  String status = '';
   String observacao = '';
   String nome = '';
   String descricao = '';
@@ -19,7 +18,6 @@ class Consulta {
   Consulta(
       {this.data = '',
       this.hora = '',
-      this.status = '',
       this.observacao = '',
       this.nome = '',
       this.descricao = '',
@@ -31,9 +29,7 @@ class Consulta {
       this.medico = ''});
 
   Consulta.fromMap(Map<String, dynamic> json) {
-    data = json['data'];
-    hora = json['hora'];
-    status = json['status'];
+    ativo = json['ativo'];
     observacao = json['observacao'];
     nome = json['nome'];
     descricao = json['descricao'];
@@ -46,9 +42,9 @@ class Consulta {
 
   Map<String, dynamic> toMap() {
     return {
-      'data': data,
       'nome': nome,
-      'hora': hora,
+      'descricao': descricao,
+      'ativo': ativo,
       'observacao': observacao,
       'responsavel': responsavel,
       'medico': medico,

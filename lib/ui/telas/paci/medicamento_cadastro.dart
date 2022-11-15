@@ -393,8 +393,10 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         widget.medicamento = await firestoreMedicamento.novoMedicamentoPaciente(
             widget.medicamento!, global.idPacienteGlobal);
         await fireTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
+        tarefasNovas = [];
       } else {
         await fireTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
+        tarefasNovas = [];
       }
       setState(() {});
     }
