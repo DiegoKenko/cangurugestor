@@ -86,7 +86,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
       // Listener para atualizar os campos de endereço
       if (cepController.text.length == 9) {
         CepAPI.getCep(cepController.text).then((value) {
-          if (value['erro'] == 'true') {
+          if (value['erro']) {
             ruaController.text = '';
             bairroController.text = '';
             cidadeController.text = '';

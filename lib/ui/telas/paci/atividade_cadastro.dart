@@ -571,7 +571,6 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
         Tarefa(
           dateTime: proxTarefa,
           nome: widget.atividade!.nome,
-          descricao: widget.atividade!.descricao,
           observacao: widget.atividade!.observacao,
           idTipo: widget.atividade!.id,
           tipo: EnumTarefa.atividade,

@@ -10,7 +10,6 @@ class Tarefa {
   DateTime dateTime = DateTime.now();
   String date = '';
   String time = '';
-  String descricao = '';
   String observacao = '';
   bool concluida = false;
   Tarefa({
@@ -18,7 +17,6 @@ class Tarefa {
     this.idTipo = '',
     this.tipo = EnumTarefa.nenhuma,
     required this.dateTime,
-    this.descricao = '',
     this.observacao = '',
     this.concluida = false,
   }) {
@@ -34,7 +32,6 @@ class Tarefa {
     dateTime = DateTime.parse(json['dateTime'].toDate().toString());
     date = json['date'];
     time = json['time'];
-    descricao = json['descricao'];
     observacao = json['observacao'];
     concluida = json['concluida'];
   }
@@ -48,7 +45,6 @@ class Tarefa {
       'dateTime': dateTime,
       'date': DateFormat('dd/MM/yyyy').format(dateTime),
       'time': DateFormat('HH:mm').format(dateTime),
-      'descricao': descricao,
       'observacao': observacao,
       'concluida': concluida,
     };

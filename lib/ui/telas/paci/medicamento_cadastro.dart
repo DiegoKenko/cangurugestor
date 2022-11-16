@@ -489,7 +489,6 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
         Tarefa(
           dateTime: proxTarefa,
           nome: widget.medicamento!.nome,
-          descricao: widget.medicamento!.descricao,
           observacao: widget.medicamento!.observacao,
           idTipo: widget.medicamento!.id,
           tipo: EnumTarefa.medicamento,

@@ -19,7 +19,7 @@ class _ItemConsultaState extends State<ItemConsulta> {
       onTap: widget.onTap,
       child: ItemContainer(
         titulo: widget.consulta.nome,
-        subtitle: widget.consulta.descricao,
+        subtitle: '',
       ),
     );
   }

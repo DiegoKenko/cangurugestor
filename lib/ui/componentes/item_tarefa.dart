@@ -55,12 +55,6 @@ class _ItemTarefaState extends State<ItemTarefa> {
                         color: corPad1,
                       ),
                       Text(
-                        widget.tarefa.descricao,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
                         widget.tarefa.observacao,
                         style: const TextStyle(
                           fontSize: 16,

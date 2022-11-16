@@ -12,6 +12,7 @@ import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_hora.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
+import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -19,7 +20,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:cangurugestor/global.dart' as global;
 
 class ConsultaCadastro extends StatefulWidget {
-  Consulta? consulta;
+  Consulta? consulta = Consulta();
   final int opcao;
   final int privilegio;
   bool edit;
@@ -42,10 +43,7 @@ class ConsultaCadastro extends StatefulWidget {
 
 class _ConsultaCadastroState extends State<ConsultaCadastro> {
   TextEditingController nomeController = TextEditingController();
-  TextEditingController dataController = TextEditingController();
-  TextEditingController horaController = TextEditingController();
   TextEditingController medicoController = TextEditingController();
-  TextEditingController cuidadorController = TextEditingController();
   TextEditingController cepController = TextEditingController();
   TextEditingController ruaController = TextEditingController();
   TextEditingController bairroController = TextEditingController();
@@ -67,33 +65,51 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
   @override
   void initState() {
     widget.consulta ??= Consulta();
-    dataController =
-        TextEditingController(text: widget.consulta?.data.toString());
-    horaController = TextEditingController(text: widget.consulta?.hora);
     nomeController = TextEditingController(text: widget.consulta?.nome);
     medicoController = TextEditingController(text: widget.consulta?.medico);
-    cepController = TextEditingController(text: widget.consulta?.local?.cep);
-    ruaController = TextEditingController(text: widget.consulta?.local?.rua);
-    bairroController =
-        TextEditingController(text: widget.consulta?.local?.bairro);
-    numeroRuaController =
-        TextEditingController(text: widget.consulta?.local?.numeroRua);
+    cepController = TextEditingController(text: widget.consulta?.cep);
+    cepController.addListener(() {
+      // Listener para atualizar os campos de endereço
+      if (cepController.text.length == 9) {
+        CepAPI.getCep(cepController.text).then((value) {
+          if (value['erro']) {
+            ruaController.text = '';
+            bairroController.text = '';
+            cidadeController.text = '';
+            estadoController.text = '';
+            return;
+          } else {
+            ruaController.text = value['logradouro'];
+            bairroController.text = value['bairro'];
+            cidadeController.text = value['localidade'];
+            estadoController.text = value['uf'];
+          }
+        });
+      }
+    });
+    ruaController = TextEditingController(text: widget.consulta?.rua);
+    bairroController = TextEditingController(text: widget.consulta?.bairro);
+    numeroRuaController = TextEditingController(text: widget.consulta?.numero);
     complementoRuaController =
-        TextEditingController(text: widget.consulta?.local?.complementoRua);
-    cidadeController =
-        TextEditingController(text: widget.consulta?.local?.cidade);
-    estadoController =
-        TextEditingController(text: widget.consulta?.local?.estado);
+        TextEditingController(text: widget.consulta?.complementoRua);
+    cidadeController = TextEditingController(text: widget.consulta?.cidade);
+    estadoController = TextEditingController(text: widget.consulta?.estado);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    dataController.dispose();
     nomeController.dispose();
-    horaController.dispose();
     medicoController.dispose();
+    cepController.dispose();
+    ruaController.dispose();
+    bairroController.dispose();
+    numeroRuaController.dispose();
+    complementoRuaController.dispose();
+    cidadeController.dispose();
+    estadoController.dispose();
+
     super.dispose();
   }
 
@@ -324,6 +340,15 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
     );
   }
 
+  Future<List<Tarefa>> buscaTarefasConsulta() async {
+    List<Tarefa> tarefas = [];
+    if (widget.consulta!.id.isNotEmpty) {
+      return await firestoreTarefa.getTarefasConsulta(
+          widget.consulta!.id, global.idPacienteGlobal);
+    }
+    return tarefas;
+  }
+
   Future<void> addConsulta() async {
     widget.consulta!.nome = nomeController.text;
 
@@ -367,7 +392,6 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
         Tarefa(
           dateTime: proxTarefa,
           nome: widget.consulta!.nome,
-          descricao: widget.consulta!.descricao,
           observacao: widget.consulta!.observacao,
           idTipo: widget.consulta!.id,
           tipo: EnumTarefa.consulta,
@@ -382,10 +406,5 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
             .add(TextEditingController(text: tarefasNovas[i].time));
       }
     });
-  }
-
-  Future<List<Tarefa>> buscaTarefasConsulta() async {
-    return await firestoreTarefa.getTarefasAtividade(
-        widget.consulta!.id, global.idPacienteGlobal);
   }
 }
