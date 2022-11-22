@@ -1,6 +1,10 @@
+import 'package:cangurugestor/classes/cuidador.dart';
+import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/classes/pessoa.dart';
 
 class Responsavel extends Pessoa {
+  List<Cuidador> cuidadores = [];
+  List<Paciente> pacientes = [];
   List<String>? idCuidadores;
   List<String>? idPacientes;
   String? idContrato;
@@ -25,7 +29,7 @@ class Responsavel extends Pessoa {
       this.id = '',
       this.idGestor = '',
       this.senha = '',
-      this.ativo = false,
+      this.ativo = true,
       this.idContrato})
       : super(
           cpf: cpf,
@@ -43,44 +47,39 @@ class Responsavel extends Pessoa {
         );
 
   Responsavel.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
-    senha = map['senha'];
     ativo = map['ativo'];
-    nome = map['nome'];
-    sobrenome = map['sobrenome'];
-    nascimento = map['nascimento'];
-    email = map['email'];
-    telefone = map['telefone'];
-    cpf = map['cpf'];
-    ativo = map['ativo'];
-    idGestor = map['gestor'];
-    cep = map['cep'];
-    estado = map['estado'];
-    cidade = map['cidade'];
     bairro = map['bairro'];
+    cep = map['cep'];
+    cidade = map['cidade'];
     complementoRua = map['complementoRua'];
-    numeroRua = map['complementoRua'];
+    cpf = map['cpf'];
+    email = map['email'];
+    estado = map['estado'];
+    idGestor = map['gestor'];
+    nascimento = map['nascimento'];
+    nome = map['nome'];
     rua = map['rua'];
     senha = map['senha'];
+    sobrenome = map['sobrenome'];
+    telefone = map['telefone'];
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'ativo': ativo,
+      'bairro': bairro,
+      'cep': cep,
+      'cidade': cidade,
+      'complementoRua': complementoRua,
       'cpf': cpf,
-      'nome': nome,
-      'sobrenome': sobrenome,
-      'nascimento': nascimento,
+      'estado': estado,
       'email': email,
       'gestor': idGestor,
-      'telefone': telefone,
-      'contrato': idContrato ?? {},
-      'ativo': ativo,
-      'cep': cep,
       'rua': rua,
-      'complementoRua': complementoRua,
-      'bairro': bairro,
-      'cidade': cidade,
-      'estado': estado,
-      'senha': senha,
+      'nascimento': nascimento,
+      'nome': nome,
+      'sobrenome': sobrenome,
+      'telefone': telefone,
     };
   }
 

@@ -1,8 +1,11 @@
 import 'package:cangurugestor/classes/atividade.dart';
 import 'package:cangurugestor/classes/consulta.dart';
+import 'package:cangurugestor/classes/cuidador.dart';
 import 'package:cangurugestor/classes/medicamento.dart';
 import 'package:cangurugestor/classes/paciente.dart';
+import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
+import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
@@ -12,7 +15,9 @@ import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/ui/componentes/header_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/item_atividade.dart';
 import 'package:cangurugestor/ui/componentes/item_consulta.dart';
+import 'package:cangurugestor/ui/componentes/item_cuidador.dart';
 import 'package:cangurugestor/ui/componentes/item_medicamento.dart';
+import 'package:cangurugestor/ui/componentes/item_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:cangurugestor/ui/telas/paci/atividade_cadastro.dart';
 import 'package:cangurugestor/ui/telas/paci/consulta_cadastro.dart';
@@ -65,7 +70,10 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
   List<Widget> consultasWidget = [];
   List<Widget> medicamentosWidget = [];
   List<Widget> atividadesWidget = [];
+  List<Widget> tarefasWidget = [];
+  List<Widget> cuidadoresWidget = [];
   final FirestorePaciente firestorePaciente = FirestorePaciente();
+  final FirestoreTarefa firestoreTarefa = FirestoreTarefa();
 
   @override
   void initState() {
@@ -145,6 +153,9 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                     ],
                   ),
                 ),
+                widget.paciente!.id.isNotEmpty
+                    ? tarefaGroup()
+                    : const SizedBox(),
                 dadosPessoaisGroup(),
                 widget.paciente!.id.isNotEmpty
                     ? medicamentoGroup()
@@ -154,6 +165,9 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                     : const SizedBox(),
                 widget.paciente!.id.isNotEmpty
                     ? consultaGroup()
+                    : const SizedBox(),
+                widget.paciente!.id.isNotEmpty
+                    ? cuidadorGroup()
                     : const SizedBox(),
                 widget.edit ? configuracaoGroup() : const SizedBox(),
               ],
@@ -516,5 +530,70 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
 
   void excluirPaciente() {
     firestorePaciente.excluirPaciente(widget.paciente!);
+  }
+
+  Widget tarefaGroup() {
+    return FutureBuilder(
+        future: firestoreTarefa.getTarefasTodas(widget.paciente!.id),
+        builder: (context, AsyncSnapshot<List<Tarefa>> builder) {
+          if (builder.hasData) {
+            tarefasWidget = [];
+            for (var tarefa in builder.data!) {
+              tarefasWidget.add(ItemTarefa(
+                tarefa: tarefa,
+              ));
+            }
+            return AgrupadorCadastro(
+              initiallyExpanded: true,
+              leading: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.schedule,
+                  size: 40,
+                  color: Color.fromARGB(255, 10, 48, 88),
+                ),
+              ),
+              titulo: 'Tarefas',
+              children: tarefasWidget,
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  Widget cuidadorGroup() {
+    return FutureBuilder(
+        future: firestorePaciente.todosCuidadoresPaciente(widget.paciente!.id),
+        builder: (context, AsyncSnapshot<List<Cuidador>> builder) {
+          if (builder.hasData) {
+            cuidadoresWidget = [];
+            for (var cuidador in builder.data!) {
+              cuidadoresWidget.add(ItemCuidador(
+                privilegio: widget.privilegio,
+                cuidador: cuidador,
+              ));
+            }
+            return AgrupadorCadastro(
+              initiallyExpanded: true,
+              leading: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.schedule,
+                  size: 40,
+                  color: Color.fromARGB(255, 10, 48, 88),
+                ),
+              ),
+              titulo: 'Cuidadores',
+              children: cuidadoresWidget,
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 }

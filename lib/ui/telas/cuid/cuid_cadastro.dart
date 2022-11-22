@@ -5,7 +5,6 @@ import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
 import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
-import 'package:cangurugestor/firebaseUtils/firestore_funcoes.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
@@ -86,17 +85,18 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
       // Listener para atualizar os campos de endereço
       if (cepController.text.length == 9) {
         CepAPI.getCep(cepController.text).then((value) {
-          if (value['erro']) {
+          if (value['cep'] != null) {
+            ruaController.text = value['logradouro'];
+            bairroController.text = value['bairro'];
+            cidadeController.text = value['localidade'];
+            estadoController.text = value['uf'];
+            return;
+          } else {
             ruaController.text = '';
             bairroController.text = '';
             cidadeController.text = '';
             estadoController.text = '';
-            return;
           }
-          ruaController.text = value['logradouro'];
-          bairroController.text = value['bairro'];
-          cidadeController.text = value['localidade'];
-          estadoController.text = value['uf'];
         });
       }
     });
@@ -189,11 +189,8 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
               ? Center(
                   child: IconButton(
                     onPressed: () {
-                      if (_formKeyDadosPessoais.currentState!.validate() &&
-                          _formKeyEndereco.currentState!.validate()) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        addCuidador();
-                      }
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      addCuidador();
                     },
                     icon: const Icon(
                       Icons.save,

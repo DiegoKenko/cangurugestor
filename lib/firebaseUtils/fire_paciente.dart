@@ -1,5 +1,6 @@
 import 'package:cangurugestor/classes/atividade.dart';
 import 'package:cangurugestor/classes/consulta.dart';
+import 'package:cangurugestor/classes/cuidador.dart';
 import 'package:cangurugestor/classes/medicamento.dart';
 import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/classes/responsavel.dart';
@@ -204,5 +205,31 @@ class FirestorePaciente {
       consultaReturn.last.id = element.id;
     }
     return consultaReturn;
+  }
+
+  Future<List<Cuidador>> todosCuidadoresPaciente(String idPaciente) async {
+    List<Cuidador> cuidadores = [];
+    if (idPaciente.isEmpty) {
+      return cuidadores;
+    }
+    firestore
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('cuidadores')
+        .get()
+        .then((value) async {
+      if (value.docs.isNotEmpty) {
+        for (var element in value.docs) {
+          var cuidadorSnap =
+              await firestore.collection('cuidadores').doc(element.id).get();
+
+          if (cuidadorSnap.exists) {
+            cuidadores.add(Cuidador.fromMap(cuidadorSnap.data()!));
+            cuidadores.last.id = cuidadorSnap.id;
+          }
+        }
+      }
+    });
+    return cuidadores;
   }
 }

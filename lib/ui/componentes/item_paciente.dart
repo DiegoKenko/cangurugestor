@@ -1,3 +1,4 @@
+import 'package:cangurugestor/classes/cuidador.dart';
 import 'package:cangurugestor/classes/paciente.dart';
 import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/ui/componentes/item_container.dart';

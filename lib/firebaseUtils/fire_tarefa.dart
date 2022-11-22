@@ -99,4 +99,25 @@ class FirestoreTarefa {
     }
     return tarefas;
   }
+
+  Future<List<Tarefa>> getTarefasTodas(String idPaciente) async {
+    List<Tarefa> tarefas = [];
+    // Busca proximas tarefas abertas
+    await firestore
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('tarefas')
+        .orderBy('dateTime')
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        for (var element in value.docs) {
+          tarefas.add(Tarefa.fromMap(element.data()));
+          tarefas.last.id = element.id;
+        }
+      }
+    });
+
+    return tarefas;
+  }
 }

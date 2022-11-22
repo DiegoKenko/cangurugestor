@@ -85,17 +85,17 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
       // Listener para atualizar os campos de endereço
       if (cepController.text.length == 9) {
         CepAPI.getCep(cepController.text).then((value) {
-          if (value['erro']) {
-            ruaController.text = '';
-            bairroController.text = '';
-            cidadeController.text = '';
-            estadoController.text = '';
-            return;
-          } else {
+          if (value['cep'] != null) {
             ruaController.text = value['logradouro'];
             bairroController.text = value['bairro'];
             cidadeController.text = value['localidade'];
             estadoController.text = value['uf'];
+            return;
+          } else {
+            ruaController.text = '';
+            bairroController.text = '';
+            cidadeController.text = '';
+            estadoController.text = '';
           }
         });
       }
