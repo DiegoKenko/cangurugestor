@@ -583,7 +583,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
-                  Icons.schedule,
+                  Icons.person_pin,
                   size: 40,
                   color: Color.fromARGB(255, 10, 48, 88),
                 ),

@@ -5,11 +5,12 @@ class Tarefa {
   String nome = '';
   String id = '';
   String idTipo = '';
-  EnumTarefa? tipo = EnumTarefa.nenhuma;
+  EnumTarefa tipo = EnumTarefa.nenhuma;
   String descricaoTipo = '';
   DateTime dateTime = DateTime.now();
   String date = '';
   String time = '';
+  String descricao = '';
   String observacao = '';
   bool concluida = false;
   Tarefa({
@@ -41,12 +42,25 @@ class Tarefa {
       'nome': nome,
       'id': id,
       'idTipo': idTipo,
-      'tipo': tipo!.name,
+      'descricao': descricao,
+      'tipo': tipo.name,
       'dateTime': dateTime,
       'date': DateFormat('dd/MM/yyyy').format(dateTime),
       'time': DateFormat('HH:mm').format(dateTime),
       'observacao': observacao,
       'concluida': concluida,
     };
+  }
+
+  void setTime(String time) {
+    this.time = time;
+  }
+
+  void setDate(String date) {
+    this.date = date;
+  }
+
+  void setDateTime(DateTime dateTime) {
+    this.dateTime = dateTime;
   }
 }
