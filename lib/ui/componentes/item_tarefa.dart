@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 class ItemTarefa extends StatefulWidget {
   Tarefa tarefa;
   void Function()? onTap;
-  ItemTarefa({Key? key, required this.tarefa, this.onTap}) : super(key: key);
+  ItemTarefa({
+    Key? key,
+    required this.tarefa,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   State<ItemTarefa> createState() => _ItemTarefaState();
@@ -44,7 +48,7 @@ class _ItemTarefaState extends State<ItemTarefa> {
                           size: 17,
                           color: widget.tarefa.dateTime.isBefore(DateTime.now())
                               ? Theme.of(context).errorColor
-                              : Theme.of(context).focusColor,
+                              : corPad1,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -58,7 +62,7 @@ class _ItemTarefaState extends State<ItemTarefa> {
                       widget.tarefa.concluida ? 'Concluída' : 'Pendente',
                       style: TextStyle(
                         color: widget.tarefa.concluida
-                            ? Theme.of(context).focusColor
+                            ? corPad1
                             : Theme.of(context).errorColor,
                       ),
                     ),
@@ -127,7 +131,7 @@ class _ItemTarefaState extends State<ItemTarefa> {
                   ),
                 ),
               ),
-              Padding(
+              /* Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Transform.scale(
                   scale: 1.5,
@@ -147,7 +151,7 @@ class _ItemTarefaState extends State<ItemTarefa> {
                     value: widget.tarefa.concluida,
                   ),
                 ),
-              )
+              ) */
             ],
           ),
         ),

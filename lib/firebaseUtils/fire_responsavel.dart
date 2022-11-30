@@ -22,7 +22,7 @@ class FirestoreResponsavel {
     return responsavel;
   }
 
-  atualizarResponavel(Responsavel responsavel) {
+  void atualizarResponavel(Responsavel responsavel) {
     firestore.collection('responsaveis').doc(responsavel.id).get().then(
       (snapshot) {
         snapshot.reference.update(responsavel.toMap());
@@ -38,42 +38,35 @@ class FirestoreResponsavel {
     );
   }
 
-  Future<List<Paciente>> todosPacientesResponsavel(String idResponsavel) async {
-    List<Paciente> pacientes = [];
-    if (idResponsavel.isNotEmpty) {
-      await firestore
-          .collection('pacientes')
-          .where('responsavel', isEqualTo: idResponsavel)
-          .get()
-          .then((value) {
-        for (var doc in value.docs) {
-          pacientes.add(Paciente.fromMap(doc.data()));
-          pacientes.last.id = doc.id;
-        }
-      });
-    }
-    return pacientes;
+  Stream<List<Paciente>> todosPacientesResponsavelStream(String idResponsavel) {
+    return firestore
+        .collection('pacientes')
+        .where('responsavel', isEqualTo: idResponsavel)
+        .snapshots()
+        .map(
+          (event) => event.docs.map((e) {
+            var paciente = Paciente.fromMap(e.data());
+            paciente.id = e.id;
+            return paciente;
+          }).toList(),
+        );
   }
 
-  Future<List<Cuidador>> todosCuidadoresResponsavel(
-      String idResponsavel) async {
-    List<Cuidador> cuidadores = [];
-    if (idResponsavel.isNotEmpty) {
-      await firestore
-          .collection('cuidadores')
-          .where('responsavel', isEqualTo: idResponsavel)
-          .get()
-          .then((value) {
-        for (var doc in value.docs) {
-          cuidadores.add(Cuidador.fromMap(doc.data()));
-          cuidadores.last.id = doc.id;
-        }
-      });
-    }
-    return cuidadores;
+  Stream<List<Cuidador>> todosCuidadoresResponsavel(String idResponsavel) {
+    return firestore
+        .collection('cuidadores')
+        .where('responsavel', isEqualTo: idResponsavel)
+        .snapshots()
+        .map(
+          (event) => event.docs.map((e) {
+            var cuidador = Cuidador.fromMap(e.data());
+            cuidador.id = e.id;
+            return cuidador;
+          }).toList(),
+        );
   }
 
-  excluirResponsavel(String idReponsavel) {
+  void excluirResponsavel(String idReponsavel) {
     firestore.collection('responsaveis').doc(idReponsavel).delete();
 
     firestoreLogin.deleteLogin(idReponsavel);

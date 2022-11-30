@@ -16,7 +16,7 @@ class Paciente extends Pessoa {
   List<Consulta>? consultas = [];
   List<Medicamento>? medicamentos = [];
   List<Atividade>? atividades = [];
-  List<String> cuidadores = [];
+  List cuidadores = [];
   Prescricao? prescricao = Prescricao();
 
   Paciente(

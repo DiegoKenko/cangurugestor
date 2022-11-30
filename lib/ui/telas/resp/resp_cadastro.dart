@@ -177,8 +177,11 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
                   widget.responsavel != null
                       ? HeaderCadastro(
                           texto:
-                              '${widget.responsavel!.nome} ${widget.responsavel!.sobrenome}')
-                      : HeaderCadastro(),
+                              '${widget.responsavel!.nome} ${widget.responsavel!.sobrenome}',
+                          titulo: 'Cliente',
+                          subTitulo: widget.responsavel!.telefone,
+                        )
+                      : Container(),
                 ],
               ),
             ),
@@ -281,7 +284,6 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
 
   AgrupadorCadastro configuracoesGroup() {
     return AgrupadorCadastro(
-      initiallyExpanded: true,
       leading: Container(
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
@@ -342,7 +344,6 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     return Form(
       key: _formKeyEndereco,
       child: AgrupadorCadastro(
-          initiallyExpanded: true,
           leading: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
@@ -408,7 +409,6 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     return Form(
       key: _formKeyDadosPessoais,
       child: AgrupadorCadastro(
-        initiallyExpanded: true,
         leading: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
@@ -469,9 +469,9 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
     );
   }
 
-  FutureBuilder<List<Cuidador>> cuidadorGroup() {
-    return FutureBuilder(
-        future: fireStoreResponsavel
+  StreamBuilder<List<Cuidador>> cuidadorGroup() {
+    return StreamBuilder(
+        stream: fireStoreResponsavel
             .todosCuidadoresResponsavel(widget.responsavel!.id),
         builder:
             (BuildContext buildcontext, AsyncSnapshot<List<Cuidador>> snap) {
@@ -507,10 +507,10 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
         });
   }
 
-  pacienteGroup() {
-    return FutureBuilder(
-      future: fireStoreResponsavel
-          .todosPacientesResponsavel(widget.responsavel!.id),
+  StreamBuilder<List<Paciente>> pacienteGroup() {
+    return StreamBuilder(
+      stream: fireStoreResponsavel
+          .todosPacientesResponsavelStream(widget.responsavel!.id),
       builder: (context, AsyncSnapshot<List<Paciente>> snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
@@ -518,7 +518,10 @@ class _CadastroResponsavelState extends State<CadastroResponsavel> {
             for (var element in snapshot.data!) {
               pacientesWidget.insert(
                 0,
-                ItemPaciente(privilegio: widget.privilegio, paciente: element),
+                ItemPaciente(
+                  privilegio: widget.privilegio,
+                  paciente: element,
+                ),
               );
             }
           }

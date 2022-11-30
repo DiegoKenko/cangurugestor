@@ -10,7 +10,7 @@ class AgrupadorCadastro extends StatefulWidget {
       {Key? key,
       required this.leading,
       required this.titulo,
-      this.initiallyExpanded = true,
+      this.initiallyExpanded = false,
       required this.children})
       : super(key: key);
 

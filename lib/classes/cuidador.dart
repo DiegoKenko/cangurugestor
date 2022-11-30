@@ -5,7 +5,7 @@ import 'package:cangurugestor/classes/responsavel.dart';
 class Cuidador extends Pessoa {
   String id = '';
   List<Paciente>? pacientes;
-  List<String>? idPacientes;
+  List idPacientes = [];
   DateTime? dataCadastro;
   bool ativo = true;
   String? senha;
@@ -19,6 +19,7 @@ class Cuidador extends Pessoa {
     String email = '',
     String telefone = '',
     this.pacientes,
+    this.idPacientes = const [],
     this.ativo = false,
     this.senha = '',
     this.id = '',
@@ -56,6 +57,7 @@ class Cuidador extends Pessoa {
       'responsavel': idResponsavel,
       'telefone': telefone,
       'ativo': ativo,
+      'pacientes': idPacientes,
       'senha': senha ?? 'canguruX',
       'dataCadastro': DateTime.now().toString(),
     };

@@ -1,5 +1,3 @@
-import 'package:cangurugestor/classes/local.dart';
-
 class Consulta {
   String id = '';
   String observacao = '';

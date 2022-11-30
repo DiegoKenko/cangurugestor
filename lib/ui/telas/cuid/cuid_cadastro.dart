@@ -167,8 +167,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
                       widget.cuidador != null
                           ? HeaderCadastro(
                               texto:
-                                  '${widget.cuidador!.nome} ${widget.cuidador!.sobrenome}')
-                          : HeaderCadastro(),
+                                  '${widget.cuidador!.nome} ${widget.cuidador!.sobrenome}',
+                              titulo: 'Cuidador',
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
@@ -205,9 +207,8 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     );
   }
 
-  configuracoesGroup() {
+  Widget configuracoesGroup() {
     return AgrupadorCadastro(
-      initiallyExpanded: false,
       leading: Container(
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
@@ -264,11 +265,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     );
   }
 
-  enderecoGroup() {
+  Widget enderecoGroup() {
     return Form(
       key: _formKeyEndereco,
       child: AgrupadorCadastro(
-          initiallyExpanded: true,
           leading: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
@@ -327,11 +327,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     );
   }
 
-  dadosPessoaisGroup() {
+  Widget dadosPessoaisGroup() {
     return Form(
       key: _formKeyDadosPessoais,
       child: AgrupadorCadastro(
-        initiallyExpanded: true,
         leading: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
@@ -390,9 +389,9 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     );
   }
 
-  FutureBuilder<List<Paciente>> pacienteGroup() {
-    return FutureBuilder(
-        future: firestoreCuidador.todosPacientesCuidador(
+  StreamBuilder<List<Paciente>> pacienteGroup() {
+    return StreamBuilder(
+        stream: firestoreCuidador.todosPacientesCuidadorStream(
             global.idResponsavelGlobal, widget.cuidador!.id),
         builder: (context, AsyncSnapshot<List<Paciente>> builder) {
           if (builder.hasData) {
@@ -409,7 +408,6 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
             pacientesWidget.add(botaoAdicionarPaciente(context));
           }
           return AgrupadorCadastro(
-              initiallyExpanded: true,
               leading: Container(
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
@@ -430,9 +428,9 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
       onPressed: () {
         Scaffold.of(context).showBottomSheet<void>(
           (BuildContext context) {
-            return FutureBuilder(
-              future: firestoreResponsavel
-                  .todosPacientesResponsavel(global.idResponsavelGlobal),
+            return StreamBuilder(
+              stream: firestoreResponsavel
+                  .todosPacientesResponsavelStream(global.idResponsavelGlobal),
               builder: (context, AsyncSnapshot<List<Paciente>> snapshot) {
                 if (snapshot.hasData) {
                   List<Paciente>? pacientes = snapshot.data;
@@ -518,9 +516,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
     firestoreCuidador.excluirCuidador(widget.cuidador!.id);
   }
 
-  listTilePaciente(Paciente paciente, Cuidador cuidador) {
-    final bool exists = cuidador.pacientes!.firstWhere(
-            (element) => element.id == paciente.id,
+  Widget listTilePaciente(Paciente paciente, Cuidador cuidador) {
+    bool exists = false;
+    exists = cuidador.idPacientes.firstWhere(
+            (element) => element == paciente.id,
             orElse: () => Paciente()) !=
         Paciente();
     return Container(
@@ -547,8 +546,8 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
           ),
         ),
         subtitle: Text(paciente.cpf),
-        trailing: const Icon(
-          Icons.add,
+        trailing: Icon(
+          exists ? Icons.remove : Icons.add,
           color: Colors.white,
         ),
       ),

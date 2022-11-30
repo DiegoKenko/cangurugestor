@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Pessoa {
   String nome = '';
   String sobrenome = '';
@@ -59,5 +61,10 @@ class Pessoa {
     cep = map['cep'] ?? '';
   }
 
-  //get idade => nascimento!.difference(DateTime.now()).inDays ~/ 365;
+  int get idade {
+    return DateTime.now()
+            .difference(DateFormat('dd/MM/yyyy').parse(nascimento))
+            .inDays ~/
+        365;
+  }
 }

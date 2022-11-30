@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  criaTarefas(String idPaciente, List<Tarefa> tarefas) {
+  void criaTarefas(String idPaciente, List<Tarefa> tarefas) async {
     for (var tarefa in tarefas) {
-      firestore
+      await firestore
           .collection('pacientes')
           .doc(idPaciente)
           .collection('tarefas')
@@ -14,7 +14,7 @@ class FirestoreTarefa {
     }
   }
 
-  excluirTarefa(String idPaciente, String idTarefa) async {
+  void excluirTarefa(String idPaciente, String idTarefa) async {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -23,37 +23,9 @@ class FirestoreTarefa {
         .delete();
   }
 
-  Future<List<Tarefa>> getTarefasMedicamento(
-      String idMedicamento, String idPaciente,
-      {bool concluida = false}) async {
-    List<Tarefa> tarefas = [];
-    if (idMedicamento.isEmpty || idPaciente.isEmpty) return tarefas;
-    var value = await firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('tarefas')
-        .where('tipo', isEqualTo: 'medicamento')
-        .where('idTipo', isEqualTo: idMedicamento)
-        .where('concluida', isEqualTo: false)
-        .where('date',
-            isGreaterThanOrEqualTo:
-                DateFormat('dd/MM/yyyy').format(DateTime.now()))
-        .get();
-
-    if (value.docs.isNotEmpty) {
-      for (var element in value.docs) {
-        tarefas.add(Tarefa.fromMap(element.data()));
-        tarefas.last.id = element.id;
-      }
-    }
-    return tarefas;
-  }
-
-  Stream<List<Tarefa>> getTarefasMedicamentoStream(
+  Stream<List<Tarefa>> getTarefasMedicamento(
       String idMedicamento, String idPaciente,
       {bool concluida = false}) {
-    List<Tarefa> tarefas = [];
-
     return firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -61,9 +33,7 @@ class FirestoreTarefa {
         .where('tipo', isEqualTo: 'medicamento')
         .where('idTipo', isEqualTo: idMedicamento)
         .where('concluida', isEqualTo: false)
-        .where('date',
-            isGreaterThanOrEqualTo:
-                DateFormat('dd/MM/yyyy').format(DateTime.now()))
+        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots()
         .map((QuerySnapshot event) =>
             event.docs.map((DocumentSnapshot documentSnapshot) {
@@ -74,37 +44,30 @@ class FirestoreTarefa {
             }).toList());
   }
 
-  Future<List<Tarefa>> getTarefasAtividade(
+  Stream<List<Tarefa>> getTarefasAtividade(
       String idAtividade, String idPaciente,
-      {bool concluida = false}) async {
-    List<Tarefa> tarefas = [];
-    if (idAtividade.isEmpty || idPaciente.isEmpty) return tarefas;
-    var value = await firestore
+      {bool concluida = false}) {
+    return firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('tarefas')
         .where('tipo', isEqualTo: 'atividade')
         .where('idTipo', isEqualTo: idAtividade)
         .where('concluida', isEqualTo: false)
-        .where('date',
-            isGreaterThanOrEqualTo:
-                DateFormat('dd/MM/yyyy').format(DateTime.now()))
-        .get();
-
-    if (value.docs.isNotEmpty) {
-      for (var element in value.docs) {
-        tarefas.add(Tarefa.fromMap(element.data()));
-        tarefas.last.id = element.id;
-      }
-    }
-    return tarefas;
+        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .map((QuerySnapshot event) =>
+            event.docs.map((DocumentSnapshot documentSnapshot) {
+              Tarefa tarefa = Tarefa.fromMap(
+                  documentSnapshot.data() as Map<String, dynamic>);
+              tarefa.id = documentSnapshot.id;
+              return tarefa;
+            }).toList());
   }
 
-  Future<List<Tarefa>> getTarefasConsulta(String idConsulta, String idPaciente,
-      {bool concluida = false}) async {
-    List<Tarefa> tarefas = [];
-    if (idConsulta.isEmpty || idPaciente.isEmpty) return tarefas;
-    var value = await firestore
+  Stream<List<Tarefa>> getTarefasConsulta(String idConsulta, String idPaciente,
+      {bool concluida = false}) {
+    return firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('tarefas')
@@ -114,36 +77,26 @@ class FirestoreTarefa {
         .where('date',
             isGreaterThanOrEqualTo:
                 DateFormat('dd/MM/yyyy').format(DateTime.now()))
-        .get();
-
-    if (value.docs.isNotEmpty) {
-      for (var element in value.docs) {
-        tarefas.add(Tarefa.fromMap(element.data()));
-        tarefas.last.id = element.id;
-      }
-    }
-    return tarefas;
+        .snapshots()
+        .map((event) => event.docs.map((e) {
+              var tarefa = Tarefa.fromMap(e.data());
+              tarefa.id = e.id;
+              return tarefa;
+            }).toList());
   }
 
-  Future<List<Tarefa>> getTarefasTodas(String idPaciente) async {
-    List<Tarefa> tarefas = [];
-    // Busca proximas tarefas abertas
-    await firestore
+  Stream<List<Tarefa>> getTarefasTodas(String idPaciente) {
+    return firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('tarefas')
         .orderBy('dateTime')
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        for (var element in value.docs) {
-          tarefas.add(Tarefa.fromMap(element.data()));
-          tarefas.last.id = element.id;
-        }
-      }
-    });
-
-    return tarefas;
+        .snapshots()
+        .map((event) => event.docs.map((e) {
+              var tarefa = Tarefa.fromMap(e.data());
+              tarefa.id = e.id;
+              return tarefa;
+            }).toList());
   }
 
   atualizarTarefaPaciente(Tarefa tarefa, String idPaciente) async {

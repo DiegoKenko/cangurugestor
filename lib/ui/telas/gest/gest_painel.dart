@@ -95,7 +95,6 @@ class _PainelGestorState extends State<PainelGestor> {
                 texto: 'Bem-vindo ${widget.gestor.nome}!',
               ),
               AgrupadorCadastro(
-                  initiallyExpanded: true,
                   leading: Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,

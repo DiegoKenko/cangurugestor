@@ -8,7 +8,6 @@ import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
-import 'package:cangurugestor/ui/componentes/item_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/global.dart' as global;
@@ -244,7 +243,6 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                     ],
                   ),
                   AgrupadorCadastro(
-                    initiallyExpanded: true,
                     leading: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
@@ -258,7 +256,8 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
                     titulo: 'Agenda',
                     children: [
                       StreamBuilder(
-                        stream: buscaTarefasMedicamentoStream(),
+                        stream: fireTarefa.getTarefasMedicamento(
+                            widget.medicamento!.id, global.idPacienteGlobal),
                         builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
                           if (snap.hasData) {
                             return Column(children: [
@@ -359,17 +358,12 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
     );
   }
 
-  buscaMedicamentos() async {
+  void buscaMedicamentos() async {
     await firestoreMedicamento.todosMedicamentos().then((value) {
       setState(() {
         listaMedicamentos = value;
       });
     });
-  }
-
-  Stream<List<Tarefa>> buscaTarefasMedicamentoStream() {
-    return fireTarefa.getTarefasMedicamentoStream(
-        widget.medicamento!.id, global.idPacienteGlobal);
   }
 
   Future<void> addMedicamento() async {
@@ -458,7 +452,7 @@ class _MedicamentoCadastroState extends State<MedicamentoCadastro> {
     );
   }
 
-  adicionarTarefa(Tarefa ultimaTarefa) {
+  void adicionarTarefa(Tarefa ultimaTarefa) {
     DateTime proxTarefa = DateTime.now();
     DateTime ultTarefa = DateFormat('dd/MM/yyyy').parse(ultimaTarefa.date);
     DateTime ultTarefaTime = DateFormat('HH:mm').parse(ultimaTarefa.time);

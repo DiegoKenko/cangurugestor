@@ -1,16 +1,13 @@
 import 'package:cangurugestor/classes/consulta.dart';
 import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
-import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/app_bar.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro.dart';
-import 'package:cangurugestor/ui/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/ui/componentes/form_cadastro_data_hora.dart';
-import 'package:cangurugestor/ui/componentes/form_cadastro_hora.dart';
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +58,8 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
   List<TextEditingController> horaControllerList = [];
   List<TextEditingController> dataControllerListNova = [];
   List<TextEditingController> horaControllerListNova = [];
+
+  final FirestoreTarefa fireTarefa = FirestoreTarefa();
 
   @override
   void initState() {
@@ -153,6 +152,7 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
               child: ListView(
                 children: [
                   AgrupadorCadastro(
+                    initiallyExpanded: true,
                     leading: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
@@ -174,7 +174,6 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
                     ],
                   ),
                   AgrupadorCadastro(
-                    initiallyExpanded: true,
                     leading: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
@@ -187,69 +186,71 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
                     ),
                     titulo: 'Agenda',
                     children: [
-                      FutureBuilder(
-                        future: buscaTarefasConsulta(),
+                      StreamBuilder(
+                        stream: fireTarefa.getTarefasConsulta(
+                            widget.consulta!.id, global.idPacienteGlobal),
                         builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
                           if (snap.hasData) {
-                            tarefasSnap = snap.data!;
-                            tarefas = [...tarefasSnap, ...tarefasNovas];
-                            horaControllerList =
-                                List<TextEditingController>.generate(
-                              tarefas.length,
-                              (index) => TextEditingController(
-                                text: tarefas[index].time,
+                            return Column(children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snap.data!.length,
+                                itemBuilder: (context, index) {
+                                  TextEditingController tempControllerDate =
+                                      TextEditingController(
+                                    text: snap.data![index].date,
+                                  );
+                                  TextEditingController tempControllerTime =
+                                      TextEditingController(
+                                    text: snap.data![index].time,
+                                  );
+                                  tempControllerDate.removeListener(() {});
+                                  tempControllerTime.removeListener(() {});
+                                  tempControllerDate.addListener(() {
+                                    snap.data![index]
+                                        .setDate(tempControllerDate.text);
+                                    fireTarefa.atualizarTarefaPaciente(
+                                      snap.data![index],
+                                      global.idPacienteGlobal,
+                                    );
+                                  });
+                                  tempControllerTime.addListener(() {
+                                    fireTarefa.atualizarTarefaPaciente(
+                                      snap.data![index],
+                                      global.idPacienteGlobal,
+                                    );
+                                  });
+                                  return FormCadastroDataHora(
+                                    enabled: true,
+                                    onDismissed: (DismissDirection direction) {
+                                      excluirTarefaConsulta(snap.data![index]);
+                                    },
+                                    key: UniqueKey(),
+                                    controllerData: tempControllerDate,
+                                    controllerHora: tempControllerTime,
+                                  );
+                                },
                               ),
-                            );
-                            dataControllerList =
-                                List<TextEditingController>.generate(
-                              tarefas.length,
-                              (index) => TextEditingController(
-                                  text: tarefas[index].date),
-                            );
-                            for (var i = 0; i < tarefasSnap.length; i++) {
-                              dataControllerList.add(TextEditingController(
-                                  text: snap.data![i].date));
-                              horaControllerList.add(TextEditingController(
-                                  text: snap.data![i].time));
-                            }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: tarefas.length,
-                              itemBuilder: (context, index) {
-                                return FormCadastroDataHora(
-                                  enabled:
-                                      tarefas[index].id.isEmpty ? true : false,
-                                  onDismissed: (DismissDirection direction) {
-                                    setState(() {
-                                      dataControllerList.removeAt(index);
-                                      horaControllerList.removeAt(index);
-                                      if (tarefas[index].id.isEmpty) {
-                                        tarefasNovas.remove(tarefas[index]);
-                                        tarefas.removeAt(index);
-                                      } else {
-                                        firestoreTarefa.excluirTarefa(
-                                          global.idPacienteGlobal,
-                                          tarefas[index].id,
-                                        );
-                                      }
-                                    });
-                                  },
-                                  key: UniqueKey(),
-                                  controllerData: dataControllerList[index],
-                                  controllerHora: horaControllerList[index],
-                                );
-                              },
-                            );
-                          } else {
-                            return Container();
+                              widget.consulta!.id.isNotEmpty
+                                  ? BotaoCadastroTarefa(
+                                      onPressed: () {
+                                        if (snap.hasData &&
+                                            snap.data!.isNotEmpty) {
+                                          adicionarTarefa(snap.data!.last);
+                                        } else {
+                                          adicionarTarefa(
+                                              Tarefa(dateTime: DateTime.now()));
+                                        }
+                                      },
+                                    )
+                                  : Container(),
+                            ]);
                           }
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         },
                       ),
-                      widget.consulta!.id.isNotEmpty
-                          ? BotaoCadastroTarefa(
-                              onPressed: () => adicionarTarefa(),
-                            )
-                          : Container(),
                     ],
                   ),
                   AgrupadorCadastro(
@@ -340,15 +341,6 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
     );
   }
 
-  Future<List<Tarefa>> buscaTarefasConsulta() async {
-    List<Tarefa> tarefas = [];
-    if (widget.consulta!.id.isNotEmpty) {
-      return await firestoreTarefa.getTarefasConsulta(
-          widget.consulta!.id, global.idPacienteGlobal);
-    }
-    return tarefas;
-  }
-
   Future<void> addConsulta() async {
     widget.consulta!.nome = nomeController.text;
 
@@ -356,12 +348,10 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
       if (widget.opcao == opcaoInclusao && widget.consulta!.id.isEmpty) {
         widget.consulta = await firestoreConsulta.novaConsultaPaciente(
             widget.consulta!, global.idPacienteGlobal);
-        await firestoreTarefa.criaTarefas(
-            global.idPacienteGlobal, tarefasNovas);
+        firestoreTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
         tarefasNovas = [];
       } else {
-        await firestoreTarefa.criaTarefas(
-            global.idPacienteGlobal, tarefasNovas);
+        firestoreTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
         tarefasNovas = [];
       }
       setState(() {});
@@ -373,38 +363,28 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
         global.idResponsavelGlobal, global.idPacienteGlobal);
   }
 
-  adicionarTarefa() {
+  void adicionarTarefa(Tarefa ultimaTarefa) {
     DateTime proxTarefa = DateTime.now();
-    if (tarefas.isNotEmpty) {
-      DateTime ultTarefa = DateFormat('dd/MM/yyyy').parse(tarefas.last.date);
-      DateTime ultTarefaTime = DateFormat('HH:mm').parse(tarefas.last.time);
-      proxTarefa = DateTime(ultTarefa.year, ultTarefa.month, ultTarefa.day,
-          ultTarefaTime.hour, ultTarefaTime.minute);
+    DateTime ultTarefa = DateFormat('dd/MM/yyyy').parse(ultimaTarefa.date);
+    DateTime ultTarefaTime = DateFormat('HH:mm').parse(ultimaTarefa.time);
+    proxTarefa = DateTime(ultTarefa.year, ultTarefa.month, ultTarefa.day,
+        ultTarefaTime.hour, ultTarefaTime.minute);
 
-      proxTarefa = proxTarefa.add(
-        Duration(
-          minutes: enumFrequenciaEmMinutos(EnumFrequencia.dias, 7).toInt(),
-        ),
-      );
-    }
-    setState(() {
-      tarefasNovas.add(
-        Tarefa(
-          dateTime: proxTarefa,
-          nome: widget.consulta!.nome,
-          observacao: widget.consulta!.observacao,
-          idTipo: widget.consulta!.id,
-          tipo: EnumTarefa.consulta,
-        ),
-      );
-      horaControllerListNova.clear();
-      dataControllerListNova.clear();
-      for (var i = 0; i < tarefasNovas.length; i++) {
-        dataControllerListNova
-            .add(TextEditingController(text: tarefasNovas[i].date));
-        horaControllerListNova
-            .add(TextEditingController(text: tarefasNovas[i].time));
-      }
-    });
+    proxTarefa = proxTarefa.add(Duration(
+        minutes: enumFrequenciaEmMinutos(EnumFrequencia.dias, 7).toInt()));
+    fireTarefa.criaTarefas(global.idPacienteGlobal, [
+      Tarefa(
+        dateTime: proxTarefa,
+        nome: widget.consulta!.nome,
+        observacao: widget.consulta!.observacao,
+        idTipo: widget.consulta!.id,
+        tipo: EnumTarefa.medicamento,
+      ),
+    ]);
+  }
+
+  void excluirTarefaConsulta(Tarefa tarefa) {
+    // Exclui tarefas do medicamento
+    fireTarefa.excluirTarefa(global.idPacienteGlobal, tarefa.id);
   }
 }

@@ -154,57 +154,40 @@ class FirestorePaciente {
     );
   }
 
-  Future<List<Medicamento>> todosMedicamentosPaciente(String idPaciente) async {
-    List<Medicamento> medReturn = [];
-    if (idPaciente.isEmpty) {
-      return medReturn;
-    }
-    var med = await firestore
+  Stream<List<Medicamento>> todosMedicamentosPaciente(String idPaciente) {
+    return firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('medicamentos')
-        .get();
-
-    for (var element in med.docs) {
-      medReturn.add(Medicamento.fromMap(element.data()));
-      medReturn.last.id = element.id;
-    }
-    return medReturn;
+        .snapshots()
+        .map((event) => event.docs.map((e) {
+              var medicamento = Medicamento.fromMap(e.data());
+              medicamento.id = e.id;
+              return medicamento;
+            }).toList());
   }
 
-  Future<List<Atividade>> todasAtividadesPaciente(String idPaciente) async {
-    List<Atividade> atvReturn = [];
-    if (idPaciente.isEmpty) {
-      return atvReturn;
-    }
-    var atv = await firestore
+  Stream<List<Atividade>> todasAtividadesPaciente(String idPaciente) {
+    return firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('atividades')
-        .get();
-
-    for (var element in atv.docs) {
-      atvReturn.add(Atividade.fromMap(element.data()));
-      atvReturn.last.id = element.id;
-    }
-    return atvReturn;
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Atividade.fromMap(e.data())).toList());
   }
 
-  Future<List<Consulta>> todasConsultasPaciente(String idPaciente) async {
-    List<Consulta> consultaReturn = [];
-    if (idPaciente.isEmpty) {
-      return consultaReturn;
-    }
-    var cons = await firestore
+  Stream<List<Consulta>> todasConsultasPaciente(String idPaciente) {
+    return firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('consultas')
-        .get();
-    for (var element in cons.docs) {
-      consultaReturn.add(Consulta.fromMap(element.data()));
-      consultaReturn.last.id = element.id;
-    }
-    return consultaReturn;
+        .snapshots()
+        .map((event) => event.docs.map((e) {
+              var consulta = Consulta.fromMap(e.data());
+              consulta.id = e.id;
+              return consulta;
+            }).toList());
   }
 
   Future<List<Cuidador>> todosCuidadoresPaciente(String idPaciente) async {

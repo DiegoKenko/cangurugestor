@@ -21,6 +21,20 @@ final kInputStyle2 = TextStyle(
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
 
+final kTituloStyle = TextStyle(
+  color: corPreto,
+  letterSpacing: 1.7,
+  fontSize: 18,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
+
+final kSubTituloStyle = TextStyle(
+  color: corPreto,
+  letterSpacing: 1.7,
+  fontSize: 18,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
+
 final kLabelStyle = TextStyle(
   color: corPad1,
   fontSize: 16,

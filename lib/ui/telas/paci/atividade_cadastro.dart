@@ -131,6 +131,7 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
               child: ListView(
                 children: [
                   AgrupadorCadastro(
+                    initiallyExpanded: true,
                     leading: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
@@ -345,7 +346,6 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                     ],
                   ),
                   AgrupadorCadastro(
-                    initiallyExpanded: true,
                     leading: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
@@ -358,8 +358,9 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                     ),
                     titulo: 'Agenda',
                     children: [
-                      FutureBuilder(
-                        future: buscaTarefasAtividade(),
+                      StreamBuilder(
+                        stream: firestoreTarefa.getTarefasAtividade(
+                            widget.atividade!.id, global.idPacienteGlobal),
                         builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
                           if (snap.hasData) {
                             tarefasSnap = snap.data!;
@@ -474,12 +475,10 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
       if (widget.opcao == opcaoInclusao && widget.atividade!.id.isEmpty) {
         widget.atividade = await firestoreAtividade.novaAtividadePaciente(
             widget.atividade!, global.idPacienteGlobal);
-        await firestoreTarefa.criaTarefas(
-            global.idPacienteGlobal, tarefasNovas);
+        firestoreTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
         tarefasNovas = [];
       } else {
-        await firestoreTarefa.criaTarefas(
-            global.idPacienteGlobal, tarefasNovas);
+        firestoreTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
         tarefasNovas = [];
       }
       setState(() {});
@@ -493,7 +492,7 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
     }
   }
 
-  buscaAtividade() async {
+  void buscaAtividade() async {
     await firestoreAtividade.todasAtividades().then((value) {
       setState(() {
         listaAtividades = value;
@@ -546,11 +545,6 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
         ],
       ),
     );
-  }
-
-  Future<List<Tarefa>> buscaTarefasAtividade() async {
-    return await firestoreTarefa.getTarefasAtividade(
-        widget.atividade!.id, global.idPacienteGlobal);
   }
 
   adicionarTarefa() {

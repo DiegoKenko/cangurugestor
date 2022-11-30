@@ -149,7 +149,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                           ? HeaderCadastro(
                               texto:
                                   '${widget.paciente!.nome} ${widget.paciente!.sobrenome}')
-                          : HeaderCadastro(),
+                          : Container(),
                     ],
                   ),
                 ),
@@ -205,7 +205,6 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
     return Form(
       key: _formKeyDadosPessoais,
       child: AgrupadorCadastro(
-        initiallyExpanded: false,
         leading: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
@@ -255,7 +254,6 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
 
   configuracaoGroup() {
     return AgrupadorCadastro(
-      initiallyExpanded: false,
       leading: Container(
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
@@ -306,9 +304,9 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
     );
   }
 
-  FutureBuilder<List<Consulta>> consultaGroup() {
-    return FutureBuilder(
-        future: firestorePaciente.todasConsultasPaciente(widget.paciente!.id),
+  StreamBuilder<List<Consulta>> consultaGroup() {
+    return StreamBuilder(
+        stream: firestorePaciente.todasConsultasPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Consulta>> builder) {
           if (builder.hasData) {
             consultasWidget = [];
@@ -354,9 +352,9 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
         });
   }
 
-  FutureBuilder<List<Atividade>> atividadeGroup() {
-    return FutureBuilder(
-        future: firestorePaciente.todasAtividadesPaciente(widget.paciente!.id),
+  StreamBuilder<List<Atividade>> atividadeGroup() {
+    return StreamBuilder(
+        stream: firestorePaciente.todasAtividadesPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Atividade>> builder) {
           if (builder.hasData) {
             atividadesWidget = [];
@@ -404,9 +402,9 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
         });
   }
 
-  FutureBuilder<List<Medicamento>> medicamentoGroup() {
-    return FutureBuilder(
-        future:
+  StreamBuilder<List<Medicamento>> medicamentoGroup() {
+    return StreamBuilder(
+        stream:
             firestorePaciente.todosMedicamentosPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Medicamento>> builder) {
           if (builder.hasData) {
@@ -525,7 +523,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
       );
     } else if (widget.opcao == global.opcaoAlteracao) {
       firestorePaciente.atualizarPaciente(widget.paciente!);
-    } else {}
+    }
   }
 
   void excluirPaciente() {
@@ -533,8 +531,8 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
   }
 
   Widget tarefaGroup() {
-    return FutureBuilder(
-        future: firestoreTarefa.getTarefasTodas(widget.paciente!.id),
+    return StreamBuilder(
+        stream: firestoreTarefa.getTarefasTodas(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Tarefa>> builder) {
           if (builder.hasData) {
             tarefasWidget = [];
@@ -544,7 +542,6 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
               ));
             }
             return AgrupadorCadastro(
-              initiallyExpanded: true,
               leading: Container(
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
@@ -564,7 +561,7 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
         });
   }
 
-  Widget cuidadorGroup() {
+  FutureBuilder<List<Cuidador>> cuidadorGroup() {
     return FutureBuilder(
         future: firestorePaciente.todosCuidadoresPaciente(widget.paciente!.id),
         builder: (context, AsyncSnapshot<List<Cuidador>> builder) {
@@ -577,7 +574,6 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
               ));
             }
             return AgrupadorCadastro(
-              initiallyExpanded: true,
               leading: Container(
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
