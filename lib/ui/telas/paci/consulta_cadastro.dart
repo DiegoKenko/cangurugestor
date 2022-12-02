@@ -191,60 +191,65 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
                             widget.consulta!.id, global.idPacienteGlobal),
                         builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
                           if (snap.hasData) {
-                            return Column(children: [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snap.data!.length,
-                                itemBuilder: (context, index) {
-                                  TextEditingController tempControllerDate =
-                                      TextEditingController(
-                                    text: snap.data![index].date,
-                                  );
-                                  TextEditingController tempControllerTime =
-                                      TextEditingController(
-                                    text: snap.data![index].time,
-                                  );
-                                  tempControllerDate.removeListener(() {});
-                                  tempControllerTime.removeListener(() {});
-                                  tempControllerDate.addListener(() {
-                                    snap.data![index]
-                                        .setDate(tempControllerDate.text);
-                                    fireTarefa.atualizarTarefaPaciente(
-                                      snap.data![index],
-                                      global.idPacienteGlobal,
+                            if (snap.data!.isNotEmpty) {
+                              return Column(children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snap.data!.length,
+                                  itemBuilder: (context, index) {
+                                    TextEditingController tempControllerDate =
+                                        TextEditingController(
+                                      text: snap.data![index].date,
                                     );
-                                  });
-                                  tempControllerTime.addListener(() {
-                                    fireTarefa.atualizarTarefaPaciente(
-                                      snap.data![index],
-                                      global.idPacienteGlobal,
+                                    TextEditingController tempControllerTime =
+                                        TextEditingController(
+                                      text: snap.data![index].time,
                                     );
-                                  });
-                                  return FormCadastroDataHora(
-                                    enabled: true,
-                                    onDismissed: (DismissDirection direction) {
-                                      excluirTarefaConsulta(snap.data![index]);
-                                    },
-                                    key: UniqueKey(),
-                                    controllerData: tempControllerDate,
-                                    controllerHora: tempControllerTime,
-                                  );
-                                },
-                              ),
-                              widget.consulta!.id.isNotEmpty
-                                  ? BotaoCadastroTarefa(
-                                      onPressed: () {
-                                        if (snap.hasData &&
-                                            snap.data!.isNotEmpty) {
-                                          adicionarTarefa(snap.data!.last);
-                                        } else {
-                                          adicionarTarefa(
-                                              Tarefa(dateTime: DateTime.now()));
-                                        }
+
+                                    return FormCadastroDataHora(
+                                      onTimeChanged: (time) {
+                                        snap.data![index]
+                                            .setTimeFromTimeOfDay(time);
+                                        fireTarefa.atualizarTarefaPaciente(
+                                          snap.data![index],
+                                          global.idPacienteGlobal,
+                                        );
                                       },
-                                    )
-                                  : Container(),
-                            ]);
+                                      onDateChanged: (date) {
+                                        snap.data![index]
+                                            .setDateFromDateTime(date);
+                                        fireTarefa.atualizarTarefaPaciente(
+                                          snap.data![index],
+                                          global.idPacienteGlobal,
+                                        );
+                                      },
+                                      enabled: true,
+                                      onDismissed:
+                                          (DismissDirection direction) {
+                                        excluirTarefaConsulta(
+                                            snap.data![index]);
+                                      },
+                                      key: UniqueKey(),
+                                      controllerData: tempControllerDate,
+                                      controllerHora: tempControllerTime,
+                                    );
+                                  },
+                                ),
+                                widget.consulta!.id.isNotEmpty
+                                    ? BotaoCadastroTarefa(
+                                        onPressed: () {
+                                          if (snap.hasData &&
+                                              snap.data!.isNotEmpty) {
+                                            adicionarTarefa(snap.data!.last);
+                                          } else {
+                                            adicionarTarefa(Tarefa(
+                                                dateTime: DateTime.now()));
+                                          }
+                                        },
+                                      )
+                                    : Container(),
+                              ]);
+                            }
                           }
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -319,7 +324,7 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
         color: corPad1,
         child: SizedBox(
           height: 50,
-          child: widget.edit
+          child: widget.edit && widget.consulta!.id.isEmpty
               ? Center(
                   child: IconButton(
                     onPressed: () {
@@ -378,7 +383,7 @@ class _ConsultaCadastroState extends State<ConsultaCadastro> {
         nome: widget.consulta!.nome,
         observacao: widget.consulta!.observacao,
         idTipo: widget.consulta!.id,
-        tipo: EnumTarefa.medicamento,
+        tipo: EnumTarefa.consulta,
       ),
     ]);
   }

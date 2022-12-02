@@ -62,7 +62,7 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
   List<TextEditingController> dataControllerListNova = [];
   List<TextEditingController> horaControllerListNova = [];
 
-  FirestoreTarefa firestoreTarefa = FirestoreTarefa();
+  FirestoreTarefa fireTarefa = FirestoreTarefa();
   FirestoreAtividade firestoreAtividade = FirestoreAtividade();
 
   @override
@@ -359,62 +359,80 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
                     titulo: 'Agenda',
                     children: [
                       StreamBuilder(
-                        stream: firestoreTarefa.getTarefasAtividade(
+                        stream: fireTarefa.getTarefasAtividade(
                             widget.atividade!.id, global.idPacienteGlobal),
                         builder: (context, AsyncSnapshot<List<Tarefa>> snap) {
                           if (snap.hasData) {
-                            tarefasSnap = snap.data!;
-                            tarefas = [...tarefasSnap, ...tarefasNovas];
-                            horaControllerList =
-                                List<TextEditingController>.generate(
-                              tarefas.length,
-                              (index) => TextEditingController(
-                                text: tarefas[index].time,
-                              ),
-                            );
-                            dataControllerList =
-                                List<TextEditingController>.generate(
-                              tarefas.length,
-                              (index) => TextEditingController(
-                                  text: tarefas[index].date),
-                            );
-                            for (var i = 0; i < tarefasSnap.length; i++) {
-                              dataControllerList.add(TextEditingController(
-                                  text: snap.data![i].date));
-                              horaControllerList.add(TextEditingController(
-                                  text: snap.data![i].time));
+                            if (snap.data!.isNotEmpty) {
+                              tarefasSnap = snap.data!;
+                              tarefas = [...tarefasSnap, ...tarefasNovas];
+                              horaControllerList =
+                                  List<TextEditingController>.generate(
+                                tarefas.length,
+                                (index) => TextEditingController(
+                                  text: tarefas[index].time,
+                                ),
+                              );
+                              dataControllerList =
+                                  List<TextEditingController>.generate(
+                                tarefas.length,
+                                (index) => TextEditingController(
+                                    text: tarefas[index].date),
+                              );
+                              for (var i = 0; i < tarefasSnap.length; i++) {
+                                dataControllerList.add(TextEditingController(
+                                    text: snap.data![i].date));
+                                horaControllerList.add(TextEditingController(
+                                    text: snap.data![i].time));
+                              }
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: tarefas.length,
+                                itemBuilder: (context, index) {
+                                  return FormCadastroDataHora(
+                                    onTimeChanged: (time) {
+                                      snap.data![index]
+                                          .setTimeFromTimeOfDay(time);
+                                      fireTarefa.atualizarTarefaPaciente(
+                                        snap.data![index],
+                                        global.idPacienteGlobal,
+                                      );
+                                    },
+                                    onDateChanged: (date) {
+                                      snap.data![index]
+                                          .setDateFromDateTime(date);
+                                      fireTarefa.atualizarTarefaPaciente(
+                                        snap.data![index],
+                                        global.idPacienteGlobal,
+                                      );
+                                    },
+                                    enabled: tarefas[index].id.isEmpty
+                                        ? true
+                                        : false,
+                                    onDismissed: (DismissDirection direction) {
+                                      setState(() {
+                                        dataControllerList.removeAt(index);
+                                        horaControllerList.removeAt(index);
+                                        if (tarefas[index].id.isEmpty) {
+                                          tarefasNovas.remove(tarefas[index]);
+                                          tarefas.removeAt(index);
+                                        } else {
+                                          fireTarefa.excluirTarefa(
+                                            global.idPacienteGlobal,
+                                            tarefas[index].id,
+                                          );
+                                        }
+                                      });
+                                    },
+                                    key: UniqueKey(),
+                                    controllerData: dataControllerList[index],
+                                    controllerHora: horaControllerList[index],
+                                  );
+                                },
+                              );
                             }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: tarefas.length,
-                              itemBuilder: (context, index) {
-                                return FormCadastroDataHora(
-                                  enabled:
-                                      tarefas[index].id.isEmpty ? true : false,
-                                  onDismissed: (DismissDirection direction) {
-                                    setState(() {
-                                      dataControllerList.removeAt(index);
-                                      horaControllerList.removeAt(index);
-                                      if (tarefas[index].id.isEmpty) {
-                                        tarefasNovas.remove(tarefas[index]);
-                                        tarefas.removeAt(index);
-                                      } else {
-                                        firestoreTarefa.excluirTarefa(
-                                          global.idPacienteGlobal,
-                                          tarefas[index].id,
-                                        );
-                                      }
-                                    });
-                                  },
-                                  key: UniqueKey(),
-                                  controllerData: dataControllerList[index],
-                                  controllerHora: horaControllerList[index],
-                                );
-                              },
-                            );
-                          } else {
-                            return Container();
                           }
+                          return const SizedBox();
                         },
                       ),
                       widget.atividade!.id.isNotEmpty
@@ -434,7 +452,7 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
         color: corPad1,
         child: SizedBox(
           height: 50,
-          child: widget.edit
+          child: widget.edit && widget.atividade!.id.isEmpty
               ? Center(
                   child: IconButton(
                     onPressed: () {
@@ -475,10 +493,10 @@ class _AtividadeCadastroState extends State<AtividadeCadastro> {
       if (widget.opcao == opcaoInclusao && widget.atividade!.id.isEmpty) {
         widget.atividade = await firestoreAtividade.novaAtividadePaciente(
             widget.atividade!, global.idPacienteGlobal);
-        firestoreTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
+        fireTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
         tarefasNovas = [];
       } else {
-        firestoreTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
+        fireTarefa.criaTarefas(global.idPacienteGlobal, tarefasNovas);
         tarefasNovas = [];
       }
       setState(() {});

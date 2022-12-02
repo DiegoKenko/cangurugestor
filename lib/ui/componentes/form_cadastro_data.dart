@@ -1,5 +1,3 @@
-// ignore_for_file: body_might_complete_normally_nullable
-
 import 'package:cangurugestor/ui/componentes/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +13,7 @@ class FormCadastroData extends StatefulWidget {
   DateTime dataPrimeira = DateTime(DateTime.now().year - 50);
   DateTime dataInicial = DateTime.now();
   bool? enabled;
+  final void Function(DateTime date)? onDateChanged;
   FormCadastroData(
       {Key? key,
       required this.controller,
@@ -25,6 +24,7 @@ class FormCadastroData extends StatefulWidget {
       required this.dataPrimeira,
       this.obrigatorio = false,
       this.hintText,
+      this.onDateChanged,
       this.icon,
       this.textInputType = TextInputType.none})
       : super(key: key);
@@ -67,11 +67,7 @@ class _FormCadastroDataState extends State<FormCadastroData> {
               firstDate: widget.dataPrimeira,
               lastDate: widget.dataUltima);
           if (pickedDate != null) {
-            String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
-            setState(() {
-              widget.controller.text =
-                  formattedDate; //set output date to TextField value.
-            });
+            widget.onDateChanged!(pickedDate);
           }
         },
         enabled: widget.enabled,

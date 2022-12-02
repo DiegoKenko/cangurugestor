@@ -148,7 +148,10 @@ class _CadastroPacienteState extends State<CadastroPaciente> {
                       widget.paciente != null
                           ? HeaderCadastro(
                               texto:
-                                  '${widget.paciente!.nome} ${widget.paciente!.sobrenome}')
+                                  '${widget.paciente!.nome} ${widget.paciente!.sobrenome}',
+                              titulo: 'Paciente',
+                              subTitulo: '${widget.paciente!.idade} anos',
+                            )
                           : Container(),
                     ],
                   ),

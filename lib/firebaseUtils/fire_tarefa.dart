@@ -1,6 +1,5 @@
 import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -74,13 +73,13 @@ class FirestoreTarefa {
         .where('tipo', isEqualTo: 'consulta')
         .where('idTipo', isEqualTo: idConsulta)
         .where('concluida', isEqualTo: false)
-        .where('date',
-            isGreaterThanOrEqualTo:
-                DateFormat('dd/MM/yyyy').format(DateTime.now()))
+        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots()
-        .map((event) => event.docs.map((e) {
-              var tarefa = Tarefa.fromMap(e.data());
-              tarefa.id = e.id;
+        .map((QuerySnapshot event) =>
+            event.docs.map((DocumentSnapshot documentSnapshot) {
+              Tarefa tarefa = Tarefa.fromMap(
+                  documentSnapshot.data() as Map<String, dynamic>);
+              tarefa.id = documentSnapshot.id;
               return tarefa;
             }).toList());
   }
@@ -99,8 +98,8 @@ class FirestoreTarefa {
             }).toList());
   }
 
-  atualizarTarefaPaciente(Tarefa tarefa, String idPaciente) async {
-    firestore
+  Future<void> atualizarTarefaPaciente(Tarefa tarefa, String idPaciente) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('tarefas')

@@ -6,11 +6,15 @@ class FormCadastroDataHora extends StatelessWidget {
   final TextEditingController controllerHora;
   final TextEditingController controllerData;
   final void Function(DismissDirection)? onDismissed;
+  final void Function(DateTime date)? onDateChanged;
+  final void Function(TimeOfDay time)? onTimeChanged;
 
   final bool enabled;
   const FormCadastroDataHora(
       {required Key? key,
       this.enabled = true,
+      this.onDateChanged,
+      this.onTimeChanged,
       required this.controllerHora,
       required this.controllerData,
       required this.onDismissed})
@@ -49,12 +53,14 @@ class FormCadastroDataHora extends StatelessWidget {
           Flexible(
             flex: 5,
             child: FormCadastroData(
+              onDateChanged: onDateChanged,
               controller: controllerData,
               labelText: '',
               enabled: enabled,
               dataInicial: DateTime.now(),
               dataUltima: DateTime(
                 DateTime.now().year + 1,
+                DateTime.now().month + 12,
               ),
               dataPrimeira: DateTime.now(),
             ),
@@ -62,6 +68,7 @@ class FormCadastroDataHora extends StatelessWidget {
           Flexible(
             flex: 4,
             child: FormCadastroHora(
+              onTimeChanged: onTimeChanged,
               controller: controllerHora,
               labelText: '',
               enabled: enabled,

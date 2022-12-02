@@ -22,7 +22,8 @@ class ItemContainer extends StatelessWidget {
         ),
         elevation: 20,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          width: MediaQuery.of(context).size.width / 0.6,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           child: Column(
             children: [
               Center(

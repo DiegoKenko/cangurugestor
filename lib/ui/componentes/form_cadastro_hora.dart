@@ -11,6 +11,7 @@ class FormCadastroHora extends StatefulWidget {
   final String labelText;
   final bool obrigatorio;
   bool? enabled;
+  final void Function(TimeOfDay time)? onTimeChanged;
   FormCadastroHora(
       {Key? key,
       required this.controller,
@@ -18,6 +19,7 @@ class FormCadastroHora extends StatefulWidget {
       required this.enabled,
       this.hintText,
       this.icon,
+      this.onTimeChanged,
       this.obrigatorio = false,
       this.textInputType = TextInputType.none})
       : super(key: key);
@@ -62,9 +64,7 @@ class _FormCadastroHoraState extends State<FormCadastroHora> {
           );
 
           if (pickedTime != null) {
-            setState(() {
-              widget.controller.text = pickedTime.format(context);
-            });
+            widget.onTimeChanged!(pickedTime);
           }
         },
         enabled: widget.enabled,
