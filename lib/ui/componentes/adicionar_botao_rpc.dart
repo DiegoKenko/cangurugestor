@@ -21,20 +21,23 @@ class _BotaoCadastroState extends State<BotaoCadastro> {
           child: Container(
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
+              borderRadius: BorderRadius.circular(50),
               border: Border.all(
-                color: corPad1,
+                //color: corPad1,
+                color: Theme.of(context).splashColor,
+
                 width: 2,
               ),
               color: Colors.transparent,
             ),
             width: 50,
             height: 35,
-            child: Center(
+            child: const Center(
               child: Icon(
                 Icons.add,
                 size: 30,
-                color: Theme.of(context).splashColor,
+                //color: Theme.of(context).splashColor,
+                color: corPad1,
               ),
             ),
           ),

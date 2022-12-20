@@ -7,11 +7,6 @@ class Gestor extends Pessoa {
 
   Gestor();
 
-  todosClientes(List<Responsavel> responsaveis) {
-    clientes = responsaveis;
-    return this;
-  }
-
   Gestor.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     id = map['id'];
   }

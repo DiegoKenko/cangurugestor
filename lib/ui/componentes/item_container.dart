@@ -14,39 +14,35 @@ class ItemContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Material(
-        shadowColor: corPad1.withOpacity(0.3),
-        color: corPad1.withOpacity(0.5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: corPad1.withOpacity(0.4),
         ),
-        elevation: 20,
-        child: Container(
-          width: MediaQuery.of(context).size.width / 0.6,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: Column(
-            children: [
-              Center(
-                child: Text(
-                  (titulo).toUpperCase(),
-                  style: kNameStyle,
-                ),
+        width: MediaQuery.of(context).size.width / 0.6,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        child: Column(
+          children: [
+            Center(
+              child: Text(
+                (titulo).toUpperCase(),
+                style: kNameStyle,
               ),
-              subtitle != ''
-                  ? const SizedBox(
-                      height: 10,
-                    )
-                  : Container(),
-              subtitle != ''
-                  ? Center(
-                      child: Text(
-                        subtitle,
-                        style: kNameStyle,
-                      ),
-                    )
-                  : Container(),
-            ],
-          ),
+            ),
+            subtitle != ''
+                ? const SizedBox(
+                    height: 10,
+                  )
+                : Container(),
+            subtitle != ''
+                ? Center(
+                    child: Text(
+                      subtitle,
+                      style: kNameStyle,
+                    ),
+                  )
+                : Container(),
+          ],
         ),
       ),
     );

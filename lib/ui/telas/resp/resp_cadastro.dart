@@ -18,6 +18,7 @@ import 'package:cangurugestor/ui/telas/paci/paci_cadastro.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/global.dart' as global;
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroResponsavel extends StatefulWidget {

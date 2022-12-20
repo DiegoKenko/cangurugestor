@@ -1,4 +1,6 @@
 import 'package:cangurugestor/classes/gestor.dart';
+import 'package:cangurugestor/classes/responsavel.dart';
+import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/ui/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/ui/componentes/agrupador_cadastro.dart';
 import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
@@ -14,6 +16,7 @@ class PainelGestor extends StatefulWidget {
 
   PainelGestor({Key? key, required this.gestor}) : super(key: key) {
     global.gestorAtual = gestor;
+    global.idGestorGlobal = gestor.id!;
   }
 
   @override
@@ -21,52 +24,8 @@ class PainelGestor extends StatefulWidget {
 }
 
 class _PainelGestorState extends State<PainelGestor> {
-  Future<List> todosResponsaveis = Future.value([]);
   List<Widget> clienteWidget = [];
-
-  @override
-  void initState() {
-    clienteWidget = [];
-    clienteWidget = List<Widget>.from(
-      widget.gestor.clientes.map(
-        (responsavel) {
-          return ItemResponsavel(
-            privilegio: global.privilegioGestor,
-            responsavel: responsavel,
-          );
-        },
-      ),
-    );
-    clienteWidget.add(
-      BotaoCadastro(
-        onPressed: () {
-          final result = Navigator.of(context).push(
-            AnimatedPageTransition(
-              page: CadastroResponsavel(
-                privilegio: global.privilegioGestor,
-                opcao: global.opcaoInclusao,
-              ),
-            ),
-          );
-          result.then((value) {
-            if (value != null) {
-              setState(() {
-                widget.gestor.clientes.add(value);
-                clienteWidget.insert(
-                  0,
-                  ItemResponsavel(
-                    responsavel: value,
-                    privilegio: global.privilegioGestor,
-                  ),
-                );
-              });
-            }
-          });
-        },
-      ),
-    );
-    super.initState();
-  }
+  final FirestoreGestor firestoreGestor = FirestoreGestor();
 
   @override
   Widget build(BuildContext context) {
@@ -94,19 +53,51 @@ class _PainelGestorState extends State<PainelGestor> {
               HeaderCadastro(
                 texto: 'Bem-vindo ${widget.gestor.nome}!',
               ),
-              AgrupadorCadastro(
-                  leading: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      size: 40,
-                      color: corPad1,
-                    ),
-                  ),
-                  titulo: 'Clientes',
-                  children: clienteWidget),
+              StreamBuilder(
+                  stream:
+                      firestoreGestor.todosClientesGestor(widget.gestor.id!),
+                  builder: (context, AsyncSnapshot<List<Responsavel>> snap) {
+                    clienteWidget = [];
+                    if (snap.hasData) {
+                      if (snap.data!.isNotEmpty) {
+                        for (var i = 0; i < snap.data!.length; i++) {
+                          clienteWidget.add(
+                            ItemResponsavel(
+                              privilegio: global.privilegioGestor,
+                              responsavel: snap.data![i],
+                            ),
+                          );
+                        }
+                      }
+                    }
+                    clienteWidget.add(
+                      BotaoCadastro(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            AnimatedPageTransition(
+                              page: CadastroResponsavel(
+                                privilegio: global.privilegioGestor,
+                                opcao: global.opcaoInclusao,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                    return AgrupadorCadastro(
+                        leading: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.person,
+                            size: 40,
+                            color: corPad1,
+                          ),
+                        ),
+                        titulo: 'Clientes',
+                        children: clienteWidget);
+                  }),
               const SizedBox(height: 50),
             ],
           ),

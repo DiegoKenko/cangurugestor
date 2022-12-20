@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
         hoverColor: corPad3,
         errorColor: const Color.fromARGB(248, 238, 136, 127),
         canvasColor: corPad3,
-        splashColor: const Color(0xfffcb51c),
+        splashColor: const Color.fromARGB(255, 238, 163, 0),
         fontFamily: GoogleFonts.raleway().fontFamily,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
             .copyWith(secondary: corPad1),

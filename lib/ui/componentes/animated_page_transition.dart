@@ -19,11 +19,11 @@ class AnimatedPageTransition extends PageRouteBuilder {
           ) =>
               SlideTransition(
             position: Tween<Offset>(
-              begin: const Offset(1, 0),
+              begin: const Offset(0, 1),
               end: Offset.zero,
             ).animate(animation),
             child: child,
           ),
-          transitionDuration: const Duration(milliseconds: 1000),
+          transitionDuration: const Duration(milliseconds: 500),
         );
 }

@@ -22,9 +22,9 @@ class FormCadastroData extends StatefulWidget {
       required this.dataInicial,
       required this.dataUltima,
       required this.dataPrimeira,
+      this.onDateChanged,
       this.obrigatorio = false,
       this.hintText,
-      this.onDateChanged,
       this.icon,
       this.textInputType = TextInputType.none})
       : super(key: key);
@@ -47,6 +47,7 @@ class _FormCadastroDataState extends State<FormCadastroData> {
                 if (p0!.isEmpty) {
                   return 'Campo obrigatório';
                 }
+                return null;
               }
             : null,
         onTap: () async {
@@ -67,7 +68,11 @@ class _FormCadastroDataState extends State<FormCadastroData> {
               firstDate: widget.dataPrimeira,
               lastDate: widget.dataUltima);
           if (pickedDate != null) {
-            widget.onDateChanged!(pickedDate);
+            if (widget.onDateChanged != null) {
+              widget.onDateChanged!(pickedDate);
+            }
+            widget.controller.text =
+                DateFormat('dd/MM/yyyy').format(pickedDate);
           }
         },
         enabled: widget.enabled,
