@@ -98,7 +98,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
               children: [
                 Center(
                   child: Column(
-                    children: [
+                    children: const [
                       HeaderCadastro(
                         texto: 'Cuidador',
                       ),
@@ -167,15 +167,15 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
           labelText: 'Senha',
           textInputType: TextInputType.number,
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 20),
+        const Padding(
+          padding: EdgeInsets.only(top: 20, bottom: 20),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: EdgeInsets.only(left: 20, right: 20),
               child: Text(
                 'ID:  ',
-                style: const TextStyle(color: corPad1, fontSize: 15),
+                style: TextStyle(color: corPad1, fontSize: 15),
               ),
             ),
           ),

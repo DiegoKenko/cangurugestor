@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'global.dart' as global;
 
 void main() async {
   ErrorWidget.builder = (details) => Text(
@@ -50,11 +49,11 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         theme: ThemeData(
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             color: corPad1,
-            iconTheme: const IconThemeData(color: corBranco),
+            iconTheme: IconThemeData(color: corBranco),
           ),
-          tabBarTheme: TabBarTheme(
+          tabBarTheme: const TabBarTheme(
             labelColor: corPreto,
             indicator: BoxDecoration(
               border: Border(

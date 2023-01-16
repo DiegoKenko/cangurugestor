@@ -9,13 +9,13 @@ class FormCadastroData extends StatefulWidget {
   final String? hintText;
   final String labelText;
   final bool obrigatorio;
-  DateTime dataUltima = DateTime(DateTime.now().year + 50);
-  DateTime dataPrimeira = DateTime(DateTime.now().year - 50);
-  DateTime dataInicial = DateTime.now();
-  bool? enabled;
-  Function(String)? onFieldSubmitted;
+  final DateTime dataUltima;
+  final DateTime dataPrimeira;
+  final DateTime dataInicial;
+  final bool enabled;
+  final Function(String)? onFieldSubmitted;
   final void Function(DateTime date)? onDateChanged;
-  FormCadastroData(
+  const FormCadastroData(
       {Key? key,
       required this.controller,
       required this.labelText,

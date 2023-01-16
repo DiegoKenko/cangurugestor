@@ -28,7 +28,7 @@ class CanguruDrawer extends StatelessWidget {
               context.read<LoginProvider>().logout();
               Navigator.of(context).pushReplacement(
                 AnimatedPageTransition(
-                  page: TelaLogin(),
+                  page: const TelaLogin(),
                 ),
               );
             },

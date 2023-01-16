@@ -117,34 +117,31 @@ class _FichaPacienteState extends State<FichaPaciente>
 
   @override
   Widget build(BuildContext context) {
-    final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    return Container(
-      child: TabCanguru(
-        direction: VerticalDirection.up,
-        controller: _tabControllerTarefa,
-        tabs: const [
-          Tab(
-            child: kIconMedicamento,
-          ),
-          Tab(
-            child: kIconConsulta,
-          ),
-          Tab(
-            child: kIconAtividade,
-          ),
-        ],
-        views: const [
-          Tab(
-            child: MedicamentosPaciente(),
-          ),
-          Tab(
-            child: ConsultasPaciente(),
-          ),
-          Tab(
-            child: AtividadesPaciente(),
-          ),
-        ],
-      ),
+    return TabCanguru(
+      direction: VerticalDirection.up,
+      controller: _tabControllerTarefa,
+      tabs: const [
+        Tab(
+          child: kIconMedicamento,
+        ),
+        Tab(
+          child: kIconConsulta,
+        ),
+        Tab(
+          child: kIconAtividade,
+        ),
+      ],
+      views: const [
+        Tab(
+          child: MedicamentosPaciente(),
+        ),
+        Tab(
+          child: ConsultasPaciente(),
+        ),
+        Tab(
+          child: AtividadesPaciente(),
+        ),
+      ],
     );
   }
 }
@@ -266,8 +263,6 @@ class MedicamentosPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    final MedicamentoProvider medicamentoProvider =
-        context.watch<MedicamentoProvider>();
     return Builder(builder: (context) {
       pacienteProvider.load();
       return Column(
@@ -560,8 +555,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
                 Switch(
                   value: pacienteProvider.paciente.ativo,
                   onChanged: (value) {
-                    context.read<PacienteProvider>().paciente.ativo = value;
-                    context.read<PacienteProvider>().notifyListeners();
+                    pacienteProvider.paciente.ativo = value;
                   },
                 ),
               ],

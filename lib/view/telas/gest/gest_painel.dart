@@ -60,18 +60,20 @@ class _PainelGestorState extends State<PainelGestor>
                 children: <Widget>[
                   Expanded(
                     child: Builder(builder: (context) {
-                      gestorProvider.allCostumers();
-                      if (gestorProvider.costumers.isEmpty) {
+                      gestorProvider.todosClientes();
+                      if (gestorProvider.clientes.isEmpty) {
                         return Container();
                       } else {
-                        return ListView(
+                        return ListView.builder(
                           shrinkWrap: true,
-                          children: gestorProvider.costumers.map((resp) {
+                          itemCount: gestorProvider.clientes.length,
+                          itemBuilder: (context, index) {
                             return ItemContainer(
                               onTap: () {
                                 context
                                     .read<ResponsavelProvider>()
-                                    .setResponsavel(resp);
+                                    .setResponsavel(
+                                        gestorProvider.clientes[index]);
                                 Navigator.push(
                                   context,
                                   AnimatedPageTransition(
@@ -79,9 +81,10 @@ class _PainelGestorState extends State<PainelGestor>
                                   ),
                                 );
                               },
-                              title: resp.nome,
+                              title: gestorProvider.clientes[index].nome,
+                              subtitle: gestorProvider.clientes[index].id,
                             );
-                          }).toList(),
+                          },
                         );
                       }
                     }),

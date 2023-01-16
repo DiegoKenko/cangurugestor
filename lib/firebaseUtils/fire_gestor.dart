@@ -6,14 +6,13 @@ class FirestoreGestor {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<List<Responsavel>> todosClientesGestor(Gestor gestor) async {
-    var snap = await firestore
-        .collection('responsaveis')
-        .where('gestor', isEqualTo: gestor.id)
-        .get();
-    return snap.docs.map((e) {
-      var responsavel = Responsavel.fromMap(e.data());
-      responsavel.id = e.id;
-      return responsavel;
-    }).toList();
+    List<Responsavel> resps = [];
+    for (var element in gestor.idClientes) {
+      var doc = await firestore.collection('responsaveis').doc(element).get();
+      Responsavel responsavel = Responsavel.fromMap(doc.data()!);
+      responsavel.id = doc.id;
+      resps.add(responsavel);
+    }
+    return resps;
   }
 }

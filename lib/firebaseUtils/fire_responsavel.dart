@@ -1,4 +1,5 @@
 import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/responsavel.dart';
@@ -9,22 +10,22 @@ class FirestoreResponsavel {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirestoreLogin firestoreLogin = FirestoreLogin();
 
-  Future<Responsavel> incluirResponsavel(Responsavel responsavel) async {
+  Future<Responsavel> incluirResponsavel(
+      Gestor gestor, Responsavel responsavel) async {
     var doc =
         await firestore.collection('responsaveis').add(responsavel.toMap());
     responsavel.id = doc.id;
-    firestoreLogin.atualizaLogin(LoginUser(
-        colecao: 'responsaveis',
-        cpf: responsavel.cpf,
-        doc: doc.id,
-        funcao: 'responsaveis',
-        senha: responsavel.senha,
-        ativo: responsavel.ativo));
+
+    await firestore.collection('gestores').doc(gestor.id).update({
+      'idClientes': FieldValue.arrayUnion([responsavel.id])
+    });
+
     return responsavel;
   }
 
-  void atualizarResponavel(Responsavel responsavel) {
-    firestore.collection('responsaveis').doc(responsavel.id).get().then(
+  Future<void> atualizarResponavel(
+      Gestor gestor, Responsavel responsavel) async {
+    await firestore.collection('responsaveis').doc(responsavel.id).get().then(
       (snapshot) {
         snapshot.reference.update(responsavel.toMap());
         // Update or create its login too
@@ -37,11 +38,18 @@ class FirestoreResponsavel {
             ativo: responsavel.ativo));
       },
     );
+
+    await firestore.collection('gestores').doc(gestor.id).update({
+      'idClientes': FieldValue.arrayUnion([responsavel.id])
+    });
   }
 
   Future<List<Paciente>> todosPacientesResponsavel(
       Responsavel responsavel) async {
     List<Paciente> pacientesRet = [];
+    if (responsavel.idPacientes.isEmpty) {
+      return pacientesRet;
+    }
     DocumentSnapshot<Map<String, dynamic>> doc =
         await firestore.collection('responsaveis').doc(responsavel.id).get();
 

@@ -1,4 +1,3 @@
-import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
@@ -7,7 +6,6 @@ import 'package:cangurugestor/view/componentes/adicionar_botao_tarefa.dart';
 import 'package:cangurugestor/view/componentes/agrupador_cadastro.dart';
 
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
-import 'package:cangurugestor/view/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:flutter/material.dart';
 

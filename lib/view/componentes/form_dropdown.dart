@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class FormDropDown extends StatefulWidget {
   final List<String> lista;
   final TextEditingController? controller;
-  String value;
+  final String value;
   final String hintText;
-  InputBorder? borda = const OutlineInputBorder();
-  FormDropDown(
+  final InputBorder? borda = const OutlineInputBorder();
+  const FormDropDown(
       {Key? key,
       required this.lista,
       required this.controller,
@@ -34,13 +34,7 @@ class _FormDropDownState extends State<FormDropDown> {
         hint: Text(widget.hintText),
         icon: const Icon(Icons.arrow_downward),
         style: kTextStyleHeader,
-        onChanged: (String? value) {
-          // This is called when the user selects an item.
-          setState(() {
-            widget.controller!.text = value!;
-            widget.value = value;
-          });
-        },
+        onChanged: (String? value) {},
         items: widget.lista.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

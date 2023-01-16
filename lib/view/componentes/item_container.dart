@@ -1,4 +1,3 @@
-import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:flutter/material.dart';
 
 class ItemContainer extends StatelessWidget {

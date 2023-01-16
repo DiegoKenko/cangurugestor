@@ -26,7 +26,7 @@ class _TelaLoginState extends State<TelaLogin> {
         context.read<GestorProvider>().setGestor(loginProvider.gestor);
         Navigator.of(context).pushReplacement(
           AnimatedPageTransition(
-            page: PainelGestor(),
+            page: const PainelGestor(),
           ),
         );
       }
@@ -51,7 +51,7 @@ class _TelaLoginState extends State<TelaLogin> {
             ),
             const SizedBox(height: 20.0),
             !loginProvider.isLoading
-                ? ButtonLoginGoogle()
+                ? const ButtonLoginGoogle()
                 : const CircularProgressIndicator(color: corPad3),
           ],
         ),

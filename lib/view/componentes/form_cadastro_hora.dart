@@ -10,10 +10,10 @@ class FormCadastroHora extends StatefulWidget {
   final String? hintText;
   final String labelText;
   final bool obrigatorio;
-  bool? enabled;
+  final bool enabled;
   final void Function(TimeOfDay time)? onTimeChanged;
-  Function(String)? onFieldSubmitted;
-  FormCadastroHora(
+  final Function(String)? onFieldSubmitted;
+  const FormCadastroHora(
       {Key? key,
       required this.controller,
       required this.labelText,

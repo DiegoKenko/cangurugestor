@@ -1,6 +1,4 @@
-import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
-import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data_hora.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';

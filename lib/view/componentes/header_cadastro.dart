@@ -1,5 +1,5 @@
 import 'package:cangurugestor/view/componentes/styles.dart'
-    show kTextStyleHeader, kSubTituloStyle, kTituloStyle;
+    show kTextStyleHeader;
 import 'package:flutter/material.dart';
 
 class HeaderCadastro extends StatelessWidget {

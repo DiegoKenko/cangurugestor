@@ -14,11 +14,11 @@ class FormCadastro extends StatefulWidget {
   final bool enabled;
   final bool multiLine;
   final bool obrigatorio;
-  Function? onTap;
-  Function(String)? onChanged;
-  Function()? onEditingComplete;
-  InputBorder? borda = const OutlineInputBorder();
-  FormCadastro(
+  final Function? onTap;
+  final Function(String)? onChanged;
+  final Function()? onEditingComplete;
+  final InputBorder? borda;
+  const FormCadastro(
       {Key? key,
       required this.controller,
       required this.labelText,

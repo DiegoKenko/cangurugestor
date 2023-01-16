@@ -2,7 +2,6 @@ import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/model/pessoa.dart';
-import 'package:cangurugestor/model/diagnostico.dart';
 import 'package:cangurugestor/model/prescricao.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 

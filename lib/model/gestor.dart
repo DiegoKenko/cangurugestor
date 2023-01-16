@@ -4,6 +4,7 @@ import 'package:cangurugestor/model/responsavel.dart';
 class Gestor extends Pessoa {
   String id = '';
   List<Responsavel> clientes = [];
+  List<String> idClientes = [];
 
   Gestor();
 
@@ -12,6 +13,7 @@ class Gestor extends Pessoa {
     nome = map['nome'];
     sobrenome = map['sobrenome'];
     sexo = map['sexo'];
+    idClientes = List<String>.from(map['idClientes']);
   }
 
   set newId(String id) => this.id = id;

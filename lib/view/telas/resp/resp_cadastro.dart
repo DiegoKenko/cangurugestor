@@ -1,11 +1,14 @@
 import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
+import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/telas/paci/paci_cadastro.dart';
+import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +42,18 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
   Widget build(BuildContext context) {
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
+    final GestorProvider gestorProvider = context.watch<GestorProvider>();
+    responsavelProvider.setGestor(gestorProvider.gestor);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            responsavelProvider.update();
+            Navigator.of(context).pop();
+          },
+        ),
         title: Text(
           responsavelProvider.responsavel.nome,
         ),
@@ -104,26 +116,19 @@ class PacientesResponsavel extends StatelessWidget {
               shrinkWrap: true,
               itemCount: responsavelProvider.responsavel.pacientes.length,
               itemBuilder: (context, index) {
-                return Card(
-                  child: InkWell(
-                    onTap: () {
-                      context.read<PacienteProvider>().setPaciente(
-                          responsavelProvider.responsavel.pacientes[index]);
-                      Navigator.of(context).push(
-                        AnimatedPageTransition(
-                          page: const CadastroPaciente(),
-                        ),
-                      );
-                    },
-                    child: ListTile(
-                      subtitle: Text(
-                        responsavelProvider.responsavel.pacientes[index].nome,
+                return ItemContainer(
+                  onTap: () {
+                    context.read<PacienteProvider>().setPaciente(
+                        responsavelProvider.responsavel.pacientes[index]);
+                    Navigator.of(context).push(
+                      AnimatedPageTransition(
+                        page: const CadastroPaciente(),
                       ),
-                      title: Text(
-                        responsavelProvider.responsavel.pacientes[index].id,
-                      ),
-                    ),
-                  ),
+                    );
+                  },
+                  subtitle:
+                      responsavelProvider.responsavel.pacientes[index].nome,
+                  title: responsavelProvider.responsavel.pacientes[index].id,
                 );
               },
             ),
@@ -135,6 +140,7 @@ class PacientesResponsavel extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () {
+                context.read<PacienteProvider>().setPaciente(Paciente());
                 Navigator.of(context).push(
                   AnimatedPageTransition(
                     page: const CadastroPaciente(),
@@ -409,9 +415,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                 Switch(
                   value: responsavelProvider.responsavel.ativo,
                   onChanged: (value) {
-                    context.read<ResponsavelProvider>().responsavel.ativo =
-                        value;
-                    context.read<ResponsavelProvider>().notifyListeners();
+                    responsavelProvider.responsavel.ativo = value;
                   },
                 ),
               ],

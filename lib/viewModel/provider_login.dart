@@ -8,7 +8,7 @@ class LoginProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLogged = false;
   bool _hasError = false;
-  MethodLogin loginMethod = MethodLogin();
+  MethodLogin loginMethod = const MethodLogin();
   bool get isLoading => _isLoading;
   bool get isLogged => _isLogged;
   bool get hasError => _hasError;
