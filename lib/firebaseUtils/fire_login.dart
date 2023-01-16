@@ -1,14 +1,16 @@
-import 'package:cangurugestor/classes/gestor.dart';
-import 'package:cangurugestor/classes/login.dart';
-import 'package:cangurugestor/ui/componentes/animated_page_transition.dart';
-import 'package:cangurugestor/ui/telas/gest/gest_painel.dart';
+import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
+import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FirestoreLogin {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  atualizaLogin(Login login) {
+
+  atualizaLogin(LoginUser login) {
     firestore
         .collection('login')
         .where('doc', isEqualTo: login.doc)
@@ -34,37 +36,26 @@ class FirestoreLogin {
     });
   }
 
-  void autenticarUsuarioGoogle(BuildContext context, User user) {
+  Future<Gestor> autenticarUsuarioEmail(String email) async {
     Gestor gestor = Gestor();
-    firestore
+    QuerySnapshot<Map<String, dynamic>> x = await firestore
         .collection('login')
-        .where('googleEmail', isEqualTo: user.email)
-        .get()
-        .then(
-          (snap) => {
-            if (snap.docs.isNotEmpty)
-              {
-                if (snap.docs.first.data()['funcao'] == 'gestor')
-                  {
-                    firestore
-                        .collection('gestores')
-                        .doc(snap.docs.first.data()['doc'])
-                        .get()
-                        .then((value) {
-                      gestor = Gestor.fromMap(value.data()!);
-                      gestor.id = value.id;
-                      Navigator.of(context).push(
-                        AnimatedPageTransition(
-                          page: PainelGestor(
-                            gestor: gestor,
-                          ),
-                        ),
-                      );
-                    }),
-                  }
-              }
-          },
-          onError: (error, stackTrace) {},
-        );
+        .where('email', isEqualTo: email)
+        .get();
+    if (x.docs.isNotEmpty) {
+      if (x.docs.first.data()['funcao'] == 'gestor') {
+        DocumentSnapshot<Map<String, dynamic>> g = await firestore
+            .collection('gestores')
+            .doc(x.docs.first.data()['doc'])
+            .get();
+        gestor = Gestor.fromMap(g.data()!);
+        gestor.newId = g.id;
+        return gestor;
+      } else {
+        return gestor;
+      }
+    } else {
+      return gestor;
+    }
   }
 }

@@ -1,16 +1,17 @@
-import 'package:cangurugestor/classes/atividade.dart';
-import 'package:cangurugestor/classes/consulta.dart';
-import 'package:cangurugestor/classes/cuidador.dart';
-import 'package:cangurugestor/classes/medicamento.dart';
-import 'package:cangurugestor/classes/paciente.dart';
-import 'package:cangurugestor/classes/responsavel.dart';
-import 'package:cangurugestor/classes/tarefa.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/atividade.dart';
+import 'package:cangurugestor/model/consulta.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/medicamento.dart';
+import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class FirestorePaciente {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   Future<Paciente> buscarPaciente(String idPaciente) async {
     Paciente paciente = Paciente();
     if (idPaciente.isNotEmpty) {
@@ -48,11 +49,10 @@ class FirestorePaciente {
           }
         }
       }
-      if (paciente.consultas != null) {
-        if (paciente.consultas!.isNotEmpty) {
-          for (var element in paciente.consultas!) {
-            value.collection('consultas').add(element.toMap());
-          }
+
+      if (paciente.consultas.isNotEmpty) {
+        for (var element in paciente.consultas) {
+          value.collection('consultas').add(element.toMap());
         }
       }
       paciente.id = value.id;
@@ -63,7 +63,7 @@ class FirestorePaciente {
     return paciente;
   }
 
-  atualizarPaciente(Paciente paciente) {
+  void atualizarPaciente(Paciente paciente) {
     firestore.collection('pacientes').doc(paciente.id).get().then(
       (snapshot) {
         if (snapshot.exists) {
@@ -75,7 +75,7 @@ class FirestorePaciente {
     );
   }
 
-  excluirPaciente(Paciente paciente) {
+  void excluirPaciente(Paciente paciente) {
     firestore.collection('pacientes').doc(paciente.id).delete();
     excluirPacienteResponsavel(paciente);
   }
@@ -129,9 +129,9 @@ class FirestorePaciente {
       (snapshotResp) {
         if (snapshotResp.exists) {
           var responsavel = Responsavel.fromMap(snapshotResp.data()!);
-          responsavel.idPacientes ??= [];
-          if (!responsavel.idPacientes!.contains(paciente.id)) {
-            responsavel.idPacientes!.add(paciente.id);
+          responsavel.idPacientes;
+          if (!responsavel.idPacientes.contains(paciente.id)) {
+            responsavel.idPacientes.add(paciente.id);
             snapshotResp.reference.update(responsavel.toMap());
           }
         }
@@ -144,9 +144,9 @@ class FirestorePaciente {
       (snapshotResp) {
         if (snapshotResp.exists) {
           var responsavel = Responsavel.fromMap(snapshotResp.data()!);
-          responsavel.idPacientes ??= [];
-          if (!responsavel.idPacientes!.contains(paciente.id)) {
-            responsavel.idPacientes!.remove(paciente.id);
+          responsavel.idPacientes;
+          if (!responsavel.idPacientes.contains(paciente.id)) {
+            responsavel.idPacientes.remove(paciente.id);
             snapshotResp.reference.update(responsavel.toMap());
           }
         }

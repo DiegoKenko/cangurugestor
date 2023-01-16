@@ -1,4 +1,4 @@
-import 'package:cangurugestor/classes/medicamento.dart';
+import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -22,7 +22,8 @@ class FirestoreMedicamento {
     });
   }
 
-  atualizarMedicamentoPaciente(Medicamento medicamento, String idPaciente) {
+  void atualizarMedicamentoPaciente(
+      Medicamento medicamento, String idPaciente) {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -58,6 +59,44 @@ class FirestoreMedicamento {
         .collection('medicamentos')
         .doc(idMedicamento)
         .delete();
+  }
+
+  Future<Medicamento> medicamentoPaciente(
+      String idMedicamento, String idPaciente) async {
+    Medicamento med = Medicamento();
+    await firestore
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('medicamentos')
+        .doc(idMedicamento)
+        .get()
+        .then((snapshot) {
+      if (snapshot.exists) {
+        med = Medicamento.fromMap(snapshot.data()!);
+        med.id = snapshot.id;
+      }
+    });
+    return med;
+  }
+
+  Future<List<Medicamento>> todosMedicamentosPaciente(String idPaciente) async {
+    List<Medicamento> meds = [];
+    if (idPaciente.isEmpty) {
+      return meds;
+    }
+    await firestore
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('medicamentos')
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        Medicamento med = Medicamento.fromMap(doc.data());
+        med.id = doc.id;
+        meds.add(med);
+      }
+    });
+    return meds;
   }
 
   Future<List<String>> todosMedicamentos() async {

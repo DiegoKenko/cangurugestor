@@ -1,4 +1,4 @@
-import 'package:cangurugestor/classes/tarefa.dart';
+import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreTarefa {

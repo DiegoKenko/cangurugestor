@@ -1,6 +1,6 @@
-import 'package:cangurugestor/classes/cuidador.dart';
-import 'package:cangurugestor/classes/login.dart';
-import 'package:cangurugestor/classes/paciente.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -11,7 +11,7 @@ class FirestoreCuidador {
     var cuid = await firestore.collection('cuidadores').add(cuidador.toMap());
     cuidador.id = cuid.id;
 
-    firestoreLogin.atualizaLogin(Login(
+    firestoreLogin.atualizaLogin(LoginUser(
         colecao: 'cuidadores',
         cpf: cuidador.cpf,
         doc: cuid.id,
@@ -26,7 +26,7 @@ class FirestoreCuidador {
       (snapshot) {
         if (snapshot.exists) {
           snapshot.reference.update(cuidador.toMap());
-          firestoreLogin.atualizaLogin(Login(
+          firestoreLogin.atualizaLogin(LoginUser(
               colecao: 'cuidadores',
               cpf: cuidador.cpf,
               doc: snapshot.reference.id,

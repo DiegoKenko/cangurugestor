@@ -1,18 +1,19 @@
-import 'package:cangurugestor/classes/cuidador.dart';
-import 'package:cangurugestor/classes/login.dart';
-import 'package:cangurugestor/classes/paciente.dart';
-import 'package:cangurugestor/classes/responsavel.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreResponsavel {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirestoreLogin firestoreLogin = FirestoreLogin();
+
   Future<Responsavel> incluirResponsavel(Responsavel responsavel) async {
     var doc =
         await firestore.collection('responsaveis').add(responsavel.toMap());
     responsavel.id = doc.id;
-    firestoreLogin.atualizaLogin(Login(
+    firestoreLogin.atualizaLogin(LoginUser(
         colecao: 'responsaveis',
         cpf: responsavel.cpf,
         doc: doc.id,
@@ -27,7 +28,7 @@ class FirestoreResponsavel {
       (snapshot) {
         snapshot.reference.update(responsavel.toMap());
         // Update or create its login too
-        firestoreLogin.atualizaLogin(Login(
+        firestoreLogin.atualizaLogin(LoginUser(
             colecao: 'responsaveis',
             cpf: responsavel.cpf,
             doc: snapshot.reference.id,
@@ -38,18 +39,23 @@ class FirestoreResponsavel {
     );
   }
 
-  Stream<List<Paciente>> todosPacientesResponsavelStream(String idResponsavel) {
-    return firestore
-        .collection('pacientes')
-        .where('responsavel', isEqualTo: idResponsavel)
-        .snapshots()
-        .map(
-          (event) => event.docs.map((e) {
-            var paciente = Paciente.fromMap(e.data());
-            paciente.id = e.id;
-            return paciente;
-          }).toList(),
-        );
+  Future<List<Paciente>> todosPacientesResponsavel(
+      Responsavel responsavel) async {
+    List<Paciente> pacientesRet = [];
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await firestore.collection('responsaveis').doc(responsavel.id).get();
+
+    responsavel = Responsavel.fromMap(doc.data()!);
+
+    for (var element in responsavel.idPacientes) {
+      DocumentSnapshot<Map<String, dynamic>> docPaciente =
+          await firestore.collection('pacientes').doc(element).get();
+      Paciente paciente = Paciente.fromMap(docPaciente.data()!);
+      paciente.id = docPaciente.id;
+      pacientesRet.add(paciente);
+    }
+
+    return pacientesRet;
   }
 
   Stream<List<Cuidador>> todosCuidadoresResponsavel(String idResponsavel) {

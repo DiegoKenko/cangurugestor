@@ -1,4 +1,4 @@
-import 'package:cangurugestor/classes/atividade.dart';
+import 'package:cangurugestor/model/atividade.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreAtividade {

@@ -51,17 +51,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:783192734543:android:a0ce2520965ac2f8afa33a",
+        "mobilesdk_app_id": "1:783192734543:android:03ace4f2228bff44afa33a",
         "android_client_info": {
-          "package_name": "com.example.cangurugestor"
+          "package_name": "com.inora.cangurugestor"
         }
       },
       "oauth_client": [
         {
-          "client_id": "783192734543-lc8h7v0026ipcctgpbmvkb0i36a05nt9.apps.googleusercontent.com",
+          "client_id": "783192734543-2lv7pt302dj339gb8rar7i9ini1ao0bm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.cangurugestor",
+            "package_name": "com.inora.cangurugestor",
             "certificate_hash": "498327a3e7868546da7abcef252aa5fd1309726c"
           }
         },

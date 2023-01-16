@@ -1,18 +1,3 @@
-library canguru.global;
-
-import 'package:cangurugestor/classes/cuidador.dart';
-import 'package:cangurugestor/classes/gestor.dart';
-import 'package:cangurugestor/classes/paciente.dart';
-import 'package:cangurugestor/classes/responsavel.dart';
-
-String idGestorGlobal = '';
-String idResponsavelGlobal = '';
-String idCuidadorGlobal = '';
-String idPacienteGlobal = '';
-Gestor? gestorAtual;
-Cuidador? cuidadorAtual;
-Paciente? pacienteAtual;
-Responsavel? responsavelAtual;
 const int opcaoInclusao = 1;
 const int opcaoAlteracao = 2;
 const int opcaoVisualizacao = 3;
@@ -20,7 +5,7 @@ const int privilegioGestor = 1;
 const int privilegioResponsavel = 2;
 const int privilegioCuidador = 3;
 
-enum EnumFrequencia {
+enum EnumIntervalo {
   minutos,
   horas,
   dias,
@@ -35,21 +20,26 @@ enum EnumClasse {
   paciente,
 }
 
-enum EnumTarefa { medicamento, atividade, consulta, nenhuma }
+enum EnumTarefa {
+  medicamento,
+  atividade,
+  consulta,
+  nenhuma,
+}
 
-extension FrequenciaDescricao on EnumFrequencia {
+extension FrequenciaDescricao on EnumIntervalo {
   String get name => describeEnum(this);
   String get displayTitle {
     switch (this) {
-      case EnumFrequencia.minutos:
+      case EnumIntervalo.minutos:
         return 'minutos';
-      case EnumFrequencia.horas:
+      case EnumIntervalo.horas:
         return 'horas';
-      case EnumFrequencia.dias:
+      case EnumIntervalo.dias:
         return 'dias';
-      case EnumFrequencia.semanas:
+      case EnumIntervalo.semanas:
         return 'semanas';
-      case EnumFrequencia.meses:
+      case EnumIntervalo.meses:
         return 'meses';
       default:
         return 'erro';
@@ -64,17 +54,17 @@ String describeEnum(Object enumEntry) {
   return description.substring(indexOfDot + 1);
 }
 
-double enumFrequenciaEmMinutos(Object enumEntry, double quant) {
+double enumIntervaloEmMinutos(Object enumEntry, double quant) {
   switch (enumEntry) {
-    case EnumFrequencia.minutos:
+    case EnumIntervalo.minutos:
       return quant;
-    case EnumFrequencia.horas:
+    case EnumIntervalo.horas:
       return quant * 60;
-    case EnumFrequencia.dias:
+    case EnumIntervalo.dias:
       return quant * 60 * 24;
-    case EnumFrequencia.semanas:
+    case EnumIntervalo.semanas:
       return quant * 60 * 24 * 7;
-    case EnumFrequencia.meses:
+    case EnumIntervalo.meses:
       return quant * 60 * 24 * 30;
     default:
       return quant;
