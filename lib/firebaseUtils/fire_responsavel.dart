@@ -47,23 +47,29 @@ class FirestoreResponsavel {
   Future<List<Paciente>> todosPacientesResponsavel(
       Responsavel responsavel) async {
     List<Paciente> pacientesRet = [];
+    await firestore.collection('responsaveis').doc(responsavel.id).get().then(
+      (doc) {
+        if (doc.data() != null) {
+          responsavel = Responsavel.fromMap(doc.data()!);
+          responsavel.id = doc.id;
+        }
+      },
+    );
     if (responsavel.idPacientes.isEmpty) {
       return pacientesRet;
+    } else {
+      DocumentSnapshot<Map<String, dynamic>> doc =
+          await firestore.collection('responsaveis').doc(responsavel.id).get();
+      responsavel = Responsavel.fromMap(doc.data()!);
+      for (var element in responsavel.idPacientes) {
+        DocumentSnapshot<Map<String, dynamic>> docPaciente =
+            await firestore.collection('pacientes').doc(element).get();
+        Paciente paciente = Paciente.fromMap(docPaciente.data()!);
+        paciente.id = docPaciente.id;
+        pacientesRet.add(paciente);
+      }
+      return pacientesRet;
     }
-    DocumentSnapshot<Map<String, dynamic>> doc =
-        await firestore.collection('responsaveis').doc(responsavel.id).get();
-
-    responsavel = Responsavel.fromMap(doc.data()!);
-
-    for (var element in responsavel.idPacientes) {
-      DocumentSnapshot<Map<String, dynamic>> docPaciente =
-          await firestore.collection('pacientes').doc(element).get();
-      Paciente paciente = Paciente.fromMap(docPaciente.data()!);
-      paciente.id = docPaciente.id;
-      pacientesRet.add(paciente);
-    }
-
-    return pacientesRet;
   }
 
   Stream<List<Cuidador>> todosCuidadoresResponsavel(String idResponsavel) {
@@ -80,9 +86,11 @@ class FirestoreResponsavel {
         );
   }
 
-  void excluirResponsavel(String idReponsavel) {
-    firestore.collection('responsaveis').doc(idReponsavel).delete();
-
-    firestoreLogin.deleteLogin(idReponsavel);
+  void excluirResponsavel(Gestor gestor, Responsavel responsavel) {
+    //firestore.collection('responsaveis').doc(responsavel.id).delete();
+    firestore.collection('gestores').doc(gestor.id).update({
+      'idClientes': FieldValue.arrayRemove([responsavel.id])
+    });
+    firestoreLogin.deleteLogin(responsavel.id);
   }
 }

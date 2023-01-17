@@ -110,24 +110,6 @@ class _CadastroCuidadorState extends State<CadastroCuidador> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: corPad1,
-        child: SizedBox(
-          height: 50,
-          child: Center(
-            child: IconButton(
-              onPressed: () {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-              icon: const Icon(
-                Icons.save,
-                size: 30,
-                color: corPad3,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 

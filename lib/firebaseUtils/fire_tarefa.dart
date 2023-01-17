@@ -1,3 +1,4 @@
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,66 +23,23 @@ class FirestoreTarefa {
         .delete();
   }
 
-  Stream<List<Tarefa>> getTarefasMedicamento(
-      String idMedicamento, String idPaciente,
-      {bool concluida = false}) {
-    return firestore
+  Future<List<Tarefa>> todasTarefasItem(
+      Paciente paciente, String tipo, String idItem) async {
+    List<Tarefa> tarefas = [];
+    QuerySnapshot querySnapshot = await firestore
         .collection('pacientes')
-        .doc(idPaciente)
+        .doc(paciente.id)
         .collection('tarefas')
-        .where('tipo', isEqualTo: 'medicamento')
-        .where('idTipo', isEqualTo: idMedicamento)
-        .where('concluida', isEqualTo: false)
-        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
-        .snapshots()
-        .map((QuerySnapshot event) =>
-            event.docs.map((DocumentSnapshot documentSnapshot) {
-              Tarefa tarefa = Tarefa.fromMap(
-                  documentSnapshot.data() as Map<String, dynamic>);
-              tarefa.id = documentSnapshot.id;
-              return tarefa;
-            }).toList());
-  }
-
-  Stream<List<Tarefa>> getTarefasAtividade(
-      String idAtividade, String idPaciente,
-      {bool concluida = false}) {
-    return firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('tarefas')
-        .where('tipo', isEqualTo: 'atividade')
-        .where('idTipo', isEqualTo: idAtividade)
-        .where('concluida', isEqualTo: false)
-        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
-        .snapshots()
-        .map((QuerySnapshot event) =>
-            event.docs.map((DocumentSnapshot documentSnapshot) {
-              Tarefa tarefa = Tarefa.fromMap(
-                  documentSnapshot.data() as Map<String, dynamic>);
-              tarefa.id = documentSnapshot.id;
-              return tarefa;
-            }).toList());
-  }
-
-  Stream<List<Tarefa>> getTarefasConsulta(String idConsulta, String idPaciente,
-      {bool concluida = false}) {
-    return firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('tarefas')
-        .where('tipo', isEqualTo: 'consulta')
-        .where('idTipo', isEqualTo: idConsulta)
-        .where('concluida', isEqualTo: false)
-        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
-        .snapshots()
-        .map((QuerySnapshot event) =>
-            event.docs.map((DocumentSnapshot documentSnapshot) {
-              Tarefa tarefa = Tarefa.fromMap(
-                  documentSnapshot.data() as Map<String, dynamic>);
-              tarefa.id = documentSnapshot.id;
-              return tarefa;
-            }).toList());
+        .where('tipo', isEqualTo: tipo)
+        .where('idTipo', isEqualTo: idItem)
+        .get();
+    for (var documentSnapshot in querySnapshot.docs) {
+      Tarefa tarefa =
+          Tarefa.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+      tarefa.id = documentSnapshot.id;
+      tarefas.add(tarefa);
+    }
+    return tarefas;
   }
 
   Stream<List<Tarefa>> getTarefasTodas(String idPaciente) {
@@ -98,10 +56,10 @@ class FirestoreTarefa {
             }).toList());
   }
 
-  Future<void> atualizarTarefaPaciente(Tarefa tarefa, String idPaciente) async {
+  Future<void> atualizarTarefaPaciente(Tarefa tarefa, Paciente paciente) async {
     await firestore
         .collection('pacientes')
-        .doc(idPaciente)
+        .doc(paciente.id)
         .collection('tarefas')
         .doc(tarefa.id)
         .update(tarefa.toMap());

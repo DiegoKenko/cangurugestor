@@ -28,38 +28,14 @@ class FirestorePaciente {
     throw paciente;
   }
 
-  Future<Paciente> incluirPaciente(Paciente paciente) async {
-    firestore
-        .collection('pacientes')
-        .add(paciente.toMap())
-        .then((DocumentReference<Map<String, dynamic>> value) {
-      if (paciente.prescricao != null) {
-        if (paciente.prescricao!.medicamentos != null) {
-          if (paciente.prescricao!.medicamentos!.isNotEmpty) {
-            for (var element in paciente.prescricao!.medicamentos!) {
-              value.collection('medicamentos').add(element.toMap());
-            }
-          }
-        }
-        if (paciente.prescricao!.atividades != null) {
-          if (paciente.prescricao!.atividades!.isNotEmpty) {
-            for (var element in paciente.prescricao!.atividades!) {
-              value.collection('atividades').add(element.toMap());
-            }
-          }
-        }
-      }
-
-      if (paciente.consultas.isNotEmpty) {
-        for (var element in paciente.consultas) {
-          value.collection('consultas').add(element.toMap());
-        }
-      }
-      paciente.id = value.id;
-      // Adiciona paciente ao responsavel
-      adicionarPacienteResponsavel(paciente);
-      return paciente;
+  Future<Paciente> incluirPaciente(
+      Responsavel responsavel, Paciente paciente) async {
+    var doc = await firestore.collection('pacientes').add(paciente.toMap());
+    paciente.id = doc.id;
+    await firestore.collection('responsaveis').doc(responsavel.id).update({
+      'idPacientes': FieldValue.arrayUnion([paciente.id])
     });
+
     return paciente;
   }
 
@@ -68,16 +44,17 @@ class FirestorePaciente {
       (snapshot) {
         if (snapshot.exists) {
           snapshot.reference.update(paciente.toMap());
-          // Adiciona paciente ao responsavel
-          adicionarPacienteResponsavel(paciente);
         }
       },
     );
   }
 
-  void excluirPaciente(Paciente paciente) {
-    firestore.collection('pacientes').doc(paciente.id).delete();
-    excluirPacienteResponsavel(paciente);
+  Future<void> excluirPaciente(
+      Responsavel responsavel, Paciente paciente) async {
+    firestore.collection('responsaveis').doc(responsavel.id).update({
+      'idPacientes': FieldValue.arrayRemove([paciente.id])
+    });
+    //firestore.collection('pacientes').doc(paciente.id).delete();
   }
 
   Future<List<Tarefa>> todasTarefasPaciente(
@@ -121,37 +98,6 @@ class FirestorePaciente {
       }
     }); */
     return tarefas;
-  }
-
-  void adicionarPacienteResponsavel(Paciente paciente) {
-    // Adiciona paciente ao responsavel
-    firestore.collection('responsaveis').doc(paciente.idResponsavel).get().then(
-      (snapshotResp) {
-        if (snapshotResp.exists) {
-          var responsavel = Responsavel.fromMap(snapshotResp.data()!);
-          responsavel.idPacientes;
-          if (!responsavel.idPacientes.contains(paciente.id)) {
-            responsavel.idPacientes.add(paciente.id);
-            snapshotResp.reference.update(responsavel.toMap());
-          }
-        }
-      },
-    );
-  }
-
-  void excluirPacienteResponsavel(Paciente paciente) {
-    firestore.collection('responsaveis').doc(paciente.idResponsavel).get().then(
-      (snapshotResp) {
-        if (snapshotResp.exists) {
-          var responsavel = Responsavel.fromMap(snapshotResp.data()!);
-          responsavel.idPacientes;
-          if (!responsavel.idPacientes.contains(paciente.id)) {
-            responsavel.idPacientes.remove(paciente.id);
-            snapshotResp.reference.update(responsavel.toMap());
-          }
-        }
-      },
-    );
   }
 
   Stream<List<Medicamento>> todosMedicamentosPaciente(String idPaciente) {

@@ -1,4 +1,5 @@
 import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/drawer.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
@@ -36,20 +37,13 @@ class _PainelGestorState extends State<PainelGestor>
       appBar: AppBar(
         backgroundColor: corPad1,
       ),
-      bottomNavigationBar: const BottomAppBar(
-        color: corPad1,
-        child: SizedBox(
-          height: 50,
-          child: Center(),
-        ),
-      ),
       body: SafeArea(
         child: TabCanguru(
           controller: _tabController,
           tabs: [
             Tab(
               child: Text(
-                'Responsáveis',
+                'Clientes',
                 style: kSubTituloStyle,
               ),
             )
@@ -91,7 +85,7 @@ class _PainelGestorState extends State<PainelGestor>
                   ),
                   SizedBox(
                     height: 50,
-                    child: IconButton(
+                    child: BotaoCadastro(
                       onPressed: () {
                         context
                             .read<ResponsavelProvider>()
@@ -103,9 +97,6 @@ class _PainelGestorState extends State<PainelGestor>
                           ),
                         );
                       },
-                      icon: const Icon(
-                        Icons.add,
-                      ),
                     ),
                   ),
                 ],

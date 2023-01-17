@@ -59,6 +59,20 @@ final kNameStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
+final kTitleAppBarStyle = TextStyle(
+  color: corBranco,
+  fontSize: 18,
+  wordSpacing: 2,
+  letterSpacing: 2,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
+final kSubtitleAppBarStyle = TextStyle(
+  color: corPreto,
+  fontSize: 14,
+  wordSpacing: 2,
+  letterSpacing: 2,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
 
 final kBoxDecorationStyle = BoxDecoration(
   borderRadius: BorderRadius.circular(5.0),

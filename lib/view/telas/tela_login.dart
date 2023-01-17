@@ -56,12 +56,6 @@ class _TelaLoginState extends State<TelaLogin> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: corPad3,
-        child: Container(
-          height: 20,
-        ),
-      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cangurugestor/utils/cep_api.dart';
+import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
@@ -46,8 +47,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
-    pacienteProvider.paciente.idResponsavel =
-        responsavelProvider.responsavel.id;
+    pacienteProvider.setResponsavel(responsavelProvider.responsavel);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -57,6 +57,29 @@ class _CadastroPacienteState extends State<CadastroPaciente>
             pacienteProvider.clear();
             Navigator.of(context).pop();
           },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              pacienteProvider.delete();
+              pacienteProvider.clear();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+        centerTitle: true,
+        title: Column(
+          children: [
+            Text(
+              pacienteProvider.paciente.nome.toUpperCase(),
+              style: kTitleAppBarStyle,
+            ),
+            Text(
+              'paciente',
+              style: kSubtitleAppBarStyle,
+            ),
+          ],
         ),
       ),
       body: SafeArea(
@@ -84,12 +107,6 @@ class _CadastroPacienteState extends State<CadastroPaciente>
             ),
           ],
           controller: _tabController,
-        ),
-      ),
-      bottomNavigationBar: const BottomAppBar(
-        color: corPad1,
-        child: SizedBox(
-          height: 50,
         ),
       ),
     );
@@ -180,7 +197,7 @@ class AtividadesPaciente extends StatelessWidget {
         SizedBox(
           height: 40,
           child: Center(
-            child: IconButton(
+            child: BotaoCadastro(
               onPressed: () {
                 Navigator.of(context).push(
                   AnimatedPageTransition(
@@ -188,10 +205,6 @@ class AtividadesPaciente extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(
-                Icons.add,
-                size: 30,
-              ),
             ),
           ),
         )
@@ -235,7 +248,7 @@ class ConsultasPaciente extends StatelessWidget {
         SizedBox(
           height: 40,
           child: Center(
-            child: IconButton(
+            child: BotaoCadastro(
               onPressed: () {
                 Navigator.of(context).push(
                   AnimatedPageTransition(
@@ -243,10 +256,6 @@ class ConsultasPaciente extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(
-                Icons.add,
-                size: 30,
-              ),
             ),
           ),
         )
@@ -291,7 +300,7 @@ class MedicamentosPaciente extends StatelessWidget {
           SizedBox(
             height: 40,
             child: Center(
-              child: IconButton(
+              child: BotaoCadastro(
                 onPressed: () {
                   Navigator.of(context).push(
                     AnimatedPageTransition(
@@ -299,10 +308,6 @@ class MedicamentosPaciente extends StatelessWidget {
                     ),
                   );
                 },
-                icon: const Icon(
-                  Icons.add,
-                  size: 30,
-                ),
               ),
             ),
           )

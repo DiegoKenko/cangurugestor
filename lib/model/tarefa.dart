@@ -18,7 +18,6 @@ class Tarefa {
     this.nome = '',
     this.idTipo = '',
     this.tipo = EnumTarefa.nenhuma,
-    required this.dateTime,
     this.observacao = '',
     this.concluida = false,
   }) {

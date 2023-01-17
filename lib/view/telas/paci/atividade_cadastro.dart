@@ -141,58 +141,6 @@ class _CadastroAtividadeState extends State<CadastroAtividade> {
                             const SizedBox(
                               width: 20,
                             ),
-                            Expanded(
-                              flex: 8,
-                              child: SizedBox(
-                                height: 60,
-                                child: FormField<String>(
-                                  validator: (p0) {
-                                    if (p0 != null) {
-                                      if (double.parse(p0) == 0) {
-                                        return 'Campo obrigatório';
-                                      }
-                                    }
-                                    return null;
-                                  },
-                                  builder: (FormFieldState<String> state) {
-                                    return InputDecorator(
-                                      decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30))),
-                                      isEmpty: false,
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton<
-                                            global.EnumIntervalo>(
-                                          value: frequenciaUmPad,
-                                          isDense: true,
-                                          onChanged: (x) {
-                                            setState(() {
-                                              frequenciaUmPad = x!;
-                                            });
-                                          },
-                                          items: global.EnumIntervalo.values
-                                              .map((global.EnumIntervalo
-                                                  frequencia) {
-                                            return DropdownMenuItem<
-                                                global.EnumIntervalo>(
-                                              alignment: Alignment.centerLeft,
-                                              value: frequencia,
-                                              child: Text(
-                                                global
-                                                    .describeEnum(frequencia)
-                                                    .toUpperCase(),
-                                                style: kLabelStyle,
-                                              ),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -228,58 +176,6 @@ class _CadastroAtividadeState extends State<CadastroAtividade> {
                             const SizedBox(
                               width: 20,
                             ),
-                            Expanded(
-                              flex: 8,
-                              child: SizedBox(
-                                height: 60,
-                                child: FormField<String>(
-                                  validator: (p0) {
-                                    if (p0 != null) {
-                                      if (double.parse(p0) == 0) {
-                                        return 'Campo obrigatório';
-                                      }
-                                    }
-                                    return null;
-                                  },
-                                  builder: (FormFieldState<String> state) {
-                                    return InputDecorator(
-                                      decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30))),
-                                      isEmpty: false,
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton<
-                                            global.EnumIntervalo>(
-                                          value: duracaoUmPad,
-                                          isDense: true,
-                                          onChanged: (x) {
-                                            setState(() {
-                                              duracaoUmPad = x!;
-                                            });
-                                          },
-                                          items: global.EnumIntervalo.values
-                                              .map((global.EnumIntervalo
-                                                  frequencia) {
-                                            return DropdownMenuItem<
-                                                global.EnumIntervalo>(
-                                              alignment: Alignment.centerLeft,
-                                              value: frequencia,
-                                              child: Text(
-                                                global
-                                                    .describeEnum(frequencia)
-                                                    .toUpperCase(),
-                                                style: kLabelStyle,
-                                              ),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -310,26 +206,6 @@ class _CadastroAtividadeState extends State<CadastroAtividade> {
                     ],
                   )
                 ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: corPad1,
-        child: SizedBox(
-          height: 50,
-          child: Center(
-            child: IconButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-              },
-              icon: const Icon(
-                Icons.save,
-                size: 30,
-                color: corPad3,
               ),
             ),
           ),
@@ -415,7 +291,6 @@ class _CadastroAtividadeState extends State<CadastroAtividade> {
     setState(() {
       tarefasNovas.add(
         Tarefa(
-          dateTime: proxTarefa,
           nome: '',
           observacao: '',
           idTipo: '',

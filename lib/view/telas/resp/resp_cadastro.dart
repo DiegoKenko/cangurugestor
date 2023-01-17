@@ -1,5 +1,6 @@
 import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
@@ -54,8 +55,27 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
             Navigator.of(context).pop();
           },
         ),
-        title: Text(
-          responsavelProvider.responsavel.nome,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              context.read<ResponsavelProvider>().delete(
+                  responsavelProvider.gestor, responsavelProvider.responsavel);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+        title: Column(
+          children: [
+            Text(
+              responsavelProvider.responsavel.nome.toUpperCase(),
+              style: kTitleAppBarStyle,
+            ),
+            Text(
+              'cliente',
+              style: kSubtitleAppBarStyle,
+            )
+          ],
         ),
       ),
       body: SafeArea(
@@ -85,13 +105,6 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
             const Tab(child: PacientesResponsavel()),
             Tab(child: Container()),
           ],
-        ),
-      ),
-      bottomNavigationBar: const BottomAppBar(
-        color: corPad1,
-        child: SizedBox(
-          height: 50,
-          child: Center(),
         ),
       ),
     );
@@ -137,8 +150,7 @@ class PacientesResponsavel extends StatelessWidget {
         SizedBox(
           height: 50,
           child: Center(
-            child: IconButton(
-              icon: const Icon(Icons.add),
+            child: BotaoCadastro(
               onPressed: () {
                 context.read<PacienteProvider>().setPaciente(Paciente());
                 Navigator.of(context).push(

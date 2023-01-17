@@ -23,18 +23,20 @@ class _FormDropDownState extends State<FormDropDown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 20, bottom: 10, top: 10),
-      padding: const EdgeInsets.only(left: 20),
-      width: MediaQuery.of(context).size.width * 0.8,
-      decoration: kBoxDecorationDropDown,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButtonFormField<String>(
         isExpanded: true,
-        borderRadius: BorderRadius.circular(20),
-        value: null,
+        value: widget.value,
         hint: Text(widget.hintText),
-        icon: const Icon(Icons.arrow_downward),
-        style: kTextStyleHeader,
-        onChanged: (String? value) {},
+        icon: const Icon(
+          Icons.arrow_downward,
+          size: 20,
+        ),
+        style: kLabelStyle,
+        onChanged: (String? value) {
+          widget.controller!.text = value!;
+        },
         items: widget.lista.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

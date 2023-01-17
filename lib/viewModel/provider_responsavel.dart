@@ -31,4 +31,9 @@ class ResponsavelProvider extends ChangeNotifier {
         await FirestoreResponsavel().todosPacientesResponsavel(responsavel);
     notifyListeners();
   }
+
+  Future<void> delete(Gestor gestor, Responsavel responsavel) async {
+    FirestoreResponsavel().excluirResponsavel(gestor, responsavel);
+    notifyListeners();
+  }
 }

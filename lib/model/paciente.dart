@@ -9,7 +9,6 @@ class Paciente extends Pessoa {
   bool ativo = true;
   String id = '';
   String? dataCadastro;
-  String idResponsavel = '';
   Responsavel responsavel = Responsavel();
   List<Consulta> consultas = [];
   List<Medicamento> medicamentos = [];
@@ -29,7 +28,6 @@ class Paciente extends Pessoa {
     this.consultas = const [],
     this.atividades = const [],
     this.medicamentos = const [],
-    this.idResponsavel = '',
   }) : super(
           cpf: cpf,
           sobrenome: sobrenome,
@@ -41,7 +39,6 @@ class Paciente extends Pessoa {
     ativo = map['ativo'] ?? true;
     sobrenome = map['sobrenome'];
     id = map['id'] ?? '';
-    idResponsavel = map['responsavel'];
     dataCadastro = map['dataCadastro'];
   }
 
@@ -52,7 +49,6 @@ class Paciente extends Pessoa {
       'sobrenome': sobrenome,
       'nascimento': nascimento,
       'email': email,
-      'responsavel': idResponsavel,
       'telefone': telefone,
       'ativo': ativo,
       'dataCadastro': DateTime.now().toIso8601String(),

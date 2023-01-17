@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 const int opcaoInclusao = 1;
 const int opcaoAlteracao = 2;
 const int opcaoVisualizacao = 3;
@@ -27,6 +29,22 @@ enum EnumTarefa {
   nenhuma,
 }
 
+extension TarefaDescricao on EnumTarefa {
+  String get name => describeEnum(this);
+  String get collection {
+    switch (this) {
+      case EnumTarefa.medicamento:
+        return 'medicamento';
+      case EnumTarefa.atividade:
+        return 'atividade';
+      case EnumTarefa.consulta:
+        return 'consulta';
+      default:
+        return 'erro';
+    }
+  }
+}
+
 extension FrequenciaDescricao on EnumIntervalo {
   String get name => describeEnum(this);
   String get displayTitle {
@@ -45,13 +63,6 @@ extension FrequenciaDescricao on EnumIntervalo {
         return 'erro';
     }
   }
-}
-
-String describeEnum(Object enumEntry) {
-  final String description = enumEntry.toString();
-  final int indexOfDot = description.indexOf('.');
-  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
-  return description.substring(indexOfDot + 1);
 }
 
 double enumIntervaloEmMinutos(Object enumEntry, double quant) {
