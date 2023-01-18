@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   ErrorWidget.builder = (details) => Text(
@@ -50,6 +51,11 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => TarefasProvider()),
       ],
       child: MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: const [Locale('pt', 'BR')],
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
             color: corPad1,

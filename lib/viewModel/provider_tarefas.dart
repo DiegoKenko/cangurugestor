@@ -1,8 +1,8 @@
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 
 class TarefasProvider extends ChangeNotifier {
@@ -11,28 +11,59 @@ class TarefasProvider extends ChangeNotifier {
   EnumTarefa _tipo = EnumTarefa.nenhuma;
   String _idItem = '';
 
-  void addTarefa(Tarefa tarefa) {
-    _tarefas.add(tarefa);
-    notifyListeners();
-  }
+  List<Tarefa> get tarefas => _tarefas;
+  Paciente get paciente => _paciente;
+  EnumTarefa get tipo => _tipo;
+  String get idItem => _idItem;
 
-  void removeTarefa(Tarefa tarefa) {
-    _tarefas.remove(tarefa);
-    notifyListeners();
-  }
-
-  void setPaciente(Paciente paciente) {
+  set paciente(Paciente paciente) {
     _paciente = paciente;
-    notifyListeners();
   }
 
   set tipo(EnumTarefa tipo) {
     _tipo = tipo;
-    notifyListeners();
   }
 
-  set idItem(String idItem) {
-    _idItem = idItem;
+  set idItem(String id) {
+    _idItem = id;
+  }
+
+  void _addTarefa(Tarefa tarefa) async {
+    await FirestoreTarefa().criaTarefas(paciente, tarefa);
+  }
+
+  void novaTarefaMedicamento(Medicamento medicamento) {
+    Tarefa tarefa = Tarefa();
+    if (_tarefas.isEmpty) {
+      tarefa = Tarefa.init(
+        dateTime: DateTime.now(),
+        nome: medicamento.nome,
+        descricao: medicamento.descricao,
+        observacao: medicamento.observacao,
+        tipo: EnumTarefa.medicamento,
+        idTipo: _idItem,
+      );
+    } else {
+      tarefa = Tarefa.init(
+        dateTime: _tarefas.last.dateTime.add(
+          Duration(
+            minutes: enumIntervaloEmMinutos(
+                    medicamento.intervalo, medicamento.intervaloQuantidade)
+                .toInt(),
+          ),
+        ),
+        nome: medicamento.nome,
+        descricao: medicamento.descricao,
+        observacao: medicamento.observacao,
+        tipo: EnumTarefa.medicamento,
+        idTipo: _idItem,
+      );
+    }
+    _addTarefa(tarefa);
+  }
+
+  void removeTarefa(Tarefa tarefa) {
+    _tarefas.remove(tarefa);
     notifyListeners();
   }
 
@@ -50,7 +81,6 @@ class TarefasProvider extends ChangeNotifier {
         _idItem.isNotEmpty) {
       _tarefas = await FirestoreTarefa()
           .todasTarefasItem(_paciente, _tipo.collection, _idItem);
-
       notifyListeners();
     }
   }

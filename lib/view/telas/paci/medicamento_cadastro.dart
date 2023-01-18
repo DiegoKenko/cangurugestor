@@ -1,4 +1,5 @@
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
@@ -8,6 +9,7 @@ import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
+import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -82,14 +84,12 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
                   text: 'Tarefas',
                 ),
               ],
-              views: [
-                const Tab(
+              views: const [
+                Tab(
                   child: DadosMedicamento(),
                 ),
                 Tab(
-                  child: SingleChildScrollView(
-                    child: Column(),
-                  ),
+                  child: TarefasMedicamento(),
                 ),
               ],
             ),
@@ -97,6 +97,55 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
         ),
       );
     });
+  }
+}
+
+class TarefasMedicamento extends StatefulWidget {
+  const TarefasMedicamento({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<TarefasMedicamento> createState() => _TarefasMedicamentoState();
+}
+
+class _TarefasMedicamentoState extends State<TarefasMedicamento> {
+  @override
+  Widget build(BuildContext context) {
+    final TarefasProvider tarefasProvider = context.watch<TarefasProvider>();
+    tarefasProvider.paciente = context.read<PacienteProvider>().paciente;
+    tarefasProvider.tipo = EnumTarefa.medicamento;
+    tarefasProvider.idItem = context.read<MedicamentoProvider>().medicamento.id;
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Builder(builder: (context) {
+          tarefasProvider.load();
+          var widgetTarefaSalvas = tarefasProvider.tarefas
+              .map((Tarefa e) => ItemContainer(
+                    title: '${e.date} - ${e.time}',
+                    subtitle: e.observacao,
+                    onTap: () {},
+                  ))
+              .toList();
+          return Column(
+            children: [
+              ...widgetTarefaSalvas,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: BotaoCadastro(
+                  onPressed: () {
+                    tarefasProvider.novaTarefaMedicamento(
+                        context.read<MedicamentoProvider>().medicamento);
+                  },
+                ),
+              ),
+            ],
+          );
+        }),
+      ),
+    );
   }
 }
 
@@ -116,6 +165,7 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
       TextEditingController();
   final TextEditingController _intervaloUMController = TextEditingController();
   final TextEditingController _inicioController = TextEditingController();
+  final TextEditingController _observacaoController = TextEditingController();
 
   @override
   void initState() {
@@ -146,6 +196,10 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
               ? '01/01/2023'
               : _inicioController.text);
     });
+    _observacaoController.addListener(() {
+      context.read<MedicamentoProvider>().medicamento.observacao =
+          _observacaoController.text;
+    });
     super.initState();
   }
 
@@ -156,6 +210,7 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
     _intervaloQtdeController.dispose();
     _intervaloUMController.dispose();
     _inicioController.dispose();
+    _observacaoController.dispose();
     super.dispose();
   }
 
@@ -175,54 +230,65 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
         medicamentoProvider.medicamento.dataInicio == null
             ? DateTime.now()
             : medicamentoProvider.medicamento.dataInicio!);
-    return Column(
-      children: [
-        FormCadastro(
-          obrigatorio: true,
-          textInputType: TextInputType.name,
-          enabled: true,
-          controller: _nomeController,
-          labelText: 'Nome',
-        ),
-        FormCadastro(
-          obrigatorio: true,
-          textInputType: TextInputType.number,
-          enabled: true,
-          controller: _doseController,
-          labelText: 'Dose',
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: FormCadastro(
-                obrigatorio: true,
-                textInputType: TextInputType.number,
-                enabled: true,
-                controller: _intervaloQtdeController,
-                labelText: 'a cada:',
+    _observacaoController.text = medicamentoProvider.medicamento.observacao;
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          FormCadastro(
+            obrigatorio: true,
+            textInputType: TextInputType.name,
+            enabled: true,
+            controller: _nomeController,
+            labelText: 'Nome',
+          ),
+          FormCadastro(
+            obrigatorio: true,
+            textInputType: TextInputType.number,
+            enabled: true,
+            controller: _doseController,
+            labelText: 'Dose',
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: FormCadastro(
+                  obrigatorio: true,
+                  textInputType: TextInputType.number,
+                  enabled: true,
+                  controller: _intervaloQtdeController,
+                  labelText: 'a cada:',
+                ),
               ),
-            ),
-            Expanded(
-              child: FormDropDown(
-                lista: EnumIntervalo.values
-                    .map((e) => e.name)
-                    .toList(growable: false),
-                controller: _intervaloUMController,
-                value: medicamentoProvider.medicamento.intervalo.name,
-                hintText: 'Intervalo',
+              Expanded(
+                child: FormDropDown(
+                  lista: EnumIntervalo.values
+                      .map((e) => e.name)
+                      .toList(growable: false),
+                  controller: _intervaloUMController,
+                  value: medicamentoProvider.medicamento.intervalo.name,
+                  hintText: 'Intervalo',
+                ),
               ),
-            ),
-          ],
-        ),
-        FormCadastroData(
-          dataInicial: DateTime.now(),
-          dataUltima: DateTime(DateTime.now().year + 50),
-          dataPrimeira: DateTime.now(),
-          enabled: true,
-          controller: _inicioController,
-          labelText: 'Data de Início',
-        ),
-      ],
+            ],
+          ),
+          FormCadastroData(
+            dataInicial: DateTime.now(),
+            dataUltima: DateTime(DateTime.now().year + 50),
+            dataPrimeira: DateTime.now(),
+            enabled: true,
+            controller: _inicioController,
+            labelText: 'Data de Início',
+          ),
+          FormCadastro(
+            obrigatorio: true,
+            textInputType: TextInputType.name,
+            enabled: true,
+            multiLine: true,
+            controller: _observacaoController,
+            labelText: 'Observação',
+          ),
+        ],
+      ),
     );
   }
 }

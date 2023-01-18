@@ -4,11 +4,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  void criaTarefas(String idPaciente, List<Tarefa> tarefas) async {
+
+  Future<void> criaTarefas(Paciente paciente, Tarefa tarefa) async {
+    if (paciente.id.isNotEmpty) {
+      await firestore
+          .collection('pacientes')
+          .doc(paciente.id)
+          .collection('tarefas')
+          .add(tarefa.toMap());
+    }
+  }
+
+  void criaMultiplasTarefas(Paciente paciente, List<Tarefa> tarefas) async {
     for (var tarefa in tarefas) {
       await firestore
           .collection('pacientes')
-          .doc(idPaciente)
+          .doc(paciente.id)
           .collection('tarefas')
           .add(tarefa.toMap());
     }
@@ -32,6 +43,7 @@ class FirestoreTarefa {
         .collection('tarefas')
         .where('tipo', isEqualTo: tipo)
         .where('idTipo', isEqualTo: idItem)
+        .orderBy('dateTime')
         .get();
     for (var documentSnapshot in querySnapshot.docs) {
       Tarefa tarefa =

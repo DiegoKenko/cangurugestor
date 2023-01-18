@@ -18,7 +18,7 @@ class _BotaoCadastroState extends State<BotaoCadastro> {
         padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * 0.1),
         child: Align(
-          alignment: Alignment.centerRight,
+          alignment: Alignment.center,
           child: Column(
             children: const [
               Icon(

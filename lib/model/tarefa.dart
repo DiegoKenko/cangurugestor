@@ -25,6 +25,18 @@ class Tarefa {
     time = DateFormat('HH:mm').format(dateTime);
   }
 
+  Tarefa.init({
+    required this.dateTime,
+    required this.nome,
+    required this.descricao,
+    required this.observacao,
+    required this.tipo,
+    required this.idTipo,
+  }) {
+    date = DateFormat('dd/MM/yyyy').format(dateTime);
+    time = DateFormat('HH:mm').format(dateTime);
+  }
+
   Tarefa.fromMap(Map<String, dynamic> json) {
     nome = json['nome'];
     idTipo = json['idTipo'];
@@ -42,8 +54,8 @@ class Tarefa {
       'nome': nome,
       'id': id,
       'idTipo': idTipo,
-      'descricao': descricao,
       'tipo': tipo.name,
+      'descricao': descricao,
       'dateTime': dateTime,
       'date': date,
       'time': time,
