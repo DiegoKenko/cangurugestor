@@ -113,6 +113,12 @@ final kBoxDecorationDropDown = BoxDecoration(
   borderRadius: BorderRadius.circular(20),
 );
 
+final kEditTarefaTextStyle = TextStyle(
+  color: corPad1,
+  fontSize: 17,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
+
 const corPad1 = Color(0xFF00A99D);
 const corPad2 = Color(0xFF4D87FC);
 const corPad3 = Color.fromARGB(255, 253, 253, 253);

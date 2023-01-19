@@ -64,45 +64,47 @@ class Tarefa {
     };
   }
 
-  void setTimeFromTimeOfDay(TimeOfDay time) {
-    this.time = DateFormat('HH:mm').format(DateTime(time.hour, time.minute));
+  void setTimeFromTimeOfDay(TimeOfDay t) {
+    time = DateFormat('HH:mm').format(DateTime(t.hour, t.minute));
     dateTime = DateTime(
       dateTime.year,
       dateTime.month,
       dateTime.day,
-      time.hour,
-      time.minute,
+      t.hour,
+      t.minute,
     );
   }
 
-  void setDateFromDateTime(DateTime date) {
-    this.date = DateFormat('dd/MM/yyyy').format(date);
+  void setDateFromDateTime(DateTime d) {
+    date = DateFormat('dd/MM/yyyy').format(d);
     dateTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
+      d.year,
+      d.month,
+      d.day,
       dateTime.hour,
       dateTime.minute,
     );
   }
 
-  void setTimeFromString(String time) {
-    this.time = time;
+  void setTimeFromString(String t) {
+    if (t.isEmpty) return;
+    time = t;
     dateTime = DateTime(
       dateTime.year,
       dateTime.month,
       dateTime.day,
-      int.parse(time.split(':')[0]),
-      int.parse(time.split(':')[1]),
+      int.parse(t.split(':')[0]),
+      int.parse(t.split(':')[1]),
     );
   }
 
-  void setDateFromString(String date) {
-    this.date = date;
+  void setDateFromString(String d) {
+    if (d.isEmpty) return;
+    date = d;
     dateTime = DateTime(
-      int.parse(date.split('/')[2]),
-      int.parse(date.split('/')[1]),
-      int.parse(date.split('/')[0]),
+      int.parse(d.split('/')[2]),
+      int.parse(d.split('/')[1]),
+      int.parse(d.split('/')[0]),
       dateTime.hour,
       dateTime.minute,
     );

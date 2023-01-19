@@ -64,11 +64,17 @@ class Responsavel extends Pessoa {
   }
 
   Map<String, dynamic> toMap() {
+    idCuidadores = [];
     for (var cuidador in cuidadores) {
-      idCuidadores.add(cuidador.id);
+      if (!idCuidadores.contains(cuidador.id)) {
+        idCuidadores.add(cuidador.id);
+      }
     }
+    idPacientes = [];
     for (var paciente in pacientes) {
-      idPacientes.add(paciente.id);
+      if (!idPacientes.contains(paciente.id)) {
+        idPacientes.add(paciente.id);
+      }
     }
     return {
       'ativo': ativo,

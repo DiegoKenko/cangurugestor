@@ -29,7 +29,12 @@ class TarefasProvider extends ChangeNotifier {
   }
 
   void _addTarefa(Tarefa tarefa) async {
-    await FirestoreTarefa().criaTarefas(paciente, tarefa);
+    await FirestoreTarefa().insert(paciente, tarefa);
+  }
+
+  void updateTarefa(Tarefa tarefa) {
+    FirestoreTarefa().update(paciente, tarefa);
+    notifyListeners();
   }
 
   void novaTarefaMedicamento(Medicamento medicamento) {

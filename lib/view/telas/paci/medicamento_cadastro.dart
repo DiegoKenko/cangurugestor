@@ -5,6 +5,7 @@ import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/form_dropdown.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
@@ -30,6 +31,11 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (context.read<MedicamentoProvider>().paciente.id.isEmpty) {
+        context.read<MedicamentoProvider>().update();
+      }
+    });
     super.initState();
   }
 
@@ -123,10 +129,17 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
         child: Builder(builder: (context) {
           tarefasProvider.load();
           var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa e) => ItemContainer(
-                    title: '${e.date} - ${e.time}',
-                    subtitle: e.observacao,
-                    onTap: () {},
+              .map((Tarefa tarefa) => ItemContainer(
+                    title: '${tarefa.date} - ${tarefa.time}',
+                    subtitle: tarefa.observacao,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => PopUpTarefa(
+                          tarefa: tarefa,
+                        ),
+                      );
+                    },
                   ))
               .toList();
           return Column(

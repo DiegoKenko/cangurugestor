@@ -24,7 +24,7 @@ class _PainelGestorState extends State<PainelGestor>
 
   @override
   void initState() {
-    _tabController = TabController(length: 1, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -40,71 +40,83 @@ class _PainelGestorState extends State<PainelGestor>
       body: SafeArea(
         child: TabCanguru(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(
-              child: Text(
-                'Clientes',
-                style: kSubTituloStyle,
-              ),
-            )
+              text: 'Clientes',
+            ),
+            Tab(
+              text: 'Cuidadores',
+            ),
           ],
           views: [
+            const Tab(
+              child: ClientesGestor(),
+            ),
             Tab(
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Builder(builder: (context) {
-                      gestorProvider.todosClientes();
-                      if (gestorProvider.clientes.isEmpty) {
-                        return Container();
-                      } else {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: gestorProvider.clientes.length,
-                          itemBuilder: (context, index) {
-                            return ItemContainer(
-                              onTap: () {
-                                context
-                                    .read<ResponsavelProvider>()
-                                    .setResponsavel(
-                                        gestorProvider.clientes[index]);
-                                Navigator.push(
-                                  context,
-                                  AnimatedPageTransition(
-                                    page: const CadastroResponsavel(),
-                                  ),
-                                );
-                              },
-                              title: gestorProvider.clientes[index].nome,
-                              subtitle: gestorProvider.clientes[index].id,
-                            );
-                          },
-                        );
-                      }
-                    }),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: BotaoCadastro(
-                      onPressed: () {
-                        context
-                            .read<ResponsavelProvider>()
-                            .setResponsavel(Responsavel());
-                        Navigator.push(
-                          context,
-                          AnimatedPageTransition(
-                            page: const CadastroResponsavel(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              child: Container(),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class ClientesGestor extends StatelessWidget {
+  const ClientesGestor({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final GestorProvider gestorProvider = Provider.of<GestorProvider>(context);
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Builder(builder: (context) {
+            gestorProvider.todosClientes();
+            if (gestorProvider.clientes.isEmpty) {
+              return Container();
+            } else {
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: gestorProvider.clientes.length,
+                itemBuilder: (context, index) {
+                  return ItemContainer(
+                    onTap: () {
+                      context
+                          .read<ResponsavelProvider>()
+                          .setResponsavel(gestorProvider.clientes[index]);
+                      Navigator.push(
+                        context,
+                        AnimatedPageTransition(
+                          page: const CadastroResponsavel(),
+                        ),
+                      );
+                    },
+                    title: gestorProvider.clientes[index].nome,
+                    subtitle: gestorProvider.clientes[index].id,
+                  );
+                },
+              );
+            }
+          }),
+        ),
+        SizedBox(
+          height: 50,
+          child: BotaoCadastro(
+            onPressed: () {
+              context.read<ResponsavelProvider>().setResponsavel(Responsavel());
+              Navigator.push(
+                context,
+                AnimatedPageTransition(
+                  page: const CadastroResponsavel(),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

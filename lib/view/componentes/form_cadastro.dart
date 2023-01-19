@@ -17,7 +17,6 @@ class FormCadastro extends StatefulWidget {
   final Function? onTap;
   final Function(String)? onChanged;
   final Function()? onEditingComplete;
-  final InputBorder? borda;
   const FormCadastro(
       {Key? key,
       required this.controller,
@@ -31,8 +30,7 @@ class FormCadastro extends StatefulWidget {
       this.onTap,
       this.multiLine = false,
       this.inputFormatters,
-      this.borda = const OutlineInputBorder(),
-      this.textInputType = TextInputType.none})
+      required this.textInputType})
       : super(key: key);
 
   @override
@@ -70,7 +68,7 @@ class _FormCadastroState extends State<FormCadastro> {
           label: Text(widget.labelText.toUpperCase()),
           labelStyle: kLabelStyle,
           focusColor: Colors.white,
-          border: widget.borda,
+          border: OutlineInputBorder(),
         ),
       ),
     );

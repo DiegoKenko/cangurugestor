@@ -51,10 +51,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => TarefasProvider()),
       ],
       child: MaterialApp(
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate
-        ],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
         supportedLocales: const [Locale('pt', 'BR')],
         theme: ThemeData(
           appBarTheme: const AppBarTheme(

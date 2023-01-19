@@ -32,9 +32,12 @@ class FirestorePaciente {
       Responsavel responsavel, Paciente paciente) async {
     var doc = await firestore.collection('pacientes').add(paciente.toMap());
     paciente.id = doc.id;
-    await firestore.collection('responsaveis').doc(responsavel.id).update({
-      'idPacientes': FieldValue.arrayUnion([paciente.id])
-    });
+
+    if (!responsavel.idPacientes.contains(paciente.id)) {
+      await firestore.collection('responsaveis').doc(responsavel.id).update({
+        'idPacientes': FieldValue.arrayUnion([paciente.id])
+      });
+    }
 
     return paciente;
   }

@@ -16,9 +16,11 @@ class FirestoreResponsavel {
         await firestore.collection('responsaveis').add(responsavel.toMap());
     responsavel.id = doc.id;
 
-    await firestore.collection('gestores').doc(gestor.id).update({
-      'idClientes': FieldValue.arrayUnion([responsavel.id])
-    });
+    if (!gestor.idClientes.contains(responsavel.id)) {
+      await firestore.collection('gestores').doc(gestor.id).update({
+        'idClientes': FieldValue.arrayUnion([responsavel.id])
+      });
+    }
 
     return responsavel;
   }
@@ -28,20 +30,14 @@ class FirestoreResponsavel {
     await firestore.collection('responsaveis').doc(responsavel.id).get().then(
       (snapshot) {
         snapshot.reference.update(responsavel.toMap());
-        // Update or create its login too
-        firestoreLogin.atualizaLogin(LoginUser(
-            colecao: 'responsaveis',
-            cpf: responsavel.cpf,
-            doc: snapshot.reference.id,
-            funcao: 'responsavel',
-            senha: responsavel.senha,
-            ativo: responsavel.ativo));
       },
     );
 
-    await firestore.collection('gestores').doc(gestor.id).update({
-      'idClientes': FieldValue.arrayUnion([responsavel.id])
-    });
+    if (!gestor.idClientes.contains(responsavel.id)) {
+      await firestore.collection('gestores').doc(gestor.id).update({
+        'idClientes': FieldValue.arrayUnion([responsavel.id])
+      });
+    }
   }
 
   Future<List<Paciente>> todosPacientesResponsavel(
@@ -66,6 +62,7 @@ class FirestoreResponsavel {
             await firestore.collection('pacientes').doc(element).get();
         Paciente paciente = Paciente.fromMap(docPaciente.data()!);
         paciente.id = docPaciente.id;
+
         pacientesRet.add(paciente);
       }
       return pacientesRet;

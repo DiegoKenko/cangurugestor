@@ -33,7 +33,8 @@ class _CadastroPacienteState extends State<CadastroPaciente>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
         context.read<PacienteProvider>().update();

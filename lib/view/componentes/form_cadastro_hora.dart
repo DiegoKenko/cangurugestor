@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 class FormCadastroHora extends StatefulWidget {
   final TextEditingController controller;
-  final TextInputType textInputType;
   final IconData? icon;
   final String? hintText;
   final String labelText;
@@ -13,18 +12,17 @@ class FormCadastroHora extends StatefulWidget {
   final bool enabled;
   final void Function(TimeOfDay time)? onTimeChanged;
   final Function(String)? onFieldSubmitted;
-  const FormCadastroHora(
-      {Key? key,
-      required this.controller,
-      required this.labelText,
-      required this.enabled,
-      this.hintText,
-      this.onFieldSubmitted,
-      this.icon,
-      this.onTimeChanged,
-      this.obrigatorio = false,
-      this.textInputType = TextInputType.none})
-      : super(key: key);
+  const FormCadastroHora({
+    Key? key,
+    required this.controller,
+    required this.labelText,
+    required this.enabled,
+    this.hintText,
+    this.onFieldSubmitted,
+    this.icon,
+    required this.onTimeChanged,
+    this.obrigatorio = false,
+  }) : super(key: key);
 
   @override
   State<FormCadastroHora> createState() => _FormCadastroHoraState();
@@ -72,7 +70,6 @@ class _FormCadastroHoraState extends State<FormCadastroHora> {
         toolbarOptions: const ToolbarOptions(),
         cursorColor: corPad2,
         controller: widget.controller,
-        keyboardType: widget.textInputType,
         style: kTextStyleHeader,
         decoration: InputDecoration(
           label: Text(widget.labelText.toUpperCase()),

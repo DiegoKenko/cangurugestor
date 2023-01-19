@@ -5,13 +5,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> criaTarefas(Paciente paciente, Tarefa tarefa) async {
+  Future<void> insert(Paciente paciente, Tarefa tarefa) async {
     if (paciente.id.isNotEmpty) {
       await firestore
           .collection('pacientes')
           .doc(paciente.id)
           .collection('tarefas')
           .add(tarefa.toMap());
+    }
+  }
+
+  Future<void> update(Paciente paciente, Tarefa tarefa) async {
+    if (paciente.id.isNotEmpty && tarefa.id.isNotEmpty) {
+      await firestore
+          .collection('pacientes')
+          .doc(paciente.id)
+          .collection('tarefas')
+          .doc(tarefa.id)
+          .update(tarefa.toMap());
     }
   }
 
@@ -25,7 +36,7 @@ class FirestoreTarefa {
     }
   }
 
-  void excluirTarefa(String idPaciente, String idTarefa) async {
+  void delete(String idPaciente, String idTarefa) async {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
