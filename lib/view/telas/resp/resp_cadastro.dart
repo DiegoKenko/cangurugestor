@@ -27,15 +27,11 @@ class CadastroResponsavel extends StatefulWidget {
 
 class _CadastroResponsavelState extends State<CadastroResponsavel>
     with SingleTickerProviderStateMixin {
-  bool ativo = true;
-  List<Widget> pacientesWidget = [];
-  List<Widget> cuidadoresWidget = [];
-  FirestoreResponsavel fireStoreResponsavel = FirestoreResponsavel();
   late TabController _tabController;
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     super.initState();
   }
 

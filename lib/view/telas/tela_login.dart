@@ -23,7 +23,7 @@ class _TelaLoginState extends State<TelaLogin> {
     final LoginProvider loginProvider = context.watch<LoginProvider>();
     loginProvider.addListener(() {
       if (loginProvider.isLogged) {
-        context.read<GestorProvider>().setGestor(loginProvider.gestor);
+        context.read<GestorProvider>().gestor = loginProvider.gestor;
         Navigator.of(context).pushReplacement(
           AnimatedPageTransition(
             page: const PainelGestor(),

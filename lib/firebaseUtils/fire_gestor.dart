@@ -1,3 +1,4 @@
+import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,5 +24,55 @@ class FirestoreGestor {
       }
     }
     return resps;
+  }
+
+  Future<List<Cuidador>> todosCuidadoresGestor(Gestor gestor) async {
+    List<Cuidador> cuidadores = [];
+    if (gestor.id.isEmpty) {
+      return cuidadores;
+    }
+    await firestore.collection('gestores').doc(gestor.id).get().then((doc) {
+      if (doc.data() != null) {
+        gestor = Gestor.fromMap(doc.data()!);
+        gestor.id = doc.id;
+      }
+    });
+
+    for (var element in gestor.idCuidadores) {
+      if (element.isNotEmpty) {
+        var doc = await firestore.collection('cuidadores').doc(element).get();
+        if (doc.data() != null) {
+          Cuidador cuidador = Cuidador.fromMap(doc.data()!);
+          cuidador.id = doc.id;
+          cuidadores.add(cuidador);
+        }
+      }
+    }
+    return cuidadores;
+  }
+
+  Future<Gestor> create(Gestor gestor) async {
+    var doc = await firestore.collection('gestores').add(gestor.toMap());
+    gestor.id = doc.id;
+    return gestor;
+  }
+
+  Future<Gestor> read(String id) async {
+    var doc = await firestore.collection('gestores').doc(id).get();
+    if (doc.data() != null) {
+      Gestor gestor = Gestor.fromMap(doc.data()!);
+      gestor.id = doc.id;
+      return gestor;
+    } else {
+      return Gestor();
+    }
+  }
+
+  Future<Gestor> update(Gestor gestor) async {
+    await firestore
+        .collection('gestores')
+        .doc(gestor.id)
+        .update(gestor.toMap());
+    return gestor;
   }
 }

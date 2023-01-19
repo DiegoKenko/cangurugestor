@@ -44,7 +44,7 @@ class FirestoreLogin {
             .doc(x.docs.first.data()['doc'])
             .get();
         gestor = Gestor.fromMap(g.data()!);
-        gestor.newId = g.id;
+        gestor.id = g.id;
         return gestor;
       } else {
         return gestor;

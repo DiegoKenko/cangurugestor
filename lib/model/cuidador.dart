@@ -9,8 +9,6 @@ class Cuidador extends Pessoa {
   DateTime? dataCadastro;
   bool ativo = true;
   String? senha;
-  Responsavel? responsavel;
-  String? idResponsavel;
 
   Cuidador({
     String cpf = '',
@@ -23,8 +21,6 @@ class Cuidador extends Pessoa {
     this.ativo = false,
     this.senha = '',
     this.id = '',
-    this.responsavel,
-    this.idResponsavel = '',
   }) : super(
           cpf: cpf,
           nome: nome,
@@ -35,9 +31,8 @@ class Cuidador extends Pessoa {
 
   Cuidador.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     id = map['id'] ?? '';
-    idPacientes = map['pacientes'];
+    idPacientes = map['idPacientes'];
     dataCadastro = DateTime.parse(map['dataCadastro']);
-    idResponsavel = map['responsavel'];
     ativo = map['ativo'];
     cpf = map['cpf'];
     nome = map['nome'];
@@ -54,10 +49,9 @@ class Cuidador extends Pessoa {
       'sobrenome': sobrenome,
       'nascimento': nascimento,
       'email': email,
-      'responsavel': idResponsavel,
       'telefone': telefone,
       'ativo': ativo,
-      'pacientes': idPacientes,
+      'idPacientes': idPacientes,
       'senha': senha ?? 'canguruX',
       'dataCadastro': DateTime.now().toString(),
     };

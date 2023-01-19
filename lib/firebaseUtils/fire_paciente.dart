@@ -139,15 +139,14 @@ class FirestorePaciente {
             }).toList());
   }
 
-  Future<List<Cuidador>> todosCuidadoresPaciente(String idPaciente) async {
+  Future<List<Cuidador>> todosCuidadoresPaciente(Paciente paciente) async {
     List<Cuidador> cuidadores = [];
-    if (idPaciente.isEmpty) {
+    if (paciente.id.isEmpty) {
       return cuidadores;
     }
     firestore
-        .collection('pacientes')
-        .doc(idPaciente)
         .collection('cuidadores')
+        .where('idPacientes', arrayContains: paciente.id)
         .get()
         .then((value) async {
       if (value.docs.isNotEmpty) {

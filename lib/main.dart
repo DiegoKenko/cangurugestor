@@ -2,6 +2,7 @@ import 'package:cangurugestor/firebase_options.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
+import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ConsultaProvider()),
         ChangeNotifierProvider(create: (context) => AtividadeProvider()),
         ChangeNotifierProvider(create: (context) => TarefasProvider()),
+        ChangeNotifierProvider(create: (context) => CuidadorProvider()),
       ],
       child: MaterialApp(
         localizationsDelegates: GlobalMaterialLocalizations.delegates,

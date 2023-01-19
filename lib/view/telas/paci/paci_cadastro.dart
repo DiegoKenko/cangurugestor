@@ -11,6 +11,7 @@ import 'package:cangurugestor/view/telas/paci/consulta_cadastro.dart';
 import 'package:cangurugestor/view/telas/paci/medicamento_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
+import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
@@ -33,7 +34,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
 
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
@@ -104,12 +105,50 @@ class _CadastroPacienteState extends State<CadastroPaciente>
               child: FichaPaciente(),
             ),
             Tab(
-              child: Container(),
+              child: CuidadoresPaciente(),
             ),
           ],
           controller: _tabController,
         ),
       ),
+    );
+  }
+}
+
+class CuidadoresPaciente extends StatefulWidget {
+  const CuidadoresPaciente({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<CuidadoresPaciente> createState() => _CuidadoresPacienteState();
+}
+
+class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
+  @override
+  Widget build(BuildContext context) {
+    final GestorProvider gestorProvider = context.watch<GestorProvider>();
+    return Builder(
+      builder: (context) {
+        return ListView.builder(
+          itemCount: gestorProvider.gestor.cuidadores.length,
+          itemBuilder: (context, index) {
+            gestorProvider.todosCuidadores();
+            return ItemContainer(
+              title: gestorProvider.gestor.cuidadores[index].nome,
+              subtitle: gestorProvider.gestor.cuidadores[index].email,
+              trailing: InkWell(
+                onTap: () {},
+                child: Checkbox(
+                  value: gestorProvider.gestor.cuidadores[index].idPacientes
+                      .contains(context.read<PacienteProvider>().paciente.id),
+                  onChanged: (value) {},
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
