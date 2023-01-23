@@ -1,5 +1,6 @@
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
@@ -60,6 +61,32 @@ class TarefasProvider extends ChangeNotifier {
         nome: medicamento.nome,
         descricao: medicamento.descricao,
         observacao: medicamento.observacao,
+        tipo: EnumTarefa.medicamento,
+        idTipo: _idItem,
+      );
+    }
+    _addTarefa(tarefa);
+  }
+
+  void novaTarefaConsulta(Consulta consulta) {
+    Tarefa tarefa = Tarefa();
+    if (_tarefas.isEmpty) {
+      tarefa = Tarefa.init(
+        dateTime: DateTime.now(),
+        nome: consulta.descricao,
+        descricao: consulta.medico,
+        observacao: consulta.observacao,
+        tipo: EnumTarefa.medicamento,
+        idTipo: _idItem,
+      );
+    } else {
+      tarefa = Tarefa.init(
+        dateTime: _tarefas.last.dateTime.add(
+          Duration(days: 7),
+        ),
+        nome: consulta.descricao,
+        descricao: consulta.medico,
+        observacao: consulta.observacao,
         tipo: EnumTarefa.medicamento,
         idTipo: _idItem,
       );

@@ -1,11 +1,7 @@
-import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/pessoa.dart';
-import 'package:cangurugestor/model/responsavel.dart';
 
 class Gestor extends Pessoa {
   String id = '';
-  List<Responsavel> clientes = [];
-  List<Cuidador> cuidadores = [];
   List<String> idClientes = [];
   List<String> idCuidadores = [];
   Gestor();

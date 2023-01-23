@@ -51,6 +51,28 @@ class FirestoreGestor {
     return cuidadores;
   }
 
+  Future<List<Cuidador>> todosCuidadoresPaciente(
+      Gestor gestor, String idPaciente) async {
+    List<Cuidador> cuidadores = [];
+    if (gestor.id.isEmpty) {
+      return cuidadores;
+    }
+    for (var i = 0; i < gestor.idCuidadores.length; i++) {
+      if (gestor.idCuidadores[i].isEmpty) {
+        continue;
+      }
+      DocumentSnapshot<Map<String, dynamic>> doc = await firestore
+          .collection('cuidadores')
+          .doc(gestor.idCuidadores[i])
+          .get();
+      Cuidador cuidador = Cuidador.fromMap(doc.data()!);
+      if (cuidador.idPacientes.contains(idPaciente)) {
+        cuidadores.add(cuidador);
+      }
+    }
+    return cuidadores;
+  }
+
   Future<Gestor> create(Gestor gestor) async {
     var doc = await firestore.collection('gestores').add(gestor.toMap());
     gestor.id = doc.id;

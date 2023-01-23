@@ -17,17 +17,22 @@ class PopUpTarefa extends StatefulWidget {
 }
 
 class _PopUpTarefaState extends State<PopUpTarefa> {
-  final _dataController = TextEditingController();
-  final _horaController = TextEditingController();
-  final _obsController = TextEditingController();
+  final TextEditingController _dataController = TextEditingController();
+  final TextEditingController _horaController = TextEditingController();
+  final TextEditingController _obsController = TextEditingController();
+
+  @override
+  void dispose() {
+    _dataController.dispose();
+    _horaController.dispose();
+    _obsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TarefasProvider tarefasProvider =
-        Provider.of<TarefasProvider>(context);
     _dataController.text = widget.tarefa.date;
     _horaController.text = widget.tarefa.time;
-
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -48,7 +53,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
               _horaController.text,
             );
             widget.tarefa.observacao = _obsController.text;
-            tarefasProvider.updateTarefa(widget.tarefa);
+            context.read<TarefasProvider>().updateTarefa(widget.tarefa);
             Navigator.pop(context);
           },
           child: const Text('Salvar'),
@@ -71,7 +76,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
           ),
           FormCadastroHora(
             onTimeChanged: (time) {
-              _horaController.text = DateFormat('HH:mm').format(
+              var format = DateFormat('HH:mm').format(
                 DateTime(
                   0,
                   0,
@@ -80,6 +85,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
                   time.minute,
                 ),
               );
+              _horaController.text = format;
             },
             controller: _horaController,
             labelText: 'Hora',

@@ -1,3 +1,4 @@
+import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/consulta.dart';

@@ -1,3 +1,4 @@
+import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
@@ -97,11 +98,11 @@ class _CadastroPacienteState extends State<CadastroPaciente>
               text: 'Cuidadores',
             ),
           ],
-          views: [
-            const Tab(
+          views: const [
+            Tab(
               child: DadosPaciente(),
             ),
-            const Tab(
+            Tab(
               child: FichaPaciente(),
             ),
             Tab(
@@ -128,25 +129,49 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
   @override
   Widget build(BuildContext context) {
     final GestorProvider gestorProvider = context.watch<GestorProvider>();
+    final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     return Builder(
       builder: (context) {
-        return ListView.builder(
-          itemCount: gestorProvider.gestor.cuidadores.length,
-          itemBuilder: (context, index) {
-            gestorProvider.todosCuidadores();
-            return ItemContainer(
-              title: gestorProvider.gestor.cuidadores[index].nome,
-              subtitle: gestorProvider.gestor.cuidadores[index].email,
-              trailing: InkWell(
-                onTap: () {},
-                child: Checkbox(
-                  value: gestorProvider.gestor.cuidadores[index].idPacientes
-                      .contains(context.read<PacienteProvider>().paciente.id),
-                  onChanged: (value) {},
-                ),
+        gestorProvider.todosCuidadoresPaciente(pacienteProvider.paciente);
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: gestorProvider.cuidadores.length,
+                itemBuilder: (context, index) {
+                  return ItemContainer(
+                    title: gestorProvider.cuidadores[index].nome,
+                    subtitle: gestorProvider.cuidadores[index].email,
+                  );
+                },
               ),
-            );
-          },
+            ),
+            BotaoCadastro(onPressed: () {
+              gestorProvider
+                  .todosCuidadoresDisponiveis(pacienteProvider.paciente);
+              showBottomSheet(
+                  context: context,
+                  builder: ((context) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: gestorProvider.cuidadoresDisponiveisPaciente
+                              .map((Cuidador e) => ItemContainer(
+                                    onTap: () {
+                                      pacienteProvider.addCuidadorPaciente(e);
+                                      Navigator.of(context).pop();
+                                    },
+                                    title: e.id,
+                                    subtitle: e.nome,
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                    );
+                  }));
+            }),
+          ],
         );
       },
     );
@@ -269,12 +294,11 @@ class ConsultasPaciente extends StatelessWidget {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  context
-                      .read<ConsultaProvider>()
-                      .setConsulta(pacienteProvider.paciente.consultas[index]);
+                  context.read<ConsultaProvider>().consulta =
+                      pacienteProvider.paciente.consultas[index];
                   Navigator.of(context).push(
                     AnimatedPageTransition(
-                      page: const CadastroMedicamento(),
+                      page: const CadastroConsulta(),
                     ),
                   );
                 },

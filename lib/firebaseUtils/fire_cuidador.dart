@@ -1,4 +1,5 @@
 import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreCuidador {
