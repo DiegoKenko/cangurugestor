@@ -1,13 +1,5 @@
 import 'package:cangurugestor/autentication/auth_login.dart';
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/responsavel.dart';
-import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_login.dart';
-import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:provider/provider.dart';
@@ -27,29 +19,8 @@ class _TelaLoginState extends State<TelaLogin> {
   Widget build(BuildContext context) {
     final LoginProvider loginProvider = context.watch<LoginProvider>();
 
-    loginProvider.addListener(() {
-      if (loginProvider.isLogged) {
-        if (loginProvider.classe == EnumClasse.gestor) {
-          context.read<GestorProvider>().gestor = loginProvider.user as Gestor;
-        }
-        if (loginProvider.classe == EnumClasse.cuidador) {
-          context.read<CuidadorProvider>().cuidador =
-              loginProvider.user as Cuidador;
-        }
-        if (loginProvider.classe == EnumClasse.responsavel) {
-          context.read<ResponsavelProvider>().responsavel =
-              loginProvider.user as Responsavel;
-        }
-        Navigator.of(context).pushReplacement(
-          AnimatedPageTransition(
-            page: loginProvider.route!,
-          ),
-        );
-      }
-    });
-
     return Scaffold(
-      backgroundColor: corPad1.withOpacity(0.8),
+      backgroundColor: corPad1.withOpacity(0.05),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(
@@ -91,10 +62,7 @@ class ButtonLoginEmailSenha extends StatelessWidget {
     return ButtonLogin(
       image: const Icon(Icons.mail, color: corPreto, size: 26.0),
       text: 'E-mail e senha',
-      onPressed: () {
-        //context.read<LoginProvider>().setLoginMethod(());
-        context.read<LoginProvider>().login();
-      },
+      methodLogin: EmailSenhaLogin(),
     );
   }
 }
@@ -107,10 +75,7 @@ class ButtonLoginAnonymous extends StatelessWidget {
     return ButtonLogin(
       image: const Icon(Icons.person, color: corPreto, size: 26.0),
       text: 'Anônimo',
-      onPressed: () {
-        //context.read<LoginProvider>().setLoginMethod(());
-        context.read<LoginProvider>().login();
-      },
+      methodLogin: AnonymousLogin(),
     );
   }
 }
@@ -126,10 +91,7 @@ class ButtonLoginApple extends StatelessWidget {
         height: 26.0,
       ),
       text: 'Entrar com Apple ID',
-      onPressed: () {
-        //context.read<LoginProvider>().setLoginMethod(());
-        context.read<LoginProvider>().login();
-      },
+      methodLogin: AppleIDLogin(),
     );
   }
 }
@@ -145,10 +107,7 @@ class ButtonLoginGoogle extends StatelessWidget {
         height: 26.0,
       ),
       text: 'Entrar com Google',
-      onPressed: () {
-        context.read<LoginProvider>().setLoginMethod(GoogleLogin());
-        context.read<LoginProvider>().login();
-      },
+      methodLogin: GoogleLogin(),
     );
   }
 }
@@ -156,16 +115,23 @@ class ButtonLoginGoogle extends StatelessWidget {
 class ButtonLogin extends StatelessWidget {
   const ButtonLogin({
     Key? key,
-    required this.onPressed,
     required this.image,
     required this.text,
+    required this.methodLogin,
   }) : super(key: key);
-  final Function()? onPressed;
+  final MethodLogin methodLogin;
   final Widget image;
   final String text;
 
   @override
   Widget build(BuildContext context) {
+    final LoginProvider loginProvider = context.watch<LoginProvider>();
+
+    void onPressed() {
+      loginProvider.setLoginMethod(methodLogin);
+      loginProvider.login();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: OutlinedButton(

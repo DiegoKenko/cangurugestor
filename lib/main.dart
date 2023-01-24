@@ -58,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         supportedLocales: const [Locale('pt', 'BR')],
         theme: ThemeData(
+          backgroundColor: corBranco,
           appBarTheme: const AppBarTheme(
             color: corPad1,
             iconTheme: IconThemeData(color: corBranco),
@@ -91,12 +92,7 @@ class _MyAppState extends State<MyApp> {
           ),
           primaryColor: corPad1,
           hoverColor: corPad3,
-          errorColor: const Color.fromARGB(248, 238, 136, 127),
-          canvasColor: corPad3,
-          splashColor: const Color.fromARGB(255, 238, 163, 0),
           fontFamily: GoogleFonts.raleway().fontFamily,
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-              .copyWith(secondary: corPad1),
         ),
         home: const Scaffold(
           body: TelaLogin(),

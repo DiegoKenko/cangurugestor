@@ -44,6 +44,7 @@ class GoogleLogin extends MethodLogin {
   @override
   Future<void> logout() async {
     if (_googleSignIn.currentUser != null) {
+      await _googleSignIn.disconnect();
       await _googleSignIn.signOut();
     }
     if (_auth.currentUser != null) {
@@ -53,11 +54,10 @@ class GoogleLogin extends MethodLogin {
 
   @override
   Future<LoginUser> loadUser() async {
-/*     var cred = await getCredentials();
-     LoginUser user =
-        await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!); */
+    var cred = await getCredentials();
     LoginUser user =
-        await FirestoreLogin().autenticarUsuarioEmail('dafl.andrade@gmail.com');
+        await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!);
+
     if (user.id.isEmpty) {
       //logout();
     }
@@ -65,9 +65,9 @@ class GoogleLogin extends MethodLogin {
   }
 }
 
-class AndroidEmailSenhaLogin extends MethodLogin {}
+class EmailSenhaLogin extends MethodLogin {}
 
-class IOSEmailSenhaLogin extends MethodLogin {}
+class AppleIDLogin extends MethodLogin {}
 
 class PhoneLogin extends MethodLogin {}
 

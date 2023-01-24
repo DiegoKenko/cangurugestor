@@ -59,7 +59,7 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login() async {
+  Future<void> login() async {
     setLoading();
     if (loginMethod is GoogleLogin) {
       final GoogleLogin googleLogin = GoogleLogin();
