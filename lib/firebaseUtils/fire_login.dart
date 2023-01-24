@@ -1,25 +1,15 @@
+import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreLogin {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  atualizaLogin(LoginUser login) {
-    firestore
-        .collection('login')
-        .where('doc', isEqualTo: login.doc)
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        value.docs.first.reference.set(login.toMap());
-      } else {
-        firestore.collection('login').add(login.toMap());
-      }
-    });
-  }
+  void atualizaLogin(LoginUser login) {}
 
-  deleteLogin(String doc) {
+  void deleteLogin(String doc) {
     firestore
         .collection('login')
         .where('doc', isEqualTo: doc)
@@ -31,8 +21,8 @@ class FirestoreLogin {
     });
   }
 
-  Future<Gestor> autenticarUsuarioEmail(String email) async {
-    Gestor gestor = Gestor();
+  Future<LoginUser> autenticarUsuarioEmail(String email) async {
+    LoginUser user;
     QuerySnapshot<Map<String, dynamic>> x = await firestore
         .collection('login')
         .where('email', isEqualTo: email)
@@ -43,14 +33,30 @@ class FirestoreLogin {
             .collection('gestores')
             .doc(x.docs.first.data()['doc'])
             .get();
-        gestor = Gestor.fromMap(g.data()!);
-        gestor.id = g.id;
-        return gestor;
+        user = Gestor.fromMap(g.data()!);
+        user.id = g.id;
+        return user;
+      } else if (x.docs.first.data()['funcao'] == 'cuidador') {
+        DocumentSnapshot<Map<String, dynamic>> c = await firestore
+            .collection('cuidadores')
+            .doc(x.docs.first.data()['doc'])
+            .get();
+        user = Cuidador.fromMap(c.data()!);
+        user.id = c.id;
+        return user;
+      } else if (x.docs.first.data()['funcao'] == 'responsavel') {
+        DocumentSnapshot<Map<String, dynamic>> r = await firestore
+            .collection('responsaveis')
+            .doc(x.docs.first.data()['doc'])
+            .get();
+        user = Responsavel.fromMap(r.data()!);
+        user.id = r.id;
+        return user;
       } else {
-        return gestor;
+        return LoginUser();
       }
     } else {
-      return gestor;
+      return LoginUser();
     }
   }
 }

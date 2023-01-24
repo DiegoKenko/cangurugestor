@@ -1,4 +1,3 @@
-import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
@@ -99,7 +98,15 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
               child: DadosResponsavel(),
             ),
             const Tab(child: PacientesResponsavel()),
-            Tab(child: Container()),
+            Tab(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: const [
+                    Text('nenhum contrato cadastrado'),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -118,37 +125,46 @@ class PacientesResponsavel extends StatelessWidget {
         context.watch<ResponsavelProvider>();
     return Column(
       children: [
-        Builder(builder: (context) {
-          responsavelProvider.loadPacientes();
-          return Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: responsavelProvider.responsavel.pacientes.length,
-              itemBuilder: (context, index) {
-                return ItemContainer(
-                  onTap: () {
-                    context.read<PacienteProvider>().setPaciente(
-                        responsavelProvider.responsavel.pacientes[index]);
-                    Navigator.of(context).push(
-                      AnimatedPageTransition(
-                        page: const CadastroPaciente(),
-                      ),
+        Builder(
+          builder: (context) {
+            responsavelProvider.loadPacientes();
+            if (responsavelProvider.responsavel.pacientes.isEmpty) {
+              return const Expanded(
+                child: Center(
+                  child: Text('nenhum paciente cadastrado'),
+                ),
+              );
+            } else {
+              return Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: responsavelProvider.responsavel.pacientes.length,
+                  itemBuilder: (context, index) {
+                    return ItemContainer(
+                      onTap: () {
+                        context.read<PacienteProvider>().paciente =
+                            responsavelProvider.responsavel.pacientes[index];
+                        Navigator.of(context).push(
+                          AnimatedPageTransition(
+                            page: const CadastroPaciente(),
+                          ),
+                        );
+                      },
+                      title:
+                          responsavelProvider.responsavel.pacientes[index].nome,
                     );
                   },
-                  subtitle:
-                      responsavelProvider.responsavel.pacientes[index].nome,
-                  title: responsavelProvider.responsavel.pacientes[index].id,
-                );
-              },
-            ),
-          );
-        }),
+                ),
+              );
+            }
+          },
+        ),
         SizedBox(
           height: 50,
           child: Center(
             child: BotaoCadastro(
               onPressed: () {
-                context.read<PacienteProvider>().setPaciente(Paciente());
+                context.read<PacienteProvider>().paciente = Paciente();
                 Navigator.of(context).push(
                   AnimatedPageTransition(
                     page: const CadastroPaciente(),

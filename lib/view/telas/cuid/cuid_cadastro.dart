@@ -1,10 +1,6 @@
-import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
-import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/paciente.dart';
-import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
-import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
+import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
@@ -30,7 +26,8 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
+
     super.initState();
   }
 
@@ -86,12 +83,18 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
                 'Pacientes',
               ),
             ),
-          ],
-          views: const [
             Tab(
+              child: Text(
+                'Tarefas',
+              ),
+            ),
+          ],
+          views: [
+            const Tab(
               child: DadosCuidador(),
             ),
-            Tab(child: PacientesCuidador()),
+            const Tab(child: PacientesCuidador()),
+            Tab(child: Container()),
           ],
         ),
       ),
@@ -107,8 +110,20 @@ class PacientesCuidador extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
-    return Column(
-      children: [],
+    return SingleChildScrollView(
+      child: Builder(builder: (context) {
+        cuidadorProvider.todosPacientes();
+        return Column(children: [
+          ListView.builder(
+            itemCount: cuidadorProvider.pacientes.length,
+            itemBuilder: (context, index) {
+              return ItemContainer(
+                title: cuidadorProvider.pacientes[index].nome,
+              );
+            },
+          ),
+        ]);
+      }),
     );
   }
 }

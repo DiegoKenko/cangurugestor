@@ -1,16 +1,27 @@
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
-import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/login_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class MethodLogin {
-  const MethodLogin();
+  MethodLogin();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  bool userLogged = false;
+
+  void userStatus() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      userLogged = user != null;
+    });
+  }
+
+  void logout() {}
+  void login() {}
+  void loadUser() {}
 }
 
 class GoogleLogin extends MethodLogin {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<UserCredential> getCredentials() async {
@@ -30,6 +41,7 @@ class GoogleLogin extends MethodLogin {
     return await _auth.signInWithCredential(credential);
   }
 
+  @override
   Future<void> logout() async {
     if (_googleSignIn.currentUser != null) {
       await _googleSignIn.signOut();
@@ -39,15 +51,24 @@ class GoogleLogin extends MethodLogin {
     }
   }
 
-  Future<Gestor> loadUser() async {
+  @override
+  Future<LoginUser> loadUser() async {
 /*     var cred = await getCredentials();
-    Gestor gestor =
+     LoginUser user =
         await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!); */
-    Gestor gestor =
+    LoginUser user =
         await FirestoreLogin().autenticarUsuarioEmail('dafl.andrade@gmail.com');
-    if (gestor.id.isEmpty) {
+    if (user.id.isEmpty) {
       //logout();
     }
-    return gestor;
+    return user;
   }
 }
+
+class AndroidEmailSenhaLogin extends MethodLogin {}
+
+class IOSEmailSenhaLogin extends MethodLogin {}
+
+class PhoneLogin extends MethodLogin {}
+
+class AnonymousLogin extends MethodLogin {}

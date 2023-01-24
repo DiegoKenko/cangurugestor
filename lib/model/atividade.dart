@@ -1,12 +1,12 @@
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/model/responsavel.dart';
 
 class Atividade {
-  String nome = '';
   String id = '';
   String descricao = '';
   String tipo = '';
-  String data = '';
-  String hora = '';
   String local = '';
   String observacao = '';
   String status = '';
@@ -16,9 +16,11 @@ class Atividade {
   EnumIntervalo frequenciaMedida = EnumIntervalo.dias;
   EnumIntervalo duracaoMedida = EnumIntervalo.minutos;
   bool ativo = true;
+  Paciente paciente = Paciente();
+  Cuidador cuidador = Cuidador();
+  Responsavel responsavel = Responsavel();
 
   Atividade({
-    this.nome = '',
     this.descricao = '',
     this.tipo = '',
     this.duracaoQuantidade = 0,
@@ -32,12 +34,11 @@ class Atividade {
   });
 
   Atividade.fromMap(Map<String, dynamic> map) {
-    nome = map['nome'];
     descricao = map['descricao'];
     tipo = map['tipo'];
     duracaoQuantidade = map['duracaoQuantidade'];
-    data = map['data'];
-    hora = map['hora'];
+    local = map['local'];
+
     observacao = map['observacao'];
     status = map['status'];
     intensidade = map['intensidade'];
@@ -52,10 +53,8 @@ class Atividade {
 
   Map<String, dynamic> toMap() {
     return {
-      'nome': nome,
       'descricao': descricao,
-      'data': data,
-      'hora': hora,
+      'local': local,
       'observacao': observacao,
       'status': status,
       'intensidade': intensidade ?? '',

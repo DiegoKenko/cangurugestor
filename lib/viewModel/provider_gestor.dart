@@ -1,4 +1,3 @@
-import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';

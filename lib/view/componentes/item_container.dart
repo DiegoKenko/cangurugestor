@@ -1,3 +1,4 @@
+import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:flutter/material.dart';
 
 class ItemContainer extends StatelessWidget {
@@ -15,14 +16,32 @@ class ItemContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        child: ListTile(
-          trailing: trailing,
-          subtitle: Text(subtitle),
-          title: Text(
-            title,
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        shadowColor: corPad1,
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          child: ListTile(
+            trailing: trailing,
+            subtitle: Text(subtitle),
+            title: Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: corPad1,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: Text(
+                title,
+              ),
+            ),
           ),
         ),
       ),

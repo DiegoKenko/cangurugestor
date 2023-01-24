@@ -98,6 +98,8 @@ class FirestoreMedicamento {
     });
     return meds;
   }
+  
+  
 
   Future<List<String>> todosMedicamentos() async {
     List<String> medReturn = [];

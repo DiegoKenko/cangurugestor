@@ -1,44 +1,37 @@
 import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
 import 'package:cangurugestor/model/consulta.dart';
-import 'package:cangurugestor/model/paciente.dart';
 import 'package:flutter/cupertino.dart';
 
 class ConsultaProvider extends ChangeNotifier {
-  Consulta _consulta = Consulta();
-  Paciente _paciente = Paciente();
-
-  Consulta get consulta => _consulta;
-  Paciente get paciente => _paciente;
-
-  set consulta(Consulta consulta) {
-    _consulta = _consulta;
-  }
-
-  set paciente(Paciente paciente) {
-    _paciente = _paciente;
-  }
+  Consulta consulta = Consulta();
 
   void clear() {
-    _consulta = Consulta();
-    _paciente = Paciente();
+    consulta = Consulta();
     notifyListeners();
   }
 
   Future<void> load() async {
-    var med =
-        await FirestoreConsulta().consultaPaciente(_consulta.id, _paciente.id);
+    var med = await FirestoreConsulta()
+        .consultaPaciente(consulta.id, consulta.paciente.id);
     consulta = med;
     notifyListeners();
   }
 
+  Future<void> delete() async {
+    FirestoreConsulta()
+        .excluirConsultaPaciente(consulta.id, consulta.paciente.id);
+    notifyListeners();
+  }
+
   Future<void> update() async {
-    if (_consulta.id.isNotEmpty) {
-      FirestoreConsulta().atualizarConsultaPaciente(_consulta, _paciente.id);
+    if (consulta.id.isNotEmpty) {
+      FirestoreConsulta()
+          .atualizarConsultaPaciente(consulta, consulta.paciente.id);
       notifyListeners();
     } else {
-      Consulta med = await FirestoreConsulta()
-          .novaConsultaPaciente(_consulta, _paciente.id);
-      _consulta = med;
+      Consulta consulta = await FirestoreConsulta()
+          .novaConsultaPaciente(this.consulta, this.consulta.paciente.id);
+      consulta = consulta;
       notifyListeners();
     }
   }

@@ -1,7 +1,7 @@
+import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 
-class Gestor extends Pessoa {
-  String id = '';
+class Gestor extends Pessoa with LoginUser {
   List<String> idClientes = [];
   List<String> idCuidadores = [];
   Gestor();

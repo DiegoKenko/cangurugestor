@@ -41,7 +41,7 @@ class _FormCadastroState extends State<FormCadastro> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: TextFormField(
         onChanged: widget.onChanged,
         onEditingComplete: widget.onEditingComplete,
@@ -68,7 +68,7 @@ class _FormCadastroState extends State<FormCadastro> {
           label: Text(widget.labelText.toUpperCase()),
           labelStyle: kLabelStyle,
           focusColor: Colors.white,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );

@@ -1,16 +1,14 @@
 import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 
-class Responsavel extends Pessoa {
+class Responsavel extends Pessoa with LoginUser {
   List<Cuidador> cuidadores = [];
   List<Paciente> pacientes = [];
   List<String> idCuidadores = [];
   List<String> idPacientes = [];
   String idContrato = '';
-  String senha = '';
-  bool ativo = true;
-  String id = '';
 
   Responsavel(
       {String cpf = '',
@@ -25,9 +23,6 @@ class Responsavel extends Pessoa {
       String bairro = '',
       String cidade = '',
       String estado = '',
-      this.id = '',
-      this.senha = '',
-      this.ativo = true,
       this.idContrato = ''})
       : super(
           cpf: cpf,

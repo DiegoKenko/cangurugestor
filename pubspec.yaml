@@ -48,6 +48,7 @@ dependencies:
   mask_text_input_formatter: ^2.4.0
   provider: ^6.0.4
   flutter_provider: ^2.1.0
+  firebase_crashlytics: ^3.0.11
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
     - assets/imagemLogo01.png
     - assets/reduxLogo01.png
     - assets/google_icon.png
+    - assets/apple_icon.png
   uses-material-design: true
 
 

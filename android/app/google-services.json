@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:783192734543:android:5aa1ace41b4717b3afa33a",
+        "mobilesdk_app_id": "1:783192734543:android:cdd53e62420972f8afa33a",
         "android_client_info": {
-          "package_name": "com.example.canguru"
+          "package_name": "com.inora.canguru"
         }
       },
       "oauth_client": [
         {
-          "client_id": "783192734543-j82n1qpb6uvjritk9g32unmm6fijog4s.apps.googleusercontent.com",
+          "client_id": "783192734543-unft306n8ilpkdln9vo6q61sp9fdaesm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.canguru",
+            "package_name": "com.inora.canguru",
             "certificate_hash": "498327a3e7868546da7abcef252aa5fd1309726c"
           }
         },
@@ -39,54 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "783192734543-7df2kiiaur0abifnut5reg9omal3qlbo.apps.googleusercontent.com",
+              "client_id": "783192734543-3gmndsss8papt3vheam4kl0q7i4328cv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.canguru"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:783192734543:android:03ace4f2228bff44afa33a",
-        "android_client_info": {
-          "package_name": "com.inora.cangurugestor"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "783192734543-2lv7pt302dj339gb8rar7i9ini1ao0bm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.inora.cangurugestor",
-            "certificate_hash": "498327a3e7868546da7abcef252aa5fd1309726c"
-          }
-        },
-        {
-          "client_id": "783192734543-rh289u5feccc2mbrpnll1ebueis87tqv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBY7UgP133vR5D6KVg2k1zALUdezskyr48"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "783192734543-rh289u5feccc2mbrpnll1ebueis87tqv.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "783192734543-7df2kiiaur0abifnut5reg9omal3qlbo.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.canguru"
+                "bundle_id": "com.inora.cangurugestor"
               }
             }
           ]

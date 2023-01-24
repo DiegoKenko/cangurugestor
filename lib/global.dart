@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 const int opcaoInclusao = 1;
 const int opcaoAlteracao = 2;
 const int opcaoVisualizacao = 3;
+const int privilegioNenhum = 0;
 const int privilegioGestor = 1;
 const int privilegioResponsavel = 2;
 const int privilegioCuidador = 3;
@@ -20,6 +21,7 @@ enum EnumClasse {
   responsavel,
   cuidador,
   paciente,
+  naoDefinido,
 }
 
 enum EnumTarefa {

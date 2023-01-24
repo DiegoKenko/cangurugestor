@@ -3,9 +3,6 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
-import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
-import 'package:cangurugestor/view/componentes/form_cadastro_hora.dart';
-import 'package:cangurugestor/view/componentes/form_dropdown.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
@@ -14,7 +11,6 @@ import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +31,7 @@ class _CadastroConsultaState extends State<CadastroConsulta>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (context.read<ConsultaProvider>().paciente.id.isEmpty) {
+      if (context.read<ConsultaProvider>().consulta.paciente.id.isEmpty) {
         context.read<ConsultaProvider>().update();
       }
     });
@@ -52,59 +48,67 @@ class _CadastroConsultaState extends State<CadastroConsulta>
   Widget build(BuildContext context) {
     final ConsultaProvider consultaProvider = context.watch<ConsultaProvider>();
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
+    consultaProvider.consulta.paciente = pacienteProvider.paciente;
 
-    return Builder(builder: (context) {
-      consultaProvider.paciente = pacienteProvider.paciente;
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            consultaProvider.update();
+            consultaProvider.clear();
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
             onPressed: () {
-              consultaProvider.update();
+              consultaProvider.delete();
               consultaProvider.clear();
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
           ),
-          centerTitle: true,
-          title: Column(
-            children: [
-              Text(
-                consultaProvider.consulta.descricao.toUpperCase(),
-                style: kTitleAppBarStyle,
+        ],
+        centerTitle: true,
+        title: Column(
+          children: [
+            Text(
+              consultaProvider.consulta.descricao.toUpperCase(),
+              style: kTitleAppBarStyle,
+            ),
+            Text(
+              'consulta',
+              style: kSubtitleAppBarStyle,
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30, bottom: 30),
+          child: TabCanguru(
+            controller: _tabController,
+            tabs: const [
+              Tab(
+                text: 'Dados',
               ),
-              Text(
-                'consulta',
-                style: kSubtitleAppBarStyle,
+              Tab(
+                text: 'Tarefas',
+              ),
+            ],
+            views: const [
+              Tab(
+                child: DadosConsulta(),
+              ),
+              Tab(
+                child: TarefasConsulta(),
               ),
             ],
           ),
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 30),
-            child: TabCanguru(
-              controller: _tabController,
-              tabs: const [
-                Tab(
-                  text: 'Dados',
-                ),
-                Tab(
-                  text: 'Tarefas',
-                ),
-              ],
-              views: const [
-                Tab(
-                  child: DadosConsulta(),
-                ),
-                Tab(
-                  child: TarefasConsulta(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    });
+      ),
+    );
   }
 }
 
@@ -176,8 +180,6 @@ class DadosConsulta extends StatefulWidget {
 class _DadosConsultaState extends State<DadosConsulta> {
   final TextEditingController _descricaoController = TextEditingController();
   final TextEditingController _medicoController = TextEditingController();
-  final TextEditingController _dataController = TextEditingController();
-  final TextEditingController _horaController = TextEditingController();
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
@@ -190,41 +192,52 @@ class _DadosConsultaState extends State<DadosConsulta> {
 
   @override
   void initState() {
-    _dataController.addListener(() {
-      context.read<ConsultaProvider>().consulta.dataConsulta =
-          DateFormat('dd/MM/yyyy').parse(_dataController.text.isEmpty
-              ? '01/01/2023'
-              : _dataController.text);
+    _descricaoController.addListener(() {
+      // Listener para atualizar a descrição da consulta
+      context.read<ConsultaProvider>().consulta.descricao =
+          _descricaoController.text;
     });
+
+    _medicoController.addListener(() {
+      // Listener para atualizar o médico da consulta
+      context.read<ConsultaProvider>().consulta.medico = _medicoController.text;
+    });
+
+    _observacaoController.addListener(() {
+      // Listener para atualizar a observação da consulta
+      context.read<ConsultaProvider>().consulta.observacao =
+          _observacaoController.text;
+    });
+
     _ruaController.addListener(() {
       // Listener para atualizar a rua do responsável
-      context.read<PacienteProvider>().paciente.rua = _ruaController.text;
+      context.read<ConsultaProvider>().consulta.rua = _ruaController.text;
     });
     _bairroController.addListener(() {
       // Listener para atualizar o bairro do responsável
-      context.read<PacienteProvider>().paciente.bairro = _bairroController.text;
+      context.read<ConsultaProvider>().consulta.bairro = _bairroController.text;
     });
     _numeroRuaController.addListener(() {
       // Listener para atualizar o número da rua do responsável
-      context.read<PacienteProvider>().paciente.numeroRua =
+      context.read<ConsultaProvider>().consulta.numeroRua =
           _numeroRuaController.text;
     });
     _complementoRuaController.addListener(() {
       // Listener para atualizar o complemento da rua do responsável
-      context.read<PacienteProvider>().paciente.complementoRua =
+      context.read<ConsultaProvider>().consulta.complementoRua =
           _complementoRuaController.text;
     });
     _cidadeController.addListener(() {
       // Listener para atualizar a cidade do responsável
-      context.read<PacienteProvider>().paciente.cidade = _cidadeController.text;
+      context.read<ConsultaProvider>().consulta.cidade = _cidadeController.text;
     });
     _estadoController.addListener(() {
       // Listener para atualizar o estado do responsável
-      context.read<PacienteProvider>().paciente.estado = _estadoController.text;
+      context.read<ConsultaProvider>().consulta.estado = _estadoController.text;
     });
     _cepController.addListener(() {
       // Listener para atualizar o CEP do responsável
-      context.read<PacienteProvider>().paciente.cep = _cepController.text;
+      context.read<ConsultaProvider>().consulta.cep = _cepController.text;
       // Listener para atualizar os campos de endereço
       if (_cepController.text.length == 9) {
         CepAPI.getCep(_cepController.text).then((value) {
@@ -233,11 +246,11 @@ class _DadosConsultaState extends State<DadosConsulta> {
             _bairroController.text = value['bairro'];
             _cidadeController.text = value['localidade'];
             _estadoController.text = value['uf'];
-            context.read<PacienteProvider>().paciente.rua = value['logradouro'];
-            context.read<PacienteProvider>().paciente.bairro = value['bairro'];
-            context.read<PacienteProvider>().paciente.cidade =
+            context.read<ConsultaProvider>().consulta.rua = value['logradouro'];
+            context.read<ConsultaProvider>().consulta.bairro = value['bairro'];
+            context.read<ConsultaProvider>().consulta.cidade =
                 value['localidade'];
-            context.read<PacienteProvider>().paciente.estado = value['uf'];
+            context.read<ConsultaProvider>().consulta.estado = value['uf'];
 
             return;
           } else {
@@ -249,15 +262,13 @@ class _DadosConsultaState extends State<DadosConsulta> {
         });
       }
     });
-
     super.initState();
   }
 
   @override
   void dispose() {
-    _dataController.dispose();
-    _horaController.dispose();
     _descricaoController.dispose();
+    _observacaoController.dispose();
     _medicoController.dispose();
     _ruaController.dispose();
     _bairroController.dispose();
@@ -274,21 +285,14 @@ class _DadosConsultaState extends State<DadosConsulta> {
     final ConsultaProvider consultaProvider = context.watch<ConsultaProvider>();
     _descricaoController.text = consultaProvider.consulta.descricao;
     _medicoController.text = consultaProvider.consulta.medico;
-    _dataController.text = DateFormat('dd/MM/yyyy').format(
-        consultaProvider.consulta.dataConsulta == null
-            ? DateTime.now()
-            : consultaProvider.consulta.dataConsulta);
-    _horaController.text = DateFormat('HH:mm').format(
-        consultaProvider.consulta.dataConsulta == null
-            ? DateTime.now()
-            : consultaProvider.consulta.dataConsulta);
-    _ruaController.text = consultaProvider.paciente.rua;
-    _bairroController.text = consultaProvider.paciente.bairro;
-    _numeroRuaController.text = consultaProvider.paciente.numeroRua;
-    _complementoRuaController.text = consultaProvider.paciente.complementoRua;
-    _cidadeController.text = consultaProvider.paciente.cidade;
-    _estadoController.text = consultaProvider.paciente.estado;
-    _cepController.text = consultaProvider.paciente.cep;
+    _observacaoController.text = consultaProvider.consulta.observacao;
+    _ruaController.text = consultaProvider.consulta.rua;
+    _bairroController.text = consultaProvider.consulta.bairro;
+    _numeroRuaController.text = consultaProvider.consulta.numeroRua;
+    _complementoRuaController.text = consultaProvider.consulta.complementoRua;
+    _cidadeController.text = consultaProvider.consulta.cidade;
+    _estadoController.text = consultaProvider.consulta.estado;
+    _cepController.text = consultaProvider.consulta.cep;
 
     return SingleChildScrollView(
       child: Column(
@@ -300,28 +304,6 @@ class _DadosConsultaState extends State<DadosConsulta> {
             controller: _descricaoController,
             labelText: 'Nome',
           ),
-          FormCadastroData(
-            dataInicial: DateTime.now(),
-            dataUltima: DateTime(DateTime.now().year + 50),
-            dataPrimeira: DateTime.now(),
-            enabled: true,
-            controller: _dataController,
-            labelText: 'Data',
-            onDateChanged: (x) {
-              context.read<ConsultaProvider>().consulta.dataConsulta =
-                  DateTime.parse(
-                      '${_dataController.text} ${_horaController.text}');
-            },
-          ),
-          FormCadastroHora(
-              controller: _horaController,
-              labelText: 'Hora',
-              enabled: true,
-              onTimeChanged: (x) {
-                context.read<ConsultaProvider>().consulta.dataConsulta =
-                    DateTime.parse(
-                        '${_dataController.text} ${_horaController.text}');
-              }),
           FormCadastro(
             obrigatorio: true,
             textInputType: TextInputType.name,

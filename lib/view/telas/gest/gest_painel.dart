@@ -58,8 +58,8 @@ class _PainelGestorState extends State<PainelGestor>
               text: 'Cuidadores',
             ),
           ],
-          views: [
-            const Tab(
+          views: const [
+            Tab(
               child: ClientesGestor(),
             ),
             Tab(
@@ -88,29 +88,35 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
 
     return Column(
       children: [
-        Builder(builder: ((context) {
-          gestorProvider.todosCuidadores();
-          return Expanded(
-            child: ListView.builder(
-              itemCount: gestorProvider.cuidadores.length,
-              itemBuilder: (context, index) {
-                return ItemContainer(
-                  title: gestorProvider.cuidadores[index].nome,
-                  subtitle: gestorProvider.cuidadores[index].sobrenome,
-                  onTap: () {
-                    context.read<CuidadorProvider>().cuidador =
-                        gestorProvider.cuidadores[index];
-                    Navigator.of(context).push(
-                      AnimatedPageTransition(
-                        page: const CadastroCuidador(),
-                      ),
+        Builder(
+          builder: ((context) {
+            gestorProvider.todosCuidadores();
+            return Expanded(
+              child: ListView.builder(
+                itemCount: gestorProvider.cuidadores.length,
+                itemBuilder: (context, index) {
+                  if (gestorProvider.cuidadores.isEmpty) {
+                    return const Text('nenhum cuidador cadastrado');
+                  } else {
+                    return ItemContainer(
+                      title: gestorProvider.cuidadores[index].nome,
+                      subtitle: gestorProvider.cuidadores[index].sobrenome,
+                      onTap: () {
+                        context.read<CuidadorProvider>().cuidador =
+                            gestorProvider.cuidadores[index];
+                        Navigator.of(context).push(
+                          AnimatedPageTransition(
+                            page: const CadastroCuidador(),
+                          ),
+                        );
+                      },
                     );
-                  },
-                );
-              },
-            ),
-          );
-        })),
+                  }
+                },
+              ),
+            );
+          }),
+        ),
         SizedBox(
           height: 50,
           child: Center(
@@ -145,7 +151,7 @@ class ClientesGestor extends StatelessWidget {
           child: Builder(builder: (context) {
             gestorProvider.todosClientes();
             if (gestorProvider.clientes.isEmpty) {
-              return Container();
+              return const Text('nenhum cliente cadastrado');
             } else {
               return ListView.builder(
                 shrinkWrap: true,
@@ -164,7 +170,6 @@ class ClientesGestor extends StatelessWidget {
                       );
                     },
                     title: gestorProvider.clientes[index].nome,
-                    subtitle: gestorProvider.clientes[index].id,
                   );
                 },
               );

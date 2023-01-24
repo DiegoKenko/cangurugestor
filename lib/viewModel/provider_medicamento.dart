@@ -28,6 +28,12 @@ class MedicamentoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> delete() async {
+    FirestoreMedicamento()
+        .excluirMedicamentoPaciente(medicamento.id, paciente.id);
+    notifyListeners();
+  }
+
   Future<void> update() async {
     if (medicamento.id.isNotEmpty) {
       FirestoreMedicamento()

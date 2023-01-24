@@ -1,5 +1,6 @@
+import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
+import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
 import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
-import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/firebaseUtils/fire_medicamento.dart';
 import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
 import 'package:cangurugestor/model/cuidador.dart';
@@ -8,16 +9,14 @@ import 'package:cangurugestor/model/responsavel.dart';
 import 'package:flutter/cupertino.dart';
 
 class PacienteProvider extends ChangeNotifier {
-  Paciente paciente = Paciente();
+  Paciente _paciente = Paciente();
   Responsavel responsavel = Responsavel();
 
-  void setPaciente(Paciente paciente) {
-    this.paciente = paciente;
-    notifyListeners();
-  }
+  Paciente get paciente => _paciente;
 
-  void setResponsavel(Responsavel responsavel) {
-    this.responsavel = responsavel;
+  set paciente(Paciente paciente) {
+    _paciente = paciente;
+    notifyListeners();
   }
 
   void clear() {
@@ -26,30 +25,42 @@ class PacienteProvider extends ChangeNotifier {
   }
 
   void update() async {
-    if (paciente.id.isNotEmpty) {
-      FirestorePaciente().atualizarPaciente(paciente);
+    if (_paciente.id.isNotEmpty) {
+      FirestorePaciente().atualizarPaciente(_paciente);
       notifyListeners();
     } else {
       Paciente pac =
-          await FirestorePaciente().incluirPaciente(responsavel, paciente);
+          await FirestorePaciente().incluirPaciente(responsavel, _paciente);
       paciente = pac;
       notifyListeners();
     }
   }
 
   void delete() async {
-    FirestorePaciente().excluirPaciente(responsavel, paciente);
+    FirestorePaciente().excluirPaciente(responsavel, _paciente);
     notifyListeners();
   }
 
-  void load() async {
-    paciente.medicamentos =
-        await FirestoreMedicamento().todosMedicamentosPaciente(paciente.id);
+  void loadMedicamentos() async {
+    _paciente.medicamentos =
+        await FirestoreMedicamento().todosMedicamentosPaciente(_paciente.id);
+    notifyListeners();
+  }
+
+  void loadConsultas() async {
+    _paciente.consultas =
+        await FirestoreConsulta().todasConsultasPaciente(_paciente.id);
+    notifyListeners();
+  }
+
+  void loadAtividades() async {
+    _paciente.atividades =
+        await FirestoreAtividade().todasAtividadesPaciente(_paciente.id);
     notifyListeners();
   }
 
   void addCuidadorPaciente(Cuidador cuidador) async {
-    cuidador.idPacientes.add(paciente.id);
+    cuidador.idPacientes.add(_paciente.id);
     await FirestoreCuidador().update(cuidador);
     notifyListeners();
   }

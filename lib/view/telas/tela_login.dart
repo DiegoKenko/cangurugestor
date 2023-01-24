@@ -1,8 +1,13 @@
 import 'package:cangurugestor/autentication/auth_login.dart';
+import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
-import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
+import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:provider/provider.dart';
@@ -21,19 +26,30 @@ class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
     final LoginProvider loginProvider = context.watch<LoginProvider>();
+
     loginProvider.addListener(() {
       if (loginProvider.isLogged) {
-        context.read<GestorProvider>().gestor = loginProvider.gestor;
+        if (loginProvider.classe == EnumClasse.gestor) {
+          context.read<GestorProvider>().gestor = loginProvider.user as Gestor;
+        }
+        if (loginProvider.classe == EnumClasse.cuidador) {
+          context.read<CuidadorProvider>().cuidador =
+              loginProvider.user as Cuidador;
+        }
+        if (loginProvider.classe == EnumClasse.responsavel) {
+          context.read<ResponsavelProvider>().responsavel =
+              loginProvider.user as Responsavel;
+        }
         Navigator.of(context).pushReplacement(
           AnimatedPageTransition(
-            page: const PainelGestor(),
+            page: loginProvider.route!,
           ),
         );
       }
     });
 
     return Scaffold(
-      backgroundColor: corPad1,
+      backgroundColor: corPad1.withOpacity(0.8),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(
@@ -46,13 +62,20 @@ class _TelaLoginState extends State<TelaLogin> {
           children: <Widget>[
             Image(
               image: const AssetImage('assets/reduxLogo01.png'),
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(context).size.height * 0.5,
               fit: BoxFit.fitWidth,
             ),
             const SizedBox(height: 20.0),
             !loginProvider.isLoading
                 ? const ButtonLoginGoogle()
-                : const CircularProgressIndicator(color: corPad3),
+                : const CircularProgressIndicator(color: corPad1),
+            !loginProvider.isLoading ? const ButtonLoginApple() : Container(),
+            !loginProvider.isLoading
+                ? const ButtonLoginAnonymous()
+                : Container(),
+            !loginProvider.isLoading
+                ? const ButtonLoginEmailSenha()
+                : Container(),
           ],
         ),
       ),
@@ -60,54 +83,123 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 }
 
-class ButtonLoginGoogle extends StatefulWidget {
+class ButtonLoginEmailSenha extends StatelessWidget {
+  const ButtonLoginEmailSenha({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonLogin(
+      image: const Icon(Icons.mail, color: corPreto, size: 26.0),
+      text: 'E-mail e senha',
+      onPressed: () {
+        //context.read<LoginProvider>().setLoginMethod(());
+        context.read<LoginProvider>().login();
+      },
+    );
+  }
+}
+
+class ButtonLoginAnonymous extends StatelessWidget {
+  const ButtonLoginAnonymous({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonLogin(
+      image: const Icon(Icons.person, color: corPreto, size: 26.0),
+      text: 'Anônimo',
+      onPressed: () {
+        //context.read<LoginProvider>().setLoginMethod(());
+        context.read<LoginProvider>().login();
+      },
+    );
+  }
+}
+
+class ButtonLoginApple extends StatelessWidget {
+  const ButtonLoginApple({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonLogin(
+      image: const Image(
+        image: AssetImage("assets/apple_icon.png"),
+        height: 26.0,
+      ),
+      text: 'Entrar com Apple ID',
+      onPressed: () {
+        //context.read<LoginProvider>().setLoginMethod(());
+        context.read<LoginProvider>().login();
+      },
+    );
+  }
+}
+
+class ButtonLoginGoogle extends StatelessWidget {
   const ButtonLoginGoogle({Key? key}) : super(key: key);
 
   @override
-  State<ButtonLoginGoogle> createState() => _ButtonLoginGoogleState();
-}
-
-class _ButtonLoginGoogleState extends State<ButtonLoginGoogle> {
-  @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(corPad3),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            side: const BorderSide(
-              color: Colors.white,
-              width: 5,
-            ),
-            borderRadius: BorderRadius.circular(40),
-          ),
-        ),
+    return ButtonLogin(
+      image: const Image(
+        image: AssetImage("assets/google_icon.png"),
+        height: 26.0,
       ),
+      text: 'Entrar com Google',
       onPressed: () {
         context.read<LoginProvider>().setLoginMethod(GoogleLogin());
         context.read<LoginProvider>().login();
       },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Image(
-              image: AssetImage("assets/google_icon.png"),
-              height: 26.0,
+    );
+  }
+}
+
+class ButtonLogin extends StatelessWidget {
+  const ButtonLogin({
+    Key? key,
+    required this.onPressed,
+    required this.image,
+    required this.text,
+  }) : super(key: key);
+  final Function()? onPressed;
+  final Widget image;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: OutlinedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(corBranco),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              side: const BorderSide(
+                color: corPad1,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(20),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text(
-                'Entrar com Google',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+          ),
+        ),
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              image,
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

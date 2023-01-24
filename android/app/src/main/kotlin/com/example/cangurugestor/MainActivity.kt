@@ -1,4 +1,4 @@
-package com.inora.cangurugestor
+package com.inora.canguru
 
 import io.flutter.embedding.android.FlutterActivity
 

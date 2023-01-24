@@ -34,19 +34,19 @@ class FirestoreAtividade {
         .delete();
   }
 
-  Future<List<String>> todasAtividades() async {
-    List<String> atvReturn = [];
-    firestore.collection('atividades').get().then(
-      (QuerySnapshot<Map<String, dynamic>> value) {
-        for (var element in value.docs) {
-          if (element.data()['nome'] != null) {
-            atvReturn.add(element.data()['nome']);
-          }
-        }
-        atvReturn.sort((a, b) => a.compareTo(b));
-        return atvReturn;
-      },
-    );
+  Future<List<Atividade>> todasAtividadesPaciente(String idPaciente) async {
+    List<Atividade> atvReturn = [];
+    QuerySnapshot<Map<String, dynamic>> snap = await firestore
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('atividades')
+        .get();
+    for (var element in snap.docs) {
+      var atv = Atividade.fromMap(element.data());
+      atv.id = element.id;
+      atvReturn.add(atv);
+    }
+
     return atvReturn;
   }
 }

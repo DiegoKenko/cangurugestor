@@ -50,7 +50,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
-    pacienteProvider.setResponsavel(responsavelProvider.responsavel);
+    pacienteProvider.responsavel = responsavelProvider.responsavel;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -152,7 +152,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
               showBottomSheet(
                   context: context,
                   builder: ((context) {
-                    return Container(
+                    return SizedBox(
                       height: MediaQuery.of(context).size.height * 0.5,
                       child: SingleChildScrollView(
                         child: Column(
@@ -162,8 +162,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                                       pacienteProvider.addCuidadorPaciente(e);
                                       Navigator.of(context).pop();
                                     },
-                                    title: e.id,
-                                    subtitle: e.nome,
+                                    title: e.nome,
                                   ))
                               .toList(),
                         ),
@@ -239,25 +238,37 @@ class AtividadesPaciente extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            itemCount: pacienteProvider.paciente.atividades.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  context.read<AtividadeProvider>().setAtividade(
-                      pacienteProvider.paciente.atividades[index]);
-                  Navigator.of(context).push(
-                    AnimatedPageTransition(
-                      page: const CadastroAtividade(),
+          child: Builder(builder: (context) {
+            pacienteProvider.loadAtividades();
+            if (pacienteProvider.paciente.atividades.isEmpty) {
+              return const Center(
+                child: Text('Nenhuma atividade cadastrada'),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: pacienteProvider.paciente.atividades.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      context.read<AtividadeProvider>().atividade =
+                          pacienteProvider.paciente.atividades[index];
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroAtividade(),
+                        ),
+                      );
+                    },
+                    child: ItemContainer(
+                      title:
+                          pacienteProvider.paciente.atividades[index].descricao,
+                      subtitle:
+                          pacienteProvider.paciente.atividades[index].local,
                     ),
                   );
                 },
-                child: ItemContainer(
-                  title: pacienteProvider.paciente.atividades[index].nome,
-                ),
               );
-            },
-          ),
+            }
+          }),
         ),
         SizedBox(
           height: 40,
@@ -289,25 +300,37 @@ class ConsultasPaciente extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            itemCount: pacienteProvider.paciente.consultas.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  context.read<ConsultaProvider>().consulta =
-                      pacienteProvider.paciente.consultas[index];
-                  Navigator.of(context).push(
-                    AnimatedPageTransition(
-                      page: const CadastroConsulta(),
+          child: Builder(builder: (context) {
+            pacienteProvider.loadConsultas();
+            if (pacienteProvider.paciente.consultas.isEmpty) {
+              return const Center(
+                child: Text(
+                  'Nenhuma consulta cadastrada',
+                ),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: pacienteProvider.paciente.consultas.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      context.read<ConsultaProvider>().consulta =
+                          pacienteProvider.paciente.consultas[index];
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroConsulta(),
+                        ),
+                      );
+                    },
+                    child: ItemContainer(
+                      title:
+                          pacienteProvider.paciente.consultas[index].descricao,
                     ),
                   );
                 },
-                child: ItemContainer(
-                  title: pacienteProvider.paciente.consultas[index].descricao,
-                ),
               );
-            },
-          ),
+            }
+          }),
         ),
         SizedBox(
           height: 40,
@@ -336,48 +359,55 @@ class MedicamentosPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    return Builder(builder: (context) {
-      pacienteProvider.load();
-      return Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: pacienteProvider.paciente.medicamentos.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    context.read<MedicamentoProvider>().setMedicamento(
-                        pacienteProvider.paciente.medicamentos[index]);
-                    Navigator.of(context).push(
-                      AnimatedPageTransition(
-                        page: const CadastroMedicamento(),
-                      ),
-                    );
-                  },
-                  child: ItemContainer(
-                    title: pacienteProvider.paciente.medicamentos[index].nome,
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: Center(
-              child: BotaoCadastro(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    AnimatedPageTransition(
-                      page: const CadastroMedicamento(),
+    return Column(children: [
+      Expanded(
+        child: Builder(
+          builder: (context) {
+            pacienteProvider.loadMedicamentos();
+            if (pacienteProvider.paciente.medicamentos.isEmpty) {
+              return const Center(
+                child: Text('Nenhum medicamento cadastrado'),
+              );
+            }
+            {
+              return ListView.builder(
+                itemCount: pacienteProvider.paciente.medicamentos.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      context.read<MedicamentoProvider>().setMedicamento(
+                          pacienteProvider.paciente.medicamentos[index]);
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroMedicamento(),
+                        ),
+                      );
+                    },
+                    child: ItemContainer(
+                      title: pacienteProvider.paciente.medicamentos[index].nome,
                     ),
                   );
                 },
-              ),
-            ),
-          )
-        ],
-      );
-    });
+              );
+            }
+          },
+        ),
+      ),
+      SizedBox(
+        height: 40,
+        child: Center(
+          child: BotaoCadastro(
+            onPressed: () {
+              Navigator.of(context).push(
+                AnimatedPageTransition(
+                  page: const CadastroMedicamento(),
+                ),
+              );
+            },
+          ),
+        ),
+      )
+    ]);
   }
 }
 

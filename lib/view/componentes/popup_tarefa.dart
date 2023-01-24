@@ -71,7 +71,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
             labelText: 'Data',
             enabled: true,
             dataInicial: DateTime.now(),
-            dataUltima: DateTime.now().add(Duration(days: 365)),
+            dataUltima: DateTime.now().add(const Duration(days: 365)),
             dataPrimeira: DateTime.now(),
           ),
           FormCadastroHora(

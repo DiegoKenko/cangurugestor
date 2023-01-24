@@ -63,6 +63,16 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
               Navigator.pop(context);
             },
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                medicamentoProvider.delete();
+                medicamentoProvider.clear();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
           centerTitle: true,
           title: Column(
             children: [

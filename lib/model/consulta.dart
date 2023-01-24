@@ -1,30 +1,30 @@
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/model/responsavel.dart';
+
 class Consulta {
   String id = '';
   String descricao = '';
   String observacao = '';
-  String cuidador = '';
-  String paciente = '';
-  String responsavel = '';
+  Cuidador cuidador = Cuidador();
+  Paciente paciente = Paciente();
+  Responsavel responsavel = Responsavel();
   String medico = '';
   String rua = '';
-  String numero = '';
+  String numeroRua = '';
   String bairro = '';
   String cidade = '';
   String estado = '';
   String cep = '';
   String complementoRua = '';
   bool ativo = true;
-  DateTime dataConsulta = DateTime.now();
   DateTime dataRealizada = DateTime.now();
 
   Consulta(
       {this.observacao = '',
       this.descricao = '',
-      this.cuidador = '',
-      this.paciente = '',
-      this.responsavel = '',
       this.rua = '',
-      this.numero = '',
+      this.numeroRua = '',
       this.bairro = '',
       this.cidade = '',
       this.estado = '',
@@ -36,11 +36,9 @@ class Consulta {
     ativo = json['ativo'];
     observacao = json['observacao'];
     descricao = json['descricao'];
-    paciente = json['paciente'];
-    responsavel = json['responsavel'];
     medico = json['medico'];
     rua = json['rua'];
-    numero = json['numero'];
+    numeroRua = json['numeroRua'];
     bairro = json['bairro'];
     cidade = json['cidade'];
     estado = json['estado'];
@@ -53,12 +51,10 @@ class Consulta {
       'descricao': descricao,
       'ativo': ativo,
       'observacao': observacao,
-      'responsavel': responsavel,
       'medico': medico,
-      'paciente': paciente,
       'dataCadastro': DateTime.now().toString(),
       'rua': rua,
-      'numero': numero,
+      'numeroRua': numeroRua,
       'bairro': bairro,
       'cidade': cidade,
       'estado': estado,

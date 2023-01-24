@@ -48,7 +48,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBY7UgP133vR5D6KVg2k1zALUdezskyr48',
-    appId: '1:783192734543:android:a0ce2520965ac2f8afa33a',
+    appId: '1:783192734543:android:03ace4f2228bff44afa33a',
     messagingSenderId: '783192734543',
     projectId: 'canguru-6bca1',
     storageBucket: 'canguru-6bca1.appspot.com',
@@ -56,27 +56,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBANXCPzTuILHsd0KVWT7t73bwvgYzbEkk',
-    appId: '1:783192734543:ios:da9d5de15bf25b30afa33a',
+    appId: '1:783192734543:ios:e37f0270a7045f69afa33a',
     messagingSenderId: '783192734543',
     projectId: 'canguru-6bca1',
     storageBucket: 'canguru-6bca1.appspot.com',
-    androidClientId:
-        '783192734543-47lqmr9jgsa1rqll6ump2t3slusd6o4h.apps.googleusercontent.com',
-    iosClientId:
-        '783192734543-cum9599ijjhos3qs3q5vi1g3qdcecija.apps.googleusercontent.com',
+    androidClientId: '783192734543-2lv7pt302dj339gb8rar7i9ini1ao0bm.apps.googleusercontent.com',
+    iosClientId: '783192734543-3gmndsss8papt3vheam4kl0q7i4328cv.apps.googleusercontent.com',
     iosBundleId: 'com.inora.cangurugestor',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBANXCPzTuILHsd0KVWT7t73bwvgYzbEkk',
-    appId: '1:783192734543:ios:da9d5de15bf25b30afa33a',
+    appId: '1:783192734543:ios:e37f0270a7045f69afa33a',
     messagingSenderId: '783192734543',
     projectId: 'canguru-6bca1',
     storageBucket: 'canguru-6bca1.appspot.com',
-    androidClientId:
-        '783192734543-47lqmr9jgsa1rqll6ump2t3slusd6o4h.apps.googleusercontent.com',
-    iosClientId:
-        '783192734543-cum9599ijjhos3qs3q5vi1g3qdcecija.apps.googleusercontent.com',
+    androidClientId: '783192734543-2lv7pt302dj339gb8rar7i9ini1ao0bm.apps.googleusercontent.com',
+    iosClientId: '783192734543-3gmndsss8papt3vheam4kl0q7i4328cv.apps.googleusercontent.com',
     iosBundleId: 'com.inora.cangurugestor',
   );
 }

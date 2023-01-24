@@ -1,12 +1,12 @@
 import 'package:cangurugestor/model/consulta.dart';
-import 'package:cangurugestor/model/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreConsulta {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  atualizarConsultaPaciente(Consulta consulta, String idPaciente) {
-    firestore
+  Future<void> atualizarConsultaPaciente(
+      Consulta consulta, String idPaciente) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('consultas')
@@ -39,6 +39,9 @@ class FirestoreConsulta {
 
   Future<Consulta> novaConsultaPaciente(
       Consulta consulta, String idPaciente) async {
+    if (idPaciente.isEmpty) {
+      return consulta;
+    }
     var con = await firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -48,25 +51,23 @@ class FirestoreConsulta {
     return consulta;
   }
 
-  Future<List<Consulta>> todasConsultasPaciente(Paciente paciente) {
-    var consultas = <Consulta>[];
-    return firestore
+  Future<List<Consulta>> todasConsultasPaciente(String idpaciente) async {
+    List<Consulta> consultas = [];
+    var snap = await firestore
         .collection('pacientes')
-        .doc(paciente.id)
+        .doc(idpaciente)
         .collection('consultas')
-        .get()
-        .then((snapshot) {
-      for (var doc in snapshot.docs) {
-        var consulta = Consulta.fromMap(doc.data());
-        consulta.id = doc.id;
-        consultas.add(consulta);
-      }
-      return consultas;
-    });
+        .get();
+
+    for (var doc in snap.docs) {
+      var consulta = Consulta.fromMap(doc.data());
+      consulta.id = doc.id;
+      consultas.add(consulta);
+    }
+    return consultas;
   }
 
-  void excluirConsultaPaciente(
-      String idConsulta, String idReponsavel, String idPaciente) {
+  void excluirConsultaPaciente(String idConsulta, String idPaciente) {
     firestore
         .collection('pacientes')
         .doc(idPaciente)

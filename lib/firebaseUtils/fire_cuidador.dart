@@ -1,5 +1,6 @@
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreCuidador {
@@ -32,5 +33,26 @@ class FirestoreCuidador {
 
   Future<void> delete(Cuidador cuidador) async {
     await firestore.collection('cuidadores').doc(cuidador.id).delete();
+  }
+
+  Future<List<Paciente>> todosPacientesCuidador(
+      String idCuidador, Gestor gestor) async {
+    List<Paciente> pacientes = [];
+    QuerySnapshot<Map<String, dynamic>> doc =
+        await firestore.collection('cuidadores').get();
+    for (var element in doc.docs) {
+      DocumentSnapshot<Map<String, dynamic>> gestorDoc =
+          await firestore.collection('gestores').doc(element.id).get();
+      List<String> idPacientesGestor = gestorDoc.data()!['idPacientes'];
+      if (idPacientesGestor.contains(idCuidador)) {
+        DocumentSnapshot<Map<String, dynamic>> pacienteDoc =
+            await firestore.collection('pacientes').doc(element.id).get();
+
+        Paciente paciente = Paciente.fromMap(pacienteDoc.data()!);
+        paciente.id = pacienteDoc.id;
+        pacientes.add(paciente);
+      }
+    }
+    return pacientes;
   }
 }
