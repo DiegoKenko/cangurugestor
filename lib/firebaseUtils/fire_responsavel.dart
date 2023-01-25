@@ -9,14 +9,13 @@ class FirestoreResponsavel {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirestoreLogin firestoreLogin = FirestoreLogin();
 
-  Future<Responsavel> incluirResponsavel(
-      Gestor gestor, Responsavel responsavel) async {
+  Future<Responsavel> incluirResponsavel(Responsavel responsavel) async {
     var doc =
         await firestore.collection('responsaveis').add(responsavel.toMap());
     responsavel.id = doc.id;
 
-    if (!gestor.idClientes.contains(responsavel.id)) {
-      await firestore.collection('gestores').doc(gestor.id).update({
+    if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
+      await firestore.collection('gestores').doc(responsavel.gestor.id).update({
         'idClientes': FieldValue.arrayUnion([responsavel.id])
       });
     }
@@ -24,16 +23,15 @@ class FirestoreResponsavel {
     return responsavel;
   }
 
-  Future<void> atualizarResponavel(
-      Gestor gestor, Responsavel responsavel) async {
+  Future<void> atualizarResponavel(Responsavel responsavel) async {
     await firestore.collection('responsaveis').doc(responsavel.id).get().then(
       (snapshot) {
         snapshot.reference.update(responsavel.toMap());
       },
     );
 
-    if (!gestor.idClientes.contains(responsavel.id)) {
-      await firestore.collection('gestores').doc(gestor.id).update({
+    if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
+      await firestore.collection('gestores').doc(responsavel.gestor.id).update({
         'idClientes': FieldValue.arrayUnion([responsavel.id])
       });
     }

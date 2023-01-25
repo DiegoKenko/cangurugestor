@@ -94,9 +94,7 @@ class _MyAppState extends State<MyApp> {
           hoverColor: corPad3,
           fontFamily: GoogleFonts.raleway().fontFamily,
         ),
-        home: const Scaffold(
-          body: TelaLogin(),
-        ),
+        home: const TelaLogin(),
       ),
     );
   }

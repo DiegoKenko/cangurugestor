@@ -30,7 +30,6 @@ class GestorProvider extends ChangeNotifier {
 
   set gestor(Gestor gestor) {
     _gestor = gestor;
-    notifyListeners();
   }
 
   void todosClientes() async {

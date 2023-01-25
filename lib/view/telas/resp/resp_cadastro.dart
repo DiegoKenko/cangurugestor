@@ -55,7 +55,8 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
             icon: const Icon(Icons.delete),
             onPressed: () {
               context.read<ResponsavelProvider>().delete(
-                  responsavelProvider.gestor, responsavelProvider.responsavel);
+                  responsavelProvider.responsavel.gestor,
+                  responsavelProvider.responsavel);
               Navigator.of(context).pop();
             },
           ),

@@ -33,7 +33,7 @@ class GoogleLogin extends MethodLogin {
         await googleUser?.authentication;
 
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
@@ -57,18 +57,45 @@ class GoogleLogin extends MethodLogin {
     var cred = await getCredentials();
     LoginUser user =
         await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!);
-
-    if (user.id.isEmpty) {
-      //logout();
-    }
     return user;
   }
 }
 
-class EmailSenhaLogin extends MethodLogin {}
+class EmailSenhaLogin extends MethodLogin {
+  final String email;
+  final String senha;
+  EmailSenhaLogin(this.email, this.senha);
+
+  @override
+  Future<LoginUser> loadUser() async {
+    LoginUser user = await FirestoreLogin().autenticarUsuarioEmail(email);
+    return user;
+  }
+
+  @override
+  Future<void> logout() async {
+    if (_auth.currentUser != null) {
+      await _auth.signOut();
+    }
+  }
+}
 
 class AppleIDLogin extends MethodLogin {}
 
 class PhoneLogin extends MethodLogin {}
 
-class AnonymousLogin extends MethodLogin {}
+class AnonymousLogin extends MethodLogin {
+  @override
+  Future<LoginUser> loadUser() async {
+    LoginUser user =
+        await FirestoreLogin().autenticarUsuarioEmail('anonimo@inora.com.br');
+    return user;
+  }
+
+  @override
+  Future<void> logout() async {
+    if (_auth.currentUser != null) {
+      await _auth.signOut();
+    }
+  }
+}

@@ -159,9 +159,8 @@ class ClientesGestor extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ItemContainer(
                     onTap: () {
-                      context
-                          .read<ResponsavelProvider>()
-                          .setResponsavel(gestorProvider.clientes[index]);
+                      context.read<ResponsavelProvider>().responsavel =
+                          gestorProvider.clientes[index];
                       Navigator.push(
                         context,
                         AnimatedPageTransition(
@@ -180,7 +179,7 @@ class ClientesGestor extends StatelessWidget {
           height: 50,
           child: BotaoCadastro(
             onPressed: () {
-              context.read<ResponsavelProvider>().setResponsavel(Responsavel());
+              context.read<ResponsavelProvider>().responsavel = Responsavel();
               Navigator.push(
                 context,
                 AnimatedPageTransition(

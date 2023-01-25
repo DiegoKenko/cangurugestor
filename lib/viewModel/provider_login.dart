@@ -2,11 +2,13 @@ import 'package:cangurugestor/autentication/auth_login.dart';
 import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/login.dart';
 import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/view/telas/resp/resp_painel.dart';
+import 'package:cangurugestor/view/telas/tela_login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cangurugestor/global.dart' as global;
 
@@ -14,25 +16,19 @@ class LoginProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLogged = false;
   bool _hasError = false;
-  MethodLogin _loginMethod = MethodLogin();
-  LoginUser _user = LoginUser();
-  EnumClasse _classe = EnumClasse.naoDefinido;
-  Widget? _route;
-  int _privilegio = global.privilegioNenhum;
-
   bool get isLoading => _isLoading;
   bool get isLogged => _isLogged;
   bool get hasError => _hasError;
-  int get privilegio => _privilegio;
-  LoginUser get user => _user;
-  EnumClasse get classe => _classe;
-  Widget? get route => _route;
+  final Login _login = Login();
 
-  MethodLogin get loginMethod => _loginMethod;
+  LoginUser get user => _login.user;
+  EnumClasse get classe => _login.classe;
+  Widget get route => _login.route ?? const TelaLogin();
+  int get privilegio => _login.privilegio;
+  MethodLogin get loginMethod => _login.method;
 
-  setLoginMethod(MethodLogin login) {
-    _loginMethod = login;
-    notifyListeners();
+  set method(MethodLogin method) {
+    _login.method = method;
   }
 
   void sucess() {
@@ -44,18 +40,22 @@ class LoginProvider extends ChangeNotifier {
 
   void setLoading() {
     _isLoading = true;
+    resetLogin();
     notifyListeners();
   }
 
-  void resetLoading() {
-    _isLoading = false;
-    notifyListeners();
+  void resetLogin() {
+    _login.user = LoginUser();
+    _login.classe = EnumClasse.naoDefinido;
+    _login.route = Container();
+    _login.privilegio = 0;
   }
 
   void fail() {
     _isLoading = false;
     _hasError = true;
     _isLogged = false;
+    resetLogin();
     notifyListeners();
   }
 
@@ -63,28 +63,36 @@ class LoginProvider extends ChangeNotifier {
     setLoading();
     if (loginMethod is GoogleLogin) {
       final GoogleLogin googleLogin = GoogleLogin();
-      _user = await googleLogin.loadUser();
-      if (_user is Gestor) {
-        _classe = EnumClasse.gestor;
-        _route = const PainelGestor();
-        _privilegio = global.privilegioGestor;
-      } else if (_user is Cuidador) {
-        _classe = EnumClasse.cuidador;
-        _route = const PainelCuidador();
-        _privilegio = global.privilegioCuidador;
-      } else if (_user is Responsavel) {
-        _classe = EnumClasse.responsavel;
-        _route = const PainelResponsavel();
-        _privilegio = global.privilegioResponsavel;
-      } else {
-        _classe = EnumClasse.naoDefinido;
-        _route = Container();
-      }
-      _user.id.isEmpty ? fail() : sucess();
+      _login.user = await googleLogin.loadUser();
+    } else if (loginMethod is EmailSenhaLogin) {
+      final EmailSenhaLogin emailSenhaLogin = loginMethod as EmailSenhaLogin;
+      _login.user = await emailSenhaLogin.loadUser();
+    } else if (loginMethod is AnonymousLogin) {
+      final AnonymousLogin anonymousLogin = AnonymousLogin();
+      _login.user = await anonymousLogin.loadUser();
+    } else {
+      fail();
     }
+    if (_login.user is Gestor) {
+      _login.classe = EnumClasse.gestor;
+      _login.route = const PainelGestor();
+      _login.privilegio = global.privilegioGestor;
+    } else if (_login.user is Cuidador) {
+      _login.classe = EnumClasse.cuidador;
+      _login.route = const PainelCuidador();
+      _login.privilegio = global.privilegioCuidador;
+    } else if (_login.user is Responsavel) {
+      _login.classe = EnumClasse.responsavel;
+      _login.route = const PainelResponsavel();
+      _login.privilegio = global.privilegioResponsavel;
+    } else {
+      _login.classe = EnumClasse.naoDefinido;
+      _login.route = Container();
+    }
+    _login.user.id.isEmpty ? fail() : sucess();
   }
 
-  void logout() async {
+  Future<void> logout() async {
     if (loginMethod is GoogleLogin) {
       final GoogleLogin googleLogin = GoogleLogin();
       await googleLogin.logout();

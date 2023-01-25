@@ -1,5 +1,13 @@
 import 'package:cangurugestor/autentication/auth_login.dart';
+import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
+import 'package:cangurugestor/viewModel/provider_cuidador.dart';
+import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:provider/provider.dart';
@@ -12,41 +20,66 @@ class TelaLogin extends StatefulWidget {
 }
 
 class _TelaLoginState extends State<TelaLogin> {
-  final cpfController = TextEditingController();
-  final senhaController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final LoginProvider loginProvider = context.watch<LoginProvider>();
 
+    loginProvider.addListener(() {
+      if (loginProvider.isLogged) {
+        if (loginProvider.classe == EnumClasse.gestor) {
+          context.read<GestorProvider>().gestor = loginProvider.user as Gestor;
+        } else if (loginProvider.classe == EnumClasse.responsavel) {
+          context.read<ResponsavelProvider>().responsavel =
+              loginProvider.user as Responsavel;
+        } else if (loginProvider.classe == EnumClasse.cuidador) {
+          context.read<CuidadorProvider>().cuidador =
+              loginProvider.user as Cuidador;
+        }
+        Navigator.of(context).push(
+          AnimatedPageTransition(
+            page: loginProvider.route,
+          ),
+        );
+      }
+    });
+
     return Scaffold(
-      backgroundColor: corPad1.withOpacity(0.05),
+      backgroundColor: corBranco,
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(
-          horizontal: 40.0,
-          vertical: 80.0,
+          horizontal: 20.0,
+          vertical: 40.0,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Image(
               image: const AssetImage('assets/reduxLogo01.png'),
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: MediaQuery.of(context).size.height * 0.4,
               fit: BoxFit.fitWidth,
             ),
-            const SizedBox(height: 20.0),
-            !loginProvider.isLoading
-                ? const ButtonLoginGoogle()
-                : const CircularProgressIndicator(color: corPad1),
-            !loginProvider.isLoading ? const ButtonLoginApple() : Container(),
-            !loginProvider.isLoading
-                ? const ButtonLoginAnonymous()
-                : Container(),
-            !loginProvider.isLoading
-                ? const ButtonLoginEmailSenha()
-                : Container(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(height: 20.0),
+                  !loginProvider.isLoading
+                      ? const ButtonLoginGoogle()
+                      : const CircularProgressIndicator(color: corPad1),
+                  !loginProvider.isLoading
+                      ? const ButtonLoginApple()
+                      : Container(),
+                  !loginProvider.isLoading
+                      ? const ButtonLoginAnonymous()
+                      : Container(),
+                  !loginProvider.isLoading
+                      ? const ButtonLoginEmailSenha()
+                      : Container(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -54,15 +87,134 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 }
 
-class ButtonLoginEmailSenha extends StatelessWidget {
+class ButtonLoginEmailSenha extends StatefulWidget {
   const ButtonLoginEmailSenha({Key? key}) : super(key: key);
 
   @override
+  State<ButtonLoginEmailSenha> createState() => _ButtonLoginEmailSenhaState();
+}
+
+class _ButtonLoginEmailSenhaState extends State<ButtonLoginEmailSenha> {
+  bool _showPassword = false;
+  bool _tapped = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    return ButtonLogin(
-      image: const Icon(Icons.mail, color: corPreto, size: 26.0),
-      text: 'E-mail e senha',
-      methodLogin: EmailSenhaLogin(),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: OutlinedButton(
+            onPressed: () {
+              setState(() {
+                _tapped = !_tapped;
+              });
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(corBranco),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  side: const BorderSide(
+                    color: corPad1,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const <Widget>[
+                  Icon(Icons.mail, color: corPreto, size: 26.0),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      'E-mail e senha',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        _tapped
+            ? Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _emailController,
+                            decoration: const InputDecoration(
+                              labelText: 'E-mail',
+                              labelStyle: TextStyle(color: corPreto),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: corPad1),
+                              ),
+                            ),
+                          ),
+                          TextField(
+                            controller: _senhaController,
+                            obscureText: !_showPassword,
+                            decoration: InputDecoration(
+                              labelText: 'Senha',
+                              labelStyle: const TextStyle(color: corPreto),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: corPad1),
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _showPassword = !_showPassword;
+                                  });
+                                },
+                                icon: Icon(
+                                  _showPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: corPreto,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () {
+                          context.read<LoginProvider>().method =
+                              EmailSenhaLogin(
+                            _emailController.text,
+                            _senhaController.text,
+                          );
+                          context.read<LoginProvider>().login();
+                        },
+                        icon: const Icon(
+                          Icons.chevron_right,
+                          size: 50,
+                          color: corPad1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Container(),
+      ],
     );
   }
 }
@@ -125,11 +277,9 @@ class ButtonLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
-
     void onPressed() {
-      loginProvider.setLoginMethod(methodLogin);
-      loginProvider.login();
+      context.read<LoginProvider>().method = methodLogin;
+      context.read<LoginProvider>().login();
     }
 
     return Padding(

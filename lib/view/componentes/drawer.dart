@@ -29,7 +29,6 @@ class CanguruDrawer extends StatelessWidget {
               ),
               onTap: () {
                 context.read<LoginProvider>().logout();
-                Navigator.of(context).popUntil((route) => route.isFirst);
                 Navigator.of(context).pushReplacement(
                   AnimatedPageTransition(
                     page: const TelaLogin(),

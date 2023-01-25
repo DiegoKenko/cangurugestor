@@ -1,4 +1,5 @@
 import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/pessoa.dart';
@@ -9,6 +10,7 @@ class Responsavel extends Pessoa with LoginUser {
   List<String> idCuidadores = [];
   List<String> idPacientes = [];
   String idContrato = '';
+  Gestor gestor = Gestor();
 
   Responsavel(
       {String cpf = '',

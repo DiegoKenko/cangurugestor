@@ -5,23 +5,16 @@ import 'package:flutter/cupertino.dart';
 
 class ResponsavelProvider extends ChangeNotifier {
   Responsavel responsavel = Responsavel();
-  Gestor gestor = Gestor();
-  ResponsavelProvider();
-
-  void setResponsavel(Responsavel res) {
-    responsavel = res;
-    notifyListeners();
-  }
 
   void setGestor(Gestor gest) {
-    gestor = gest;
+    responsavel.gestor = gest;
   }
 
   void update() {
     if (responsavel.id.isEmpty) {
-      FirestoreResponsavel().incluirResponsavel(gestor, responsavel);
+      FirestoreResponsavel().incluirResponsavel(responsavel);
     } else {
-      FirestoreResponsavel().atualizarResponavel(gestor, responsavel);
+      FirestoreResponsavel().atualizarResponavel(responsavel);
     }
     notifyListeners();
   }
