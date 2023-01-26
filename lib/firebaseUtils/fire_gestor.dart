@@ -67,6 +67,7 @@ class FirestoreGestor {
           .get();
       Cuidador cuidador = Cuidador.fromMap(doc.data()!);
       if (cuidador.idPacientes.contains(idPaciente)) {
+        cuidador.id = doc.id;
         cuidadores.add(cuidador);
       }
     }

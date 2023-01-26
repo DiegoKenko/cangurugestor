@@ -43,4 +43,20 @@ class CuidadorProvider extends ChangeNotifier {
     _pacientes = await FirestoreCuidador().todosPacientesCuidador(cuidador);
     notifyListeners();
   }
+
+  Future<void> addCuidadorPaciente(Paciente paciente) async {
+    if (!cuidador.idPacientes.contains(paciente.id)) {
+      cuidador.idPacientes.add(paciente.id);
+      await FirestoreCuidador().update(cuidador);
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeCuidadorPaciente(Paciente paciente) async {
+    if (cuidador.idPacientes.contains(paciente.id)) {
+      cuidador.idPacientes.remove(paciente.id);
+      await FirestoreCuidador().update(cuidador);
+      notifyListeners();
+    }
+  }
 }

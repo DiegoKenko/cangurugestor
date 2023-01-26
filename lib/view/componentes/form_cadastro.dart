@@ -57,7 +57,6 @@ class _FormCadastroState extends State<FormCadastro> {
         inputFormatters: widget.inputFormatters,
         enabled: widget.enabled,
         cursorWidth: 2,
-        toolbarOptions: const ToolbarOptions(),
         cursorColor: corPreto,
         controller: widget.controller,
         keyboardType: widget.textInputType,

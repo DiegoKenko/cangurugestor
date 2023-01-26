@@ -10,12 +10,9 @@ class GestorProvider extends ChangeNotifier {
   final FirestoreGestor _firestoreGestor = FirestoreGestor();
   List<Responsavel> _clientes = [];
   List<Cuidador> _cuidadores = [];
-  List<Cuidador> _cuidadoresDisponiveisPaciente = [];
 
   List<Cuidador> get cuidadores => _cuidadores;
   List<Responsavel> get clientes => _clientes;
-  List<Cuidador> get cuidadoresDisponiveisPaciente =>
-      _cuidadoresDisponiveisPaciente;
 
   set clientes(List<Responsavel> clientes) {
     _clientes = clientes;
@@ -38,21 +35,8 @@ class GestorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void todosCuidadores() async {
+  Future<void> todosCuidadores() async {
     _cuidadores = await _firestoreGestor.todosCuidadoresGestor(gestor);
-    notifyListeners();
-  }
-
-  void todosCuidadoresDisponiveis(Paciente paciente) async {
-    List<Cuidador> cuidadores =
-        await _firestoreGestor.todosCuidadoresGestor(gestor);
-    List<Cuidador> cuidadoresDisponiveis =
-        await _firestoreGestor.todosCuidadoresPaciente(gestor, paciente.id);
-
-    _cuidadoresDisponiveisPaciente = cuidadores
-        .where((element) =>
-            !cuidadoresDisponiveis.any((cuidador) => cuidador.id == element.id))
-        .toList();
     notifyListeners();
   }
 

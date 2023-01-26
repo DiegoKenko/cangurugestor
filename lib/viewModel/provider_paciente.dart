@@ -24,7 +24,7 @@ class PacienteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update() async {
+  Future<void> update() async {
     if (_paciente.id.isNotEmpty) {
       FirestorePaciente().atualizarPaciente(_paciente);
       notifyListeners();
@@ -36,32 +36,42 @@ class PacienteProvider extends ChangeNotifier {
     }
   }
 
-  void delete() async {
+  Future<void> delete() async {
     FirestorePaciente().excluirPaciente(responsavel, _paciente);
     notifyListeners();
   }
 
-  void loadMedicamentos() async {
+  Future<void> loadMedicamentos() async {
     _paciente.medicamentos =
         await FirestoreMedicamento().todosMedicamentosPaciente(_paciente.id);
     notifyListeners();
   }
 
-  void loadConsultas() async {
+  Future<void> loadConsultas() async {
     _paciente.consultas =
         await FirestoreConsulta().todasConsultasPaciente(_paciente.id);
     notifyListeners();
   }
 
-  void loadAtividades() async {
+  Future<void> loadAtividades() async {
     _paciente.atividades =
         await FirestoreAtividade().todasAtividadesPaciente(_paciente.id);
     notifyListeners();
   }
 
-  void addCuidadorPaciente(Cuidador cuidador) async {
-    cuidador.idPacientes.add(_paciente.id);
-    await FirestoreCuidador().update(cuidador);
-    notifyListeners();
+  Future<void> addCuidadorPaciente(Cuidador cuidador) async {
+    if (!cuidador.idPacientes.contains(_paciente.id)) {
+      cuidador.idPacientes.add(_paciente.id);
+      await FirestoreCuidador().update(cuidador);
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeCuidadorPaciente(Cuidador cuidador) async {
+    if (cuidador.idPacientes.contains(_paciente.id)) {
+      cuidador.idPacientes.remove(_paciente.id);
+      await FirestoreCuidador().update(cuidador);
+      notifyListeners();
+    }
   }
 }

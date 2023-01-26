@@ -26,18 +26,19 @@ class FirestoreLogin {
 
   Future<void> atualizaLoginCuidador(Cuidador cuidador) async {
     final LoginUser user = LoginUser.fromCuidador(cuidador);
-
-    await firestore
-        .collection('login')
-        .where('doc', isEqualTo: user.doc)
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        value.docs.first.reference.update(user.toMap());
-      } else {
-        firestore.collection('login').add(user.toMap());
-      }
-    });
+    if (user.doc.isNotEmpty) {
+      await firestore
+          .collection('login')
+          .where('doc', isEqualTo: user.doc)
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          value.docs.first.reference.update(user.toMap());
+        } else {
+          firestore.collection('login').add(user.toMap());
+        }
+      });
+    }
   }
 
   void deleteLogin(String doc) {

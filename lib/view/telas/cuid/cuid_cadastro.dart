@@ -45,8 +45,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             if (context.read<LoginProvider>().editCuidador) {
-              cuidadorProvider.update();
-              gestorProvider.addCuidadorGestor(cuidadorProvider.cuidador);
+              cuidadorProvider.update().then(
+                    (value) => gestorProvider
+                        .addCuidadorGestor(cuidadorProvider.cuidador),
+                  );
             }
             cuidadorProvider.clear();
             Navigator.of(context).pop();
@@ -115,21 +117,17 @@ class PacientesCuidador extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
-    return SingleChildScrollView(
-      child: Builder(builder: (context) {
-        cuidadorProvider.todosPacientes();
-        return Column(children: [
-          ListView.builder(
-            itemCount: cuidadorProvider.pacientes.length,
-            itemBuilder: (context, index) {
-              return ItemContainer(
-                title: cuidadorProvider.pacientes[index].nome,
-              );
-            },
-          ),
-        ]);
-      }),
-    );
+    return Builder(builder: (context) {
+      cuidadorProvider.todosPacientes();
+      return ListView.builder(
+        itemCount: cuidadorProvider.pacientes.length,
+        itemBuilder: (context, index) {
+          return ItemContainer(
+            title: cuidadorProvider.pacientes[index].nome,
+          );
+        },
+      );
+    });
   }
 }
 

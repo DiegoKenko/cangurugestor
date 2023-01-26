@@ -67,7 +67,6 @@ class _FormCadastroHoraState extends State<FormCadastroHora> {
         onFieldSubmitted: widget.onFieldSubmitted,
         enabled: widget.enabled,
         cursorWidth: 2,
-        toolbarOptions: const ToolbarOptions(),
         cursorColor: corPad2,
         controller: widget.controller,
         style: kTextStyleHeader,

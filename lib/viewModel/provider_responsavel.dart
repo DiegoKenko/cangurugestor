@@ -1,5 +1,6 @@
 import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -28,5 +29,15 @@ class ResponsavelProvider extends ChangeNotifier {
   Future<void> delete(Gestor gestor, Responsavel responsavel) async {
     FirestoreResponsavel().excluirResponsavel(gestor, responsavel);
     notifyListeners();
+  }
+
+  void clear() {
+    responsavel = Responsavel();
+    notifyListeners();
+  }
+
+  void addPaciente(Paciente paciente) {
+    responsavel.idPacientes.add(paciente.id);
+    update();
   }
 }

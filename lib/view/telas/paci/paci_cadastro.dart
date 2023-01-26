@@ -40,8 +40,11 @@ class _CadastroPacienteState extends State<CadastroPaciente>
 
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
-        context.read<PacienteProvider>().update();
-        context.read<ResponsavelProvider>().update();
+        context.read<PacienteProvider>().update().then((value) {
+          context
+              .read<ResponsavelProvider>()
+              .addPaciente(context.read<PacienteProvider>().paciente);
+        });
       }
     });
     super.initState();
@@ -60,8 +63,9 @@ class _CadastroPacienteState extends State<CadastroPaciente>
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             if (context.read<LoginProvider>().editPaciente) {
-              pacienteProvider.update();
-              responsavelProvider.update();
+              context.read<PacienteProvider>().update().then((value) => context
+                  .read<ResponsavelProvider>()
+                  .addPaciente(context.read<PacienteProvider>().paciente));
             }
             pacienteProvider.clear();
             Navigator.of(context).pop();
@@ -157,8 +161,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
             ),
             loginProvider.editPaciente
                 ? BotaoCadastro(onPressed: () {
-                    gestorProvider
-                        .todosCuidadoresDisponiveis(pacienteProvider.paciente);
+                    gestorProvider.todosCuidadores();
                     showBottomSheet(
                         context: context,
                         builder: ((context) {
@@ -166,17 +169,70 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: SingleChildScrollView(
                               child: Column(
-                                children:
-                                    gestorProvider.cuidadoresDisponiveisPaciente
-                                        .map((Cuidador e) => ItemContainer(
-                                              onTap: () {
-                                                pacienteProvider
-                                                    .addCuidadorPaciente(e);
-                                                Navigator.of(context).pop();
-                                              },
-                                              title: e.nome,
-                                            ))
+                                children: [
+                                  Container(
+                                    color: corPad1,
+                                    height: 40,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.arrow_back,
+                                              color: corBranco,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          const Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                'Cuidadores disponíveis',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Column(
+                                    children: gestorProvider.cuidadores
+                                        .map(
+                                          (Cuidador e) => ItemContainer(
+                                            onTap: () {},
+                                            title: e.nome,
+                                            trailing: e.idPacientes.contains(
+                                                    pacienteProvider
+                                                        .paciente.id)
+                                                ? ElevatedButton(
+                                                    onPressed: () {
+                                                      pacienteProvider
+                                                          .removeCuidadorPaciente(
+                                                              e);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text(
+                                                      'Remover',
+                                                    ),
+                                                  )
+                                                : ElevatedButton(
+                                                    onPressed: () {
+                                                      pacienteProvider
+                                                          .addCuidadorPaciente(
+                                                              e);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text(
+                                                        'Adicionar')),
+                                          ),
+                                        )
                                         .toList(),
+                                  ),
+                                ],
                               ),
                             ),
                           );

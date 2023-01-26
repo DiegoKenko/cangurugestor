@@ -77,7 +77,6 @@ class _FormCadastroDataState extends State<FormCadastroData> {
         onFieldSubmitted: widget.onFieldSubmitted,
         enabled: widget.enabled,
         cursorWidth: 2,
-        toolbarOptions: const ToolbarOptions(),
         cursorColor: corPad2,
         controller: widget.controller,
         keyboardType: widget.textInputType,
