@@ -8,6 +8,7 @@ import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,9 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            atividadeProvider.update();
+            if (context.read<LoginProvider>().editAtividade) {
+              atividadeProvider.update();
+            }
             atividadeProvider.clear();
             Navigator.of(context).pop();
           },
@@ -148,20 +151,28 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
                     },
                   ))
               .toList();
-          return Column(
-            children: [
-              ...widgetTarefaSalvas,
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: BotaoCadastro(
-                  onPressed: () {
-                    tarefasProvider.novaTarefaAtividade(
-                        context.read<AtividadeProvider>().atividade);
-                  },
+          if (context.read<LoginProvider>().editAtividade) {
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      tarefasProvider.novaTarefaAtividade(
+                          context.read<AtividadeProvider>().atividade);
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+              ],
+            );
+          }
         }),
       ),
     );

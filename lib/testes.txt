@@ -1,0 +1,10 @@
+- criação responsavel
+:criar login
+
+- criação paciente
+: adicionar ao responsavel  
+
+
+
+- criação/alteração cuidador
+:criar/alterar login

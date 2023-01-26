@@ -1,5 +1,5 @@
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
-import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/model/pessoa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -53,9 +53,9 @@ class GoogleLogin extends MethodLogin {
   }
 
   @override
-  Future<LoginUser> loadUser() async {
+  Future<Pessoa> loadUser() async {
     var cred = await getCredentials();
-    LoginUser user =
+    Pessoa user =
         await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!);
     return user;
   }
@@ -67,8 +67,8 @@ class EmailSenhaLogin extends MethodLogin {
   EmailSenhaLogin(this.email, this.senha);
 
   @override
-  Future<LoginUser> loadUser() async {
-    LoginUser user = await FirestoreLogin().autenticarUsuarioEmail(email);
+  Future<Pessoa> loadUser() async {
+    Pessoa user = await FirestoreLogin().autenticarUsuarioEmail(email);
     return user;
   }
 
@@ -86,8 +86,8 @@ class PhoneLogin extends MethodLogin {}
 
 class AnonymousLogin extends MethodLogin {
   @override
-  Future<LoginUser> loadUser() async {
-    LoginUser user =
+  Future<Pessoa> loadUser() async {
+    Pessoa user =
         await FirestoreLogin().autenticarUsuarioEmail('anonimo@inora.com.br');
     return user;
   }

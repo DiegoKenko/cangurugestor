@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 class Pessoa {
+  String id = '';
   String nome = '';
   String sobrenome = '';
   String nascimento = '';
@@ -17,8 +18,11 @@ class Pessoa {
   String cidade = '';
   String estado = '';
   String cep = '';
+  bool ativo = false;
 
   Pessoa({
+    this.id = '',
+    this.ativo = false,
     this.nome = '',
     this.sobrenome = '',
     this.nascimento = '',
@@ -36,6 +40,29 @@ class Pessoa {
     this.estado = '',
     this.cep = '',
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'ativo': ativo,
+      'nome': nome,
+      'sobrenome': sobrenome,
+      'nascimento': nascimento,
+      'sexo': sexo,
+      'cpf': cpf,
+      'rg': rg,
+      'email': email,
+      'telefone': telefone,
+      'celular': celular,
+      'rua': rua,
+      'numeroRua': numeroRua,
+      'complementoRua': complementoRua,
+      'bairro': bairro,
+      'cidade': cidade,
+      'estado': estado,
+      'cep': cep,
+    };
+  }
 
   Pessoa.fromMap(Map<String, dynamic> map) {
     nome = map['nome'] ?? '';
@@ -59,6 +86,7 @@ class Pessoa {
     cidade = map['cidade'] ?? '';
     estado = map['estado'] ?? '';
     cep = map['cep'] ?? '';
+    ativo = map['ativo'] ?? false;
   }
 
   int get idade {

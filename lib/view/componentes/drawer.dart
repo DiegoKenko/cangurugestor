@@ -8,36 +8,45 @@ import 'package:provider/provider.dart';
 class CanguruDrawer extends StatelessWidget {
   const CanguruDrawer({
     Key? key,
+    this.drawerListTile = const [],
   }) : super(key: key);
+  final List<Widget> drawerListTile;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: corPad1,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 9,
-            child: Container(),
-          ),
-          Expanded(
-            flex: 1,
-            child: DrawerListTile(
-              title: const Text(
-                'Sair',
-                style: TextStyle(color: Colors.white),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 9,
+                child: Column(
+                  children: drawerListTile,
+                ),
               ),
-              onTap: () {
-                context.read<LoginProvider>().logout();
-                Navigator.of(context).pushReplacement(
-                  AnimatedPageTransition(
-                    page: const TelaLogin(),
+              Expanded(
+                flex: 1,
+                child: DrawerListTile(
+                  title: const Text(
+                    'Sair',
+                    style: TextStyle(color: Colors.white),
                   ),
-                );
-              },
-            ),
+                  onTap: () {
+                    context.read<LoginProvider>().logout();
+                    Navigator.of(context).pushReplacement(
+                      AnimatedPageTransition(
+                        page: const TelaLogin(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -55,7 +64,7 @@ class DrawerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       child: Container(
         decoration: const BoxDecoration(
           border: Border(

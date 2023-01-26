@@ -6,6 +6,7 @@ import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -36,13 +37,17 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
     final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
     final GestorProvider gestorProvider = context.watch<GestorProvider>();
     cuidadorProvider.gestor = gestorProvider.gestor;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            cuidadorProvider.update();
+            if (context.read<LoginProvider>().editCuidador) {
+              cuidadorProvider.update();
+              gestorProvider.addCuidadorGestor(cuidadorProvider.cuidador);
+            }
             cuidadorProvider.clear();
             Navigator.of(context).pop();
           },
@@ -143,7 +148,6 @@ class _DadosCuidadorState extends State<DadosCuidador> {
   final TextEditingController _nascimentoController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
@@ -177,10 +181,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
       context.read<CuidadorProvider>().cuidador.telefone =
           _telefoneController.text;
     });
-    _senhaController.addListener(() {
-      // Listener para atualizar a senha do responsável
-      context.read<CuidadorProvider>().cuidador.senha = _senhaController.text;
-    });
+
     _ruaController.addListener(() {
       // Listener para atualizar a rua do responsável
       context.read<CuidadorProvider>().cuidador.rua = _ruaController.text;
@@ -244,7 +245,6 @@ class _DadosCuidadorState extends State<DadosCuidador> {
     _nascimentoController.dispose();
     _emailController.dispose();
     _telefoneController.dispose();
-    _senhaController.dispose();
     _ruaController.dispose();
     _bairroController.dispose();
     _numeroRuaController.dispose();

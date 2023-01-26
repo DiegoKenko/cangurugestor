@@ -8,6 +8,7 @@ import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
@@ -148,20 +149,26 @@ class _TarefasConsultaState extends State<TarefasConsulta> {
                     },
                   ))
               .toList();
-          return Column(
-            children: [
-              ...widgetTarefaSalvas,
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: BotaoCadastro(
-                  onPressed: () {
-                    tarefasProvider.novaTarefaConsulta(
-                        context.read<ConsultaProvider>().consulta);
-                  },
+          if (context.read<LoginProvider>().editConsulta) {
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      tarefasProvider.novaTarefaConsulta(
+                          context.read<ConsultaProvider>().consulta);
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
+          } else {
+            return Column(
+              children: widgetTarefaSalvas,
+            );
+          }
         }),
       ),
     );

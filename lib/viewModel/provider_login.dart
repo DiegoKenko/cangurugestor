@@ -3,7 +3,7 @@ import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/login.dart';
-import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/model/pessoa.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
@@ -21,11 +21,34 @@ class LoginProvider extends ChangeNotifier {
   bool get hasError => _hasError;
   final Login _login = Login();
 
-  LoginUser get user => _login.user;
+  Pessoa get user => _login.user;
   EnumClasse get classe => _login.classe;
   Widget get route => _login.route ?? const TelaLogin();
-  int get privilegio => _login.privilegio;
   MethodLogin get loginMethod => _login.method;
+
+  bool get editPaciente {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
+  bool get editCuidador {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
+  bool get editResponsavel {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
+  bool get editMedicamento {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
+  bool get editConsulta {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
+  bool get editAtividade {
+    return _login.privilegio == global.privilegioGestor;
+  }
 
   set method(MethodLogin method) {
     _login.method = method;
@@ -45,7 +68,7 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void resetLogin() {
-    _login.user = LoginUser();
+    _login.user = Pessoa();
     _login.classe = EnumClasse.naoDefinido;
     _login.route = Container();
     _login.privilegio = 0;

@@ -1,10 +1,9 @@
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 
-class Responsavel extends Pessoa with LoginUser {
+class Responsavel extends Pessoa {
   List<Cuidador> cuidadores = [];
   List<Paciente> pacientes = [];
   List<String> idCuidadores = [];
@@ -54,12 +53,12 @@ class Responsavel extends Pessoa with LoginUser {
     nome = map['nome'];
     rua = map['rua'];
     numeroRua = map['numeroRua'] ?? '';
-    senha = map['senha'] ?? '';
     sobrenome = map['sobrenome'];
     telefone = map['telefone'];
     idPacientes = map['idPacientes'].cast<String>();
   }
 
+  @override
   Map<String, dynamic> toMap() {
     idCuidadores = [];
     for (var cuidador in cuidadores) {
@@ -82,7 +81,6 @@ class Responsavel extends Pessoa with LoginUser {
       'cpf': cpf,
       'estado': estado,
       'email': email,
-      'senha': senha,
       'rua': rua,
       'numeroRua': numeroRua,
       'nascimento': nascimento,

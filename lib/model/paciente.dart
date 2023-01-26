@@ -6,8 +6,6 @@ import 'package:cangurugestor/model/prescricao.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 
 class Paciente extends Pessoa {
-  bool ativo = true;
-  String id = '';
   String? dataCadastro;
   Responsavel responsavel = Responsavel();
   List<Consulta> consultas = [];
@@ -21,14 +19,16 @@ class Paciente extends Pessoa {
     String nome = '',
     String sobrenome = '',
     String nascimento = '',
-    this.id = '',
+    String id = '',
+    bool ativo = false,
     this.dataCadastro = '',
     this.prescricao,
-    this.ativo = false,
     this.consultas = const [],
     this.atividades = const [],
     this.medicamentos = const [],
   }) : super(
+          id: id,
+          ativo: ativo,
           cpf: cpf,
           sobrenome: sobrenome,
           nome: nome,
@@ -42,6 +42,7 @@ class Paciente extends Pessoa {
     dataCadastro = map['dataCadastro'];
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'cpf': cpf,

@@ -1,5 +1,6 @@
 import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
+import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/paciente.dart';
@@ -16,20 +17,13 @@ class CuidadorProvider extends ChangeNotifier {
 
   List<Paciente> get pacientes => _pacientes;
 
-  Future<void> addCuidadorGestor() async {
-    if (!_gestor.idCuidadores.contains(cuidador.id) && cuidador.id.isNotEmpty) {
-      _gestor.idCuidadores.add(cuidador.id);
-      await FirestoreGestor().update(_gestor);
-    }
-  }
-
   Future<void> update() async {
     if (cuidador.id.isEmpty) {
       cuidador = await FirestoreCuidador().create(cuidador);
     } else {
       await FirestoreCuidador().update(cuidador);
     }
-    addCuidadorGestor();
+    await FirestoreLogin().atualizaLoginCuidador(cuidador);
     notifyListeners();
   }
 
@@ -46,8 +40,7 @@ class CuidadorProvider extends ChangeNotifier {
   }
 
   void todosPacientes() async {
-    _pacientes =
-        await FirestoreCuidador().todosPacientesCuidador(cuidador.id, _gestor);
+    _pacientes = await FirestoreCuidador().todosPacientesCuidador(cuidador);
     notifyListeners();
   }
 }

@@ -1,7 +1,6 @@
-import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 
-class Gestor extends Pessoa with LoginUser {
+class Gestor extends Pessoa {
   List<String> idClientes = [];
   List<String> idCuidadores = [];
   Gestor();
@@ -15,6 +14,7 @@ class Gestor extends Pessoa with LoginUser {
     idCuidadores = List<String>.from(map['idCuidadores']);
   }
 
+  @override
   toMap() {
     return {
       'cpf': cpf,

@@ -9,6 +9,7 @@ import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/telas/paci/paci_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,9 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            responsavelProvider.update();
+            if (context.read<LoginProvider>().editResponsavel) {
+              responsavelProvider.update();
+            }
             Navigator.of(context).pop();
           },
         ),
@@ -195,7 +198,6 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   final TextEditingController _nascimentoController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
@@ -231,11 +233,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
       context.read<ResponsavelProvider>().responsavel.telefone =
           _telefoneController.text;
     });
-    _senhaController.addListener(() {
-      // Listener para atualizar a senha do responsável
-      context.read<ResponsavelProvider>().responsavel.senha =
-          _senhaController.text;
-    });
+
     _ruaController.addListener(() {
       // Listener para atualizar a rua do responsável
       context.read<ResponsavelProvider>().responsavel.rua = _ruaController.text;
@@ -305,7 +303,6 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
     _nascimentoController.dispose();
     _emailController.dispose();
     _telefoneController.dispose();
-    _senhaController.dispose();
     _ruaController.dispose();
     _bairroController.dispose();
     _numeroRuaController.dispose();

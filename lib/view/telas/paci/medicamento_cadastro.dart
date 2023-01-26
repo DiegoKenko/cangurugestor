@@ -8,6 +8,7 @@ import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
@@ -152,20 +153,28 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
                     },
                   ))
               .toList();
-          return Column(
-            children: [
-              ...widgetTarefaSalvas,
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: BotaoCadastro(
-                  onPressed: () {
-                    tarefasProvider.novaTarefaMedicamento(
-                        context.read<MedicamentoProvider>().medicamento);
-                  },
+          if (context.read<LoginProvider>().editMedicamento) {
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      tarefasProvider.novaTarefaMedicamento(
+                          context.read<MedicamentoProvider>().medicamento);
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+              ],
+            );
+          }
         }),
       ),
     );

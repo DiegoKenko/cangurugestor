@@ -1,7 +1,6 @@
-import 'package:cangurugestor/model/login_user.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 
-class Cuidador extends Pessoa with LoginUser {
+class Cuidador extends Pessoa {
   List idPacientes = [];
   DateTime? dataCadastro;
 
@@ -43,7 +42,6 @@ class Cuidador extends Pessoa with LoginUser {
     nome = map['nome'];
     sobrenome = map['sobrenome'];
     email = map['email'];
-    senha = map['senha'];
     telefone = map['telefone'];
     nascimento = map['nascimento'];
     rua = map['rua'];
@@ -55,6 +53,7 @@ class Cuidador extends Pessoa with LoginUser {
     estado = map['estado'];
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'cpf': cpf,
@@ -65,7 +64,6 @@ class Cuidador extends Pessoa with LoginUser {
       'telefone': telefone,
       'ativo': ativo,
       'idPacientes': idPacientes,
-      'senha': senha,
       'dataCadastro': DateTime.now().toString(),
       'rua': rua,
       'numeroRua': numeroRua,

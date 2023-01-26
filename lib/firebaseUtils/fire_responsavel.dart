@@ -19,7 +19,7 @@ class FirestoreResponsavel {
         'idClientes': FieldValue.arrayUnion([responsavel.id])
       });
     }
-
+    FirestoreLogin().atualizaLoginResponsavel(responsavel);
     return responsavel;
   }
 
@@ -35,6 +35,7 @@ class FirestoreResponsavel {
         'idClientes': FieldValue.arrayUnion([responsavel.id])
       });
     }
+    FirestoreLogin().atualizaLoginResponsavel(responsavel);
   }
 
   Future<List<Paciente>> todosPacientesResponsavel(

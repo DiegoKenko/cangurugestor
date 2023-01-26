@@ -6,7 +6,7 @@ import 'package:cangurugestor/model/responsavel.dart';
 import 'package:flutter/cupertino.dart';
 
 class GestorProvider extends ChangeNotifier {
-  Gestor _gestor = Gestor();
+  Gestor gestor = Gestor();
   final FirestoreGestor _firestoreGestor = FirestoreGestor();
   List<Responsavel> _clientes = [];
   List<Cuidador> _cuidadores = [];
@@ -14,7 +14,6 @@ class GestorProvider extends ChangeNotifier {
 
   List<Cuidador> get cuidadores => _cuidadores;
   List<Responsavel> get clientes => _clientes;
-  Gestor get gestor => _gestor;
   List<Cuidador> get cuidadoresDisponiveisPaciente =>
       _cuidadoresDisponiveisPaciente;
 
@@ -28,12 +27,8 @@ class GestorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  set gestor(Gestor gestor) {
-    _gestor = gestor;
-  }
-
   void todosClientes() async {
-    _clientes = await _firestoreGestor.todosClientesGestor(_gestor);
+    _clientes = await _firestoreGestor.todosClientesGestor(gestor);
     notifyListeners();
   }
 
@@ -44,20 +39,27 @@ class GestorProvider extends ChangeNotifier {
   }
 
   void todosCuidadores() async {
-    _cuidadores = await _firestoreGestor.todosCuidadoresGestor(_gestor);
+    _cuidadores = await _firestoreGestor.todosCuidadoresGestor(gestor);
     notifyListeners();
   }
 
   void todosCuidadoresDisponiveis(Paciente paciente) async {
     List<Cuidador> cuidadores =
-        await _firestoreGestor.todosCuidadoresGestor(_gestor);
+        await _firestoreGestor.todosCuidadoresGestor(gestor);
     List<Cuidador> cuidadoresDisponiveis =
-        await _firestoreGestor.todosCuidadoresPaciente(_gestor, paciente.id);
+        await _firestoreGestor.todosCuidadoresPaciente(gestor, paciente.id);
 
     _cuidadoresDisponiveisPaciente = cuidadores
         .where((element) =>
             !cuidadoresDisponiveis.any((cuidador) => cuidador.id == element.id))
         .toList();
     notifyListeners();
+  }
+
+  Future<void> addCuidadorGestor(Cuidador cuidador) async {
+    if (!gestor.idCuidadores.contains(cuidador.id) && cuidador.id.isNotEmpty) {
+      gestor.idCuidadores.add(cuidador.id);
+      await _firestoreGestor.update(gestor);
+    }
   }
 }

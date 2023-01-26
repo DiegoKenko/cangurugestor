@@ -13,6 +13,7 @@ import 'package:cangurugestor/view/telas/paci/medicamento_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
@@ -40,6 +41,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
         context.read<PacienteProvider>().update();
+        context.read<ResponsavelProvider>().update();
       }
     });
     super.initState();
@@ -50,26 +52,32 @@ class _CadastroPacienteState extends State<CadastroPaciente>
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
+    final LoginProvider loginProvider = context.watch<LoginProvider>();
     pacienteProvider.responsavel = responsavelProvider.responsavel;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            pacienteProvider.update();
+            if (context.read<LoginProvider>().editPaciente) {
+              pacienteProvider.update();
+              responsavelProvider.update();
+            }
             pacienteProvider.clear();
             Navigator.of(context).pop();
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              pacienteProvider.delete();
-              pacienteProvider.clear();
-              Navigator.of(context).pop();
-            },
-          ),
+          loginProvider.editPaciente
+              ? IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    pacienteProvider.delete();
+                    pacienteProvider.clear();
+                    Navigator.of(context).pop();
+                  },
+                )
+              : const SizedBox(),
         ],
         centerTitle: true,
         title: Column(
@@ -130,6 +138,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
   Widget build(BuildContext context) {
     final GestorProvider gestorProvider = context.watch<GestorProvider>();
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
+    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Builder(
       builder: (context) {
         gestorProvider.todosCuidadoresPaciente(pacienteProvider.paciente);
@@ -146,30 +155,34 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                 },
               ),
             ),
-            BotaoCadastro(onPressed: () {
-              gestorProvider
-                  .todosCuidadoresDisponiveis(pacienteProvider.paciente);
-              showBottomSheet(
-                  context: context,
-                  builder: ((context) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: gestorProvider.cuidadoresDisponiveisPaciente
-                              .map((Cuidador e) => ItemContainer(
-                                    onTap: () {
-                                      pacienteProvider.addCuidadorPaciente(e);
-                                      Navigator.of(context).pop();
-                                    },
-                                    title: e.nome,
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                    );
-                  }));
-            }),
+            loginProvider.editPaciente
+                ? BotaoCadastro(onPressed: () {
+                    gestorProvider
+                        .todosCuidadoresDisponiveis(pacienteProvider.paciente);
+                    showBottomSheet(
+                        context: context,
+                        builder: ((context) {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children:
+                                    gestorProvider.cuidadoresDisponiveisPaciente
+                                        .map((Cuidador e) => ItemContainer(
+                                              onTap: () {
+                                                pacienteProvider
+                                                    .addCuidadorPaciente(e);
+                                                Navigator.of(context).pop();
+                                              },
+                                              title: e.nome,
+                                            ))
+                                        .toList(),
+                              ),
+                            ),
+                          );
+                        }));
+                  })
+                : Container(),
           ],
         );
       },
@@ -235,6 +248,7 @@ class AtividadesPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
+    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Column(
       children: [
         Expanded(
@@ -270,20 +284,22 @@ class AtividadesPaciente extends StatelessWidget {
             }
           }),
         ),
-        SizedBox(
-          height: 40,
-          child: Center(
-            child: BotaoCadastro(
-              onPressed: () {
-                Navigator.of(context).push(
-                  AnimatedPageTransition(
-                    page: const CadastroAtividade(),
+        loginProvider.editPaciente
+            ? SizedBox(
+                height: 40,
+                child: Center(
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroAtividade(),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-        )
+                ),
+              )
+            : Container(),
       ],
     );
   }
@@ -297,6 +313,7 @@ class ConsultasPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
+    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Column(
       children: [
         Expanded(
@@ -332,20 +349,22 @@ class ConsultasPaciente extends StatelessWidget {
             }
           }),
         ),
-        SizedBox(
-          height: 40,
-          child: Center(
-            child: BotaoCadastro(
-              onPressed: () {
-                Navigator.of(context).push(
-                  AnimatedPageTransition(
-                    page: const CadastroConsulta(),
+        loginProvider.editPaciente
+            ? SizedBox(
+                height: 40,
+                child: Center(
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroConsulta(),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-        )
+                ),
+              )
+            : Container(),
       ],
     );
   }
@@ -359,6 +378,7 @@ class MedicamentosPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
+    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Column(children: [
       Expanded(
         child: Builder(
@@ -393,20 +413,22 @@ class MedicamentosPaciente extends StatelessWidget {
           },
         ),
       ),
-      SizedBox(
-        height: 40,
-        child: Center(
-          child: BotaoCadastro(
-            onPressed: () {
-              Navigator.of(context).push(
-                AnimatedPageTransition(
-                  page: const CadastroMedicamento(),
+      loginProvider.editPaciente
+          ? SizedBox(
+              height: 40,
+              child: Center(
+                child: BotaoCadastro(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      AnimatedPageTransition(
+                        page: const CadastroMedicamento(),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
-      )
+              ),
+            )
+          : Container(),
     ]);
   }
 }
