@@ -34,7 +34,9 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (context.read<MedicamentoProvider>().paciente.id.isEmpty) {
-        context.read<MedicamentoProvider>().update();
+        if (context.read<LoginProvider>().editMedicamento) {
+          context.read<MedicamentoProvider>().update();
+        }
       }
     });
     super.initState();
@@ -59,7 +61,9 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              medicamentoProvider.update();
+              if (context.read<LoginProvider>().editMedicamento) {
+                medicamentoProvider.update();
+              }
               medicamentoProvider.clear();
               Navigator.pop(context);
             },

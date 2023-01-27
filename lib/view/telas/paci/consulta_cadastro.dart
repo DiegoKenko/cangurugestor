@@ -33,7 +33,9 @@ class _CadastroConsultaState extends State<CadastroConsulta>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (context.read<ConsultaProvider>().consulta.paciente.id.isEmpty) {
-        context.read<ConsultaProvider>().update();
+        if (context.read<LoginProvider>().editConsulta) {
+          context.read<ConsultaProvider>().update();
+        }
       }
     });
     super.initState();
@@ -56,7 +58,9 @@ class _CadastroConsultaState extends State<CadastroConsulta>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            consultaProvider.update();
+            if (context.read<LoginProvider>().editConsulta) {
+              consultaProvider.update();
+            }
             consultaProvider.clear();
             Navigator.of(context).pop();
           },

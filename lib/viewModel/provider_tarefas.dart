@@ -130,4 +130,18 @@ class TarefasProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> delete(Tarefa tarefa) async {
+    await FirestoreTarefa().delete(paciente.id, tarefa.id);
+  }
+
+  Future<void> loadTodasTarefas(EnumFiltroDataTarefa data) async {
+    if (paciente.id.isNotEmpty) {
+      _tarefas = await FirestoreTarefa().todasTarefasPeriodo(paciente, data);
+    }
+
+    _tarefas.sort((a, b) {
+      return a.date.compareTo(b.date);
+    });
+  }
 }

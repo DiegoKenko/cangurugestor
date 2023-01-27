@@ -7,7 +7,6 @@ class ConsultaProvider extends ChangeNotifier {
 
   void clear() {
     consulta = Consulta();
-    notifyListeners();
   }
 
   Future<void> load() async {

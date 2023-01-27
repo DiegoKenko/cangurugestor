@@ -27,7 +27,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
     super.initState();
   }
@@ -90,18 +90,12 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
                 'Pacientes',
               ),
             ),
-            Tab(
-              child: Text(
-                'Tarefas',
-              ),
-            ),
           ],
-          views: [
-            const Tab(
+          views: const [
+            Tab(
               child: DadosCuidador(),
             ),
-            const Tab(child: PacientesCuidador()),
-            Tab(child: Container()),
+            Tab(child: PacientesCuidador()),
           ],
         ),
       ),

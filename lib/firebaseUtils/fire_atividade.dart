@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreAtividade {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  atualizarAtividadePaciente(Atividade atividade, String idPaciente) {
+  void atualizarAtividadePaciente(Atividade atividade, String idPaciente) {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -25,7 +25,7 @@ class FirestoreAtividade {
     return atividade;
   }
 
-  excluirAtividadePaciente(String idAtividade, String idPaciente) {
+  void excluirAtividadePaciente(String idAtividade, String idPaciente) {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -36,17 +36,18 @@ class FirestoreAtividade {
 
   Future<List<Atividade>> todasAtividadesPaciente(String idPaciente) async {
     List<Atividade> atvReturn = [];
-    QuerySnapshot<Map<String, dynamic>> snap = await firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('atividades')
-        .get();
-    for (var element in snap.docs) {
-      var atv = Atividade.fromMap(element.data());
-      atv.id = element.id;
-      atvReturn.add(atv);
+    if (idPaciente.isNotEmpty) {
+      QuerySnapshot<Map<String, dynamic>> snap = await firestore
+          .collection('pacientes')
+          .doc(idPaciente)
+          .collection('atividades')
+          .get();
+      for (var element in snap.docs) {
+        var atv = Atividade.fromMap(element.data());
+        atv.id = element.id;
+        atvReturn.add(atv);
+      }
     }
-
     return atvReturn;
   }
 }

@@ -11,7 +11,9 @@ import 'package:flutter/cupertino.dart';
 class PacienteProvider extends ChangeNotifier {
   Paciente _paciente = Paciente();
   Responsavel responsavel = Responsavel();
+  List<Cuidador> _cuidadores = [];
 
+  List<Cuidador> get cuidadores => _cuidadores;
   Paciente get paciente => _paciente;
 
   set paciente(Paciente paciente) {
@@ -21,7 +23,8 @@ class PacienteProvider extends ChangeNotifier {
 
   void clear() {
     paciente = Paciente();
-    notifyListeners();
+    responsavel = Responsavel();
+    _cuidadores = [];
   }
 
   Future<void> update() async {
@@ -60,18 +63,27 @@ class PacienteProvider extends ChangeNotifier {
   }
 
   Future<void> addCuidadorPaciente(Cuidador cuidador) async {
-    if (!cuidador.idPacientes.contains(_paciente.id)) {
+    if (!paciente.idCuidadores.contains(cuidador.id)) {
       cuidador.idPacientes.add(_paciente.id);
+      paciente.idCuidadores.add(cuidador.id);
       await FirestoreCuidador().update(cuidador);
+      await update();
       notifyListeners();
     }
   }
 
   Future<void> removeCuidadorPaciente(Cuidador cuidador) async {
-    if (cuidador.idPacientes.contains(_paciente.id)) {
+    if (paciente.idCuidadores.contains(cuidador.id)) {
       cuidador.idPacientes.remove(_paciente.id);
+      paciente.idCuidadores.remove(cuidador.id);
       await FirestoreCuidador().update(cuidador);
+      await update();
       notifyListeners();
     }
+  }
+
+  Future<void> loadCuidadores() async {
+    _cuidadores = await FirestorePaciente().todosCuidadoresPaciente(_paciente);
+    notifyListeners();
   }
 }

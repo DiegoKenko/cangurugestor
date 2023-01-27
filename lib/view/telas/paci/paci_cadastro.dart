@@ -40,11 +40,13 @@ class _CadastroPacienteState extends State<CadastroPaciente>
 
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
-        context.read<PacienteProvider>().update().then((value) {
-          context
-              .read<ResponsavelProvider>()
-              .addPaciente(context.read<PacienteProvider>().paciente);
-        });
+        if (context.read<LoginProvider>().editPaciente) {
+          context.read<PacienteProvider>().update().then((value) {
+            context
+                .read<ResponsavelProvider>()
+                .addPaciente(context.read<PacienteProvider>().paciente);
+          });
+        }
       }
     });
     super.initState();
@@ -145,96 +147,100 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
     final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Builder(
       builder: (context) {
-        gestorProvider.todosCuidadoresPaciente(pacienteProvider.paciente);
+        pacienteProvider.loadCuidadores();
         return Column(
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: gestorProvider.cuidadores.length,
+                itemCount: pacienteProvider.cuidadores.length,
                 itemBuilder: (context, index) {
                   return ItemContainer(
-                    title: gestorProvider.cuidadores[index].nome,
-                    subtitle: gestorProvider.cuidadores[index].email,
+                    title: pacienteProvider.cuidadores[index].nome,
+                    subtitle: pacienteProvider.cuidadores[index].email,
                   );
                 },
               ),
             ),
             loginProvider.editPaciente
                 ? BotaoCadastro(onPressed: () {
-                    gestorProvider.todosCuidadores();
-                    showBottomSheet(
+                    context.read<GestorProvider>().todosCuidadoresDisponiveis();
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        isDismissible: false,
+                        elevation: 10,
                         context: context,
                         builder: ((context) {
                           return SizedBox(
                             height: MediaQuery.of(context).size.height * 0.5,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    color: corPad1,
-                                    height: 40,
-                                    width: double.infinity,
-                                    child: Center(
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.arrow_back,
-                                              color: corBranco,
+                            child: Consumer<PacienteProvider>(
+                                builder: (context, provider, _) {
+                              return SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      color: corPad1,
+                                      height: 40,
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.arrow_back,
+                                                color: corBranco,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
                                             ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          const Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'Cuidadores disponíveis',
+                                            const Expanded(
+                                              child: Center(
+                                                child: Text(
+                                                  'Cuidadores disponíveis',
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Column(
-                                    children: gestorProvider.cuidadores
-                                        .map(
-                                          (Cuidador e) => ItemContainer(
-                                            onTap: () {},
-                                            title: e.nome,
-                                            trailing: e.idPacientes.contains(
-                                                    pacienteProvider
-                                                        .paciente.id)
-                                                ? ElevatedButton(
-                                                    onPressed: () {
-                                                      pacienteProvider
-                                                          .removeCuidadorPaciente(
-                                                              e);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text(
-                                                      'Remover',
-                                                    ),
-                                                  )
-                                                : ElevatedButton(
-                                                    onPressed: () {
-                                                      pacienteProvider
-                                                          .addCuidadorPaciente(
-                                                              e);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text(
-                                                        'Adicionar')),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                    Column(
+                                      children:
+                                          gestorProvider.cuidadoresDisponiveis
+                                              .map(
+                                                (Cuidador e) => ItemContainer(
+                                                  onTap: () {},
+                                                  title: e.nome,
+                                                  trailing: provider
+                                                          .paciente.idCuidadores
+                                                          .contains(e.id)
+                                                      ? ElevatedButton(
+                                                          onPressed: () {
+                                                            provider
+                                                                .removeCuidadorPaciente(
+                                                                    e);
+                                                          },
+                                                          child: const Text(
+                                                            'Remover',
+                                                          ),
+                                                        )
+                                                      : ElevatedButton(
+                                                          onPressed: () {
+                                                            provider
+                                                                .addCuidadorPaciente(
+                                                                    e);
+                                                          },
+                                                          child: const Text(
+                                                              'Adicionar'),
+                                                        ),
+                                                ),
+                                              )
+                                              .toList(),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
                           );
                         }));
                   })

@@ -40,6 +40,13 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
       actions: [
         TextButton(
           onPressed: () {
+            context.read<TarefasProvider>().delete(widget.tarefa);
+            Navigator.pop(context);
+          },
+          child: const Text('Excluir'),
+        ),
+        TextButton(
+          onPressed: () {
             Navigator.pop(context);
           },
           child: const Text('Cancelar'),

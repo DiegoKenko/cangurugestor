@@ -19,7 +19,7 @@ class LoginProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isLogged => _isLogged;
   bool get hasError => _hasError;
-  final Login _login = Login();
+  Login _login = Login();
 
   Pessoa get user => _login.user;
   EnumClasse get classe => _login.classe;
@@ -119,10 +119,15 @@ class LoginProvider extends ChangeNotifier {
     if (loginMethod is GoogleLogin) {
       final GoogleLogin googleLogin = GoogleLogin();
       await googleLogin.logout();
-      _isLogged = false;
-      _hasError = false;
-      _isLoading = false;
+      clear();
       notifyListeners();
     }
+  }
+
+  void clear() {
+    _isLogged = false;
+    _hasError = false;
+    _isLoading = false;
+    _login = Login();
   }
 }

@@ -1,7 +1,6 @@
 import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -10,8 +9,10 @@ class GestorProvider extends ChangeNotifier {
   final FirestoreGestor _firestoreGestor = FirestoreGestor();
   List<Responsavel> _clientes = [];
   List<Cuidador> _cuidadores = [];
+  List<Cuidador> _cuidadoresDisponiveis = [];
 
   List<Cuidador> get cuidadores => _cuidadores;
+  List<Cuidador> get cuidadoresDisponiveis => _cuidadoresDisponiveis;
   List<Responsavel> get clientes => _clientes;
 
   set clientes(List<Responsavel> clientes) {
@@ -29,14 +30,14 @@ class GestorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> todosCuidadoresPaciente(Paciente paciente) async {
-    _cuidadores =
-        await _firestoreGestor.todosCuidadoresPaciente(gestor, paciente.id);
+  Future<void> todosCuidadores() async {
+    _cuidadores = await _firestoreGestor.todosCuidadoresGestor(gestor);
     notifyListeners();
   }
 
-  Future<void> todosCuidadores() async {
-    _cuidadores = await _firestoreGestor.todosCuidadoresGestor(gestor);
+  Future<void> todosCuidadoresDisponiveis() async {
+    _cuidadoresDisponiveis =
+        await _firestoreGestor.todosCuidadoresGestor(gestor);
     notifyListeners();
   }
 

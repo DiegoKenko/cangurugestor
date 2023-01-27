@@ -50,6 +50,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
             if (context.read<LoginProvider>().editResponsavel) {
               responsavelProvider.update();
             }
+            responsavelProvider.clear();
             Navigator.of(context).pop();
           },
         ),

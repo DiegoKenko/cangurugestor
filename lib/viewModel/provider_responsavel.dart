@@ -33,7 +33,6 @@ class ResponsavelProvider extends ChangeNotifier {
 
   void clear() {
     responsavel = Responsavel();
-    notifyListeners();
   }
 
   void addPaciente(Paciente paciente) {

@@ -13,7 +13,6 @@ class AtividadeProvider extends ChangeNotifier {
 
   void clear() {
     atividade = Atividade();
-    notifyListeners();
   }
 
   void update() async {

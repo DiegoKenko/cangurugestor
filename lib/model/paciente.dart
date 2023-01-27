@@ -11,7 +11,7 @@ class Paciente extends Pessoa {
   List<Consulta> consultas = [];
   List<Medicamento> medicamentos = [];
   List<Atividade> atividades = [];
-  List cuidadores = [];
+  List<String> idCuidadores = [];
   Prescricao? prescricao = Prescricao();
 
   Paciente({
@@ -37,9 +37,11 @@ class Paciente extends Pessoa {
 
   Paciente.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     ativo = map['ativo'] ?? true;
+    nome = map['nome'];
     sobrenome = map['sobrenome'];
     id = map['id'] ?? '';
     dataCadastro = map['dataCadastro'];
+    idCuidadores = List<String>.from(map['idCuidadores'] ?? []);
   }
 
   @override
@@ -49,11 +51,9 @@ class Paciente extends Pessoa {
       'nome': nome,
       'sobrenome': sobrenome,
       'nascimento': nascimento,
-      'email': email,
-      'telefone': telefone,
       'ativo': ativo,
       'dataCadastro': DateTime.now().toIso8601String(),
-      'cuidadores': cuidadores.map((e) => null).toList(),
+      'idCuidadores': idCuidadores
     };
   }
 }

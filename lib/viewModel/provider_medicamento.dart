@@ -18,7 +18,6 @@ class MedicamentoProvider extends ChangeNotifier {
   void clear() {
     medicamento = Medicamento();
     paciente = Paciente();
-    notifyListeners();
   }
 
   Future<void> load() async {

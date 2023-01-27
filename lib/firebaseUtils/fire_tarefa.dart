@@ -1,6 +1,8 @@
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -26,7 +28,8 @@ class FirestoreTarefa {
     }
   }
 
-  void criaMultiplasTarefas(Paciente paciente, List<Tarefa> tarefas) async {
+  Future<void> criaMultiplasTarefas(
+      Paciente paciente, List<Tarefa> tarefas) async {
     for (var tarefa in tarefas) {
       await firestore
           .collection('pacientes')
@@ -36,7 +39,7 @@ class FirestoreTarefa {
     }
   }
 
-  void delete(String idPaciente, String idTarefa) async {
+  Future<void> delete(String idPaciente, String idTarefa) async {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -86,5 +89,83 @@ class FirestoreTarefa {
         .collection('tarefas')
         .doc(tarefa.id)
         .update(tarefa.toMap());
+  }
+
+  Future<List<Tarefa>> todasTarefasPeriodo(
+      Paciente paciente, EnumFiltroDataTarefa filtro) async {
+    List<Tarefa> tarefas = [];
+    final DateTime now = DateTime.now();
+    final DateFormat dateFormat = DateFormat('dd/MM/yyy');
+    final String nowString = DateTime.now().toIso8601String();
+    CollectionReference<Map<String, dynamic>> collectionReference = firestore
+        .collection('pacientes')
+        .doc(paciente.id)
+        .collection('tarefas');
+    QuerySnapshot<Map<String, dynamic>> doc;
+
+    switch (filtro) {
+      case EnumFiltroDataTarefa.ontem:
+        doc = await collectionReference
+            .where(
+              'date',
+              isEqualTo: dateFormat.format(
+                now.add(
+                  const Duration(days: 1),
+                ),
+              ),
+            )
+            .get();
+        break;
+      case EnumFiltroDataTarefa.hoje:
+        doc = await collectionReference
+            .where(
+              'date',
+              isEqualTo: dateFormat.format(now),
+            )
+            .get();
+        break;
+      case EnumFiltroDataTarefa.estaSemana:
+        doc = await collectionReference
+            .where(
+              'date',
+              isGreaterThan: dateFormat.format(now),
+            )
+            .where(
+              'date',
+              isLessThanOrEqualTo: dateFormat.format(
+                now.add(
+                  const Duration(days: 7),
+                ),
+              ),
+            )
+            .get();
+        break;
+      case EnumFiltroDataTarefa.amanha:
+        doc = await collectionReference
+            .where(
+              'date',
+              isEqualTo: dateFormat.format(
+                now.add(
+                  const Duration(days: 1),
+                ),
+              ),
+            )
+            .get();
+        break;
+      default:
+        doc = await collectionReference
+            .where(
+              'date',
+              isEqualTo: dateFormat.format(now),
+            )
+            .get();
+    }
+
+    tarefas = doc.docs.map((e) {
+      Tarefa tarefa = Tarefa.fromMap(e.data());
+      tarefa.id = e.id;
+      return tarefa;
+    }).toList();
+    return tarefas;
   }
 }

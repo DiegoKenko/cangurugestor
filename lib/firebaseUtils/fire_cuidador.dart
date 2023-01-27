@@ -41,14 +41,15 @@ class FirestoreCuidador {
     List<Paciente> pacientes = [];
     DocumentSnapshot<Map<String, dynamic>> doc =
         await firestore.collection('cuidadores').doc(cuidador.id).get();
-    for (var element in doc.data()!['idPacientes']) {
+    for (String element in doc.data()!['idPacientes']) {
       if (element.isNotEmpty) {
         DocumentSnapshot<Map<String, dynamic>> pacienteDoc =
             await firestore.collection('pacientes').doc(element).get();
-
-        Paciente paciente = Paciente.fromMap(pacienteDoc.data()!);
-        paciente.id = pacienteDoc.id;
-        pacientes.add(paciente);
+        if (pacienteDoc.data() != null) {
+          Paciente paciente = Paciente.fromMap(pacienteDoc.data()!);
+          paciente.id = pacienteDoc.id;
+          pacientes.add(paciente);
+        }
       }
     }
     return pacientes;

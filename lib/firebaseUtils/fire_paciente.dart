@@ -141,26 +141,16 @@ class FirestorePaciente {
 
   Future<List<Cuidador>> todosCuidadoresPaciente(Paciente paciente) async {
     List<Cuidador> cuidadores = [];
-    if (paciente.id.isEmpty) {
+    if (paciente.id.isEmpty || paciente.idCuidadores.isEmpty) {
+      return cuidadores;
+    } else {
+      for (var element in paciente.idCuidadores) {
+        DocumentSnapshot<Map<String, dynamic>> doc =
+            await firestore.collection('cuidadores').doc(element).get();
+        cuidadores.add(Cuidador.fromMap(doc.data()!));
+        cuidadores.last.id = doc.id;
+      }
       return cuidadores;
     }
-    firestore
-        .collection('cuidadores')
-        .where('idPacientes', arrayContains: paciente.id)
-        .get()
-        .then((value) async {
-      if (value.docs.isNotEmpty) {
-        for (var element in value.docs) {
-          var cuidadorSnap =
-              await firestore.collection('cuidadores').doc(element.id).get();
-
-          if (cuidadorSnap.exists) {
-            cuidadores.add(Cuidador.fromMap(cuidadorSnap.data()!));
-            cuidadores.last.id = cuidadorSnap.id;
-          }
-        }
-      }
-    });
-    return cuidadores;
   }
 }

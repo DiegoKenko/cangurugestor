@@ -36,7 +36,8 @@ class CuidadorProvider extends ChangeNotifier {
 
   void clear() {
     cuidador = Cuidador();
-    notifyListeners();
+    _pacientes = [];
+    _gestor = Gestor();
   }
 
   void todosPacientes() async {

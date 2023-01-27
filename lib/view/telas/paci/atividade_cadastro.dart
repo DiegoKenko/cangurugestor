@@ -230,7 +230,9 @@ class _DadosAtividadeState extends State<DadosAtividade> {
     _frequenciaQtdeController.addListener(() {
       // Listener para atualizar a descrição da atividade
       context.read<AtividadeProvider>().atividade.frequenciaQuantidade =
-          double.parse(_frequenciaQtdeController.text);
+          double.parse(_frequenciaQtdeController.text.isEmpty
+              ? '0'
+              : _frequenciaQtdeController.text);
     });
     _frequenciaUMController.addListener(() {
       // Listener para atualizar a descrição da atividade

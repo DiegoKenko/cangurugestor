@@ -31,6 +31,13 @@ enum EnumTarefa {
   nenhuma,
 }
 
+enum EnumFiltroDataTarefa {
+  ontem,
+  hoje,
+  amanha,
+  estaSemana,
+}
+
 extension TarefaDescricao on EnumTarefa {
   String get name => describeEnum(this);
   String get collection {
