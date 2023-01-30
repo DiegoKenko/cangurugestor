@@ -7,6 +7,7 @@ class Tarefa {
   String id = '';
   String idTipo = '';
   EnumTarefa tipo = EnumTarefa.nenhuma;
+  EnumStatus status = EnumStatus.nenhum;
   String descricaoTipo = '';
   DateTime dateTime = DateTime.now();
   String date = '';
@@ -14,6 +15,8 @@ class Tarefa {
   String descricao = '';
   String observacao = '';
   bool concluida = false;
+  String dataConclusao = '';
+  String horaConclusao = '';
   Tarefa({
     this.nome = '',
     this.idTipo = '',
@@ -47,6 +50,8 @@ class Tarefa {
     time = json['time'];
     observacao = json['observacao'];
     concluida = json['concluida'];
+    dataConclusao = json['dataConclusao'] ?? '';
+    horaConclusao = json['horaConclusao'] ?? '';
   }
 
   Map<String, dynamic> toMap() {
@@ -61,6 +66,8 @@ class Tarefa {
       'time': time,
       'observacao': observacao,
       'concluida': concluida,
+      'dataConclusao': dataConclusao,
+      'horaConclusao': horaConclusao
     };
   }
 

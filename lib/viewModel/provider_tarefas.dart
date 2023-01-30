@@ -6,6 +6,7 @@ import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 class TarefasProvider extends ChangeNotifier {
   List<Tarefa> _tarefas = [];
@@ -136,12 +137,39 @@ class TarefasProvider extends ChangeNotifier {
   }
 
   Future<void> loadTodasTarefas(EnumFiltroDataTarefa data) async {
+    final DateTime now = DateTime.now();
+    final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
     if (paciente.id.isNotEmpty) {
-      _tarefas = await FirestoreTarefa().todasTarefasPeriodo(paciente, data);
+      _tarefas = await FirestoreTarefa().todasTarefas(paciente);
+    } else {
+      _tarefas = [];
     }
 
-    _tarefas.sort((a, b) {
-      return a.date.compareTo(b.date);
-    });
+    switch (data) {
+      case EnumFiltroDataTarefa.ontem:
+        _tarefas.removeWhere((t) =>
+            t.date != dateFormat.format(now.subtract(const Duration(days: 1))));
+        break;
+      case EnumFiltroDataTarefa.hoje:
+        _tarefas.removeWhere((t) => t.date != dateFormat.format(now));
+        break;
+      case EnumFiltroDataTarefa.amanha:
+        _tarefas.removeWhere((t) =>
+            t.date != dateFormat.format(now.add(const Duration(days: 1))));
+        break;
+      case EnumFiltroDataTarefa.estaSemana:
+        _tarefas = _tarefas
+            .where((t) => t.dateTime.isAfter(now.add(const Duration(days: 1))))
+            .toList();
+        _tarefas = _tarefas
+            .where((t) => t.dateTime.isBefore(now.add(const Duration(days: 7))))
+            .toList();
+        break;
+      default:
+        _tarefas.removeWhere((t) => t.date != dateFormat.format(now));
+    }
+
+    _tarefas.sort((a, b) => a.date.compareTo(b.date));
+    notifyListeners();
   }
 }

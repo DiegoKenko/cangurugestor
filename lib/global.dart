@@ -38,6 +38,8 @@ enum EnumFiltroDataTarefa {
   estaSemana,
 }
 
+enum EnumStatus { concluido, emAberto, nenhum }
+
 extension TarefaDescricao on EnumTarefa {
   String get name => describeEnum(this);
   String get collection {

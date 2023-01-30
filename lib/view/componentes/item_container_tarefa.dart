@@ -1,0 +1,230 @@
+import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/tarefa.dart';
+import 'package:cangurugestor/view/componentes/form_cadastro.dart';
+import 'package:cangurugestor/view/componentes/styles.dart';
+import 'package:cangurugestor/viewModel/provider_tarefas.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+class ItemContainerTarefa extends StatefulWidget {
+  final Tarefa tarefa;
+
+  const ItemContainerTarefa({Key? key, required this.tarefa}) : super(key: key);
+
+  @override
+  State<ItemContainerTarefa> createState() => _ItemContainerTarefaState();
+}
+
+class _ItemContainerTarefaState extends State<ItemContainerTarefa> {
+  final TextEditingController _obsController = TextEditingController();
+
+  @override
+  void initState() {
+    _obsController.text = widget.tarefa.observacao;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget wStatus = Container();
+
+    wStatus = StatusTarefa(
+        status: widget.tarefa.concluida
+            ? EnumStatus.concluido
+            : EnumStatus.emAberto);
+
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        shadowColor: corPad1,
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: InkWell(
+          onTap: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                isDismissible: false,
+                elevation: 10,
+                context: context,
+                builder: (context) {
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            color: corPad1,
+                            width: double.infinity,
+                            height: 40,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              widget.tarefa.nome,
+                              style: kEditTarefaTextStyle,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '${widget.tarefa.date} as ${widget.tarefa.time}',
+                            ),
+                          ),
+                          FormCadastro(
+                            enabled: true,
+                            multiLine: true,
+                            obrigatorio: true,
+                            onChanged: (p0) {
+                              widget.tarefa.observacao = p0;
+                            },
+                            controller: _obsController,
+                            labelText: 'Observação',
+                            textInputType: TextInputType.name,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                widget.tarefa.concluida
+                                    ? Text(
+                                        'realizado em ${widget.tarefa.dataConclusao} as ${widget.tarefa.horaConclusao}')
+                                    : const Text('em aberto'),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Center(
+                                  child: FilledButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text(
+                                      'Cancelar',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Center(
+                                  child: FilledButton(
+                                    onPressed: () {
+                                      widget.tarefa.dataConclusao =
+                                          DateFormat('dd/MM/yyyy')
+                                              .format(DateTime.now());
+                                      widget.tarefa.horaConclusao =
+                                          DateFormat('HH:mm')
+                                              .format(DateTime.now());
+                                      widget.tarefa.concluida = true;
+                                      context
+                                          .read<TarefasProvider>()
+                                          .updateTarefa(widget.tarefa);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(widget.tarefa.concluida
+                                        ? 'Atualizar'
+                                        : 'Realizar tarefa'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          },
+          child: Column(
+            children: [
+              ListTile(
+                trailing: trailingTipoTarefa(widget.tarefa.tipo),
+                subtitle: Text(
+                  '${widget.tarefa.date} as ${widget.tarefa.time}',
+                ),
+                title: Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: corPad1,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    widget.tarefa.nome,
+                  ),
+                ),
+              ),
+              wStatus
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Widget trailingTipoTarefa(EnumTarefa tipo) {
+  if (tipo == EnumTarefa.atividade) {
+    return kIconAtividade;
+  } else if (tipo == EnumTarefa.consulta) {
+    return kIconConsulta;
+  } else if (tipo == EnumTarefa.medicamento) {
+    return kIconMedicamento;
+  } else {
+    return Container();
+  }
+}
+
+class StatusTarefa extends StatelessWidget {
+  const StatusTarefa({super.key, required this.status});
+  final EnumStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    if (status == EnumStatus.nenhum) {
+      return Container();
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(10),
+          ),
+          color: status == EnumStatus.concluido
+              ? Colors.green[300]
+              : Colors.red[300],
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                status == EnumStatus.concluido ? Icons.check : Icons.cancel,
+                size: 15,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(status == EnumStatus.concluido
+                  ? 'realizado'
+                  : 'não realizado'),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+}

@@ -1,8 +1,9 @@
+import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/drawer.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
-import 'package:cangurugestor/view/telas/paci/paci_cadastro.dart';
+import 'package:cangurugestor/view/telas/paci/paci_dashboard.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,11 @@ class PacientesCuidador extends StatelessWidget {
               context.read<PacienteProvider>().clear();
               context.read<PacienteProvider>().paciente =
                   cuidadorProvider.pacientes[index];
+              Navigator.of(context).push(
+                AnimatedPageTransition(
+                  page: const PacienteDashboard(),
+                ),
+              );
             },
           );
         }),
