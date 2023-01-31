@@ -31,7 +31,7 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (context.read<AtividadeProvider>().atividade.id.isEmpty) {
+      if (context.read<LoginProvider>().editAtividade) {
         context.read<AtividadeProvider>().update();
       }
     });
@@ -255,7 +255,6 @@ class _DadosAtividadeState extends State<DadosAtividade> {
     _duracaoUMController.dispose();
     _frequenciaQtdeController.dispose();
     _frequenciaUMController.dispose();
-    
 
     super.dispose();
   }

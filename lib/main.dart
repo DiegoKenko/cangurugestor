@@ -70,11 +70,11 @@ class _MyAppState extends State<MyApp> {
           ),
           inputDecorationTheme: InputDecorationTheme(
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 1, color: corPad1),
+              borderSide: const BorderSide(width: 1, color: corPad1),
               borderRadius: BorderRadius.circular(20),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 2.5, color: corPad1),
+              borderSide: const BorderSide(width: 2.5, color: corPad1),
               borderRadius: BorderRadius.circular(20),
             ),
           ),

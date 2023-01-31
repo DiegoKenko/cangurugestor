@@ -33,10 +33,8 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (context.read<MedicamentoProvider>().paciente.id.isEmpty) {
-        if (context.read<LoginProvider>().editMedicamento) {
-          context.read<MedicamentoProvider>().update();
-        }
+      if (context.read<LoginProvider>().editMedicamento) {
+        context.read<MedicamentoProvider>().update();
       }
     });
     super.initState();

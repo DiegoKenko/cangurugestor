@@ -43,13 +43,7 @@ class GoogleLogin extends MethodLogin {
 
   @override
   Future<void> logout() async {
-    if (_googleSignIn.currentUser != null) {
-      await _googleSignIn.disconnect();
-      await _googleSignIn.signOut();
-    }
-    if (_auth.currentUser != null) {
-      await _auth.signOut();
-    }
+    await _auth.signOut();
   }
 
   @override

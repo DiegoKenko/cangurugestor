@@ -1,6 +1,7 @@
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -66,20 +67,6 @@ class FirestoreTarefa {
     return tarefas;
   }
 
-  Stream<List<Tarefa>> getTarefasTodas(String idPaciente) {
-    return firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('tarefas')
-        .orderBy('dateTime')
-        .snapshots()
-        .map((event) => event.docs.map((e) {
-              var tarefa = Tarefa.fromMap(e.data());
-              tarefa.id = e.id;
-              return tarefa;
-            }).toList());
-  }
-
   Future<void> atualizarTarefaPaciente(Tarefa tarefa, Paciente paciente) async {
     await firestore
         .collection('pacientes')
@@ -89,13 +76,77 @@ class FirestoreTarefa {
         .update(tarefa.toMap());
   }
 
-  Future<List<Tarefa>> todasTarefas(Paciente paciente) async {
+  Future<List<Tarefa>> todasTarefasOntem(Paciente paciente) async {
     List<Tarefa> tarefas = [];
-
     var ref = await firestore
         .collection('pacientes')
         .doc(paciente.id)
         .collection('tarefas')
+        .where('date',
+            isEqualTo: DateFormat('dd/MM/yyyy')
+                .format(DateTime.now().subtract(const Duration(days: 1))))
+        .orderBy('dateTime')
+        .get();
+
+    for (var t in ref.docs) {
+      Tarefa tarefa = Tarefa.fromMap(t.data());
+      tarefa.id = t.id;
+      tarefas.add(tarefa);
+    }
+    return tarefas;
+  }
+
+  Future<List<Tarefa>> todasTarefasHoje(Paciente paciente) async {
+    List<Tarefa> tarefas = [];
+    var ref = await firestore
+        .collection('pacientes')
+        .doc(paciente.id)
+        .collection('tarefas')
+        .where('date',
+            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()))
+        .orderBy('dateTime')
+        .get();
+
+    for (var t in ref.docs) {
+      Tarefa tarefa = Tarefa.fromMap(t.data());
+      tarefa.id = t.id;
+      tarefas.add(tarefa);
+    }
+    return tarefas;
+  }
+
+  Future<List<Tarefa>> todasTarefasAmanha(Paciente paciente) async {
+    List<Tarefa> tarefas = [];
+    var ref = await firestore
+        .collection('pacientes')
+        .doc(paciente.id)
+        .collection('tarefas')
+        .where('date',
+            isEqualTo: DateFormat('dd/MM/yyyy')
+                .format(DateTime.now().add(const Duration(days: 1))))
+        .orderBy('dateTime')
+        .get();
+
+    for (var t in ref.docs) {
+      Tarefa tarefa = Tarefa.fromMap(t.data());
+      tarefa.id = t.id;
+      tarefas.add(tarefa);
+    }
+    return tarefas;
+  }
+
+  Future<List<Tarefa>> todasTarefasSemana(Paciente paciente) async {
+    List<Tarefa> tarefas = [];
+    var ref = await firestore
+        .collection('pacientes')
+        .doc(paciente.id)
+        .collection('tarefas')
+        .where('date',
+            isGreaterThan: DateFormat('dd/MM/yyyy')
+                .format(DateTime.now().add(const Duration(days: 1))),
+            isLessThanOrEqualTo: DateFormat('dd/MM/yyyy')
+                .format(DateTime.now().add(const Duration(days: 7))))
+        .orderBy('date')
         .get();
 
     for (var t in ref.docs) {

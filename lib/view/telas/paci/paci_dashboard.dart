@@ -76,7 +76,7 @@ class _PacienteDashboardState extends State<PacienteDashboard>
           TarefasPeriodo(data: EnumFiltroDataTarefa.ontem),
           TarefasPeriodo(data: EnumFiltroDataTarefa.hoje),
           TarefasPeriodo(data: EnumFiltroDataTarefa.amanha),
-          TarefasPeriodo(data: EnumFiltroDataTarefa.estaSemana),
+          TarefasPeriodo(data: EnumFiltroDataTarefa.proxSemana),
         ],
       ),
     );
@@ -92,8 +92,9 @@ class TarefasPeriodo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TarefasProvider>(builder: (context, provider, _) {
-      context.read<TarefasProvider>().loadTodasTarefas(data);
+    final TarefasProvider provider = context.watch<TarefasProvider>();
+    return Builder(builder: (context) {
+      provider.loadTodasTarefasFiltro(data);
       return ListView.builder(
           itemCount: provider.tarefas.length,
           itemBuilder: (context, index) {

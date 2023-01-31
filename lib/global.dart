@@ -35,7 +35,7 @@ enum EnumFiltroDataTarefa {
   ontem,
   hoje,
   amanha,
-  estaSemana,
+  proxSemana,
 }
 
 enum EnumStatus { concluido, emAberto, nenhum }

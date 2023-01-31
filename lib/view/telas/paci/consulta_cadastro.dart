@@ -32,10 +32,8 @@ class _CadastroConsultaState extends State<CadastroConsulta>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (context.read<ConsultaProvider>().consulta.paciente.id.isEmpty) {
-        if (context.read<LoginProvider>().editConsulta) {
-          context.read<ConsultaProvider>().update();
-        }
+      if (context.read<LoginProvider>().editConsulta) {
+        context.read<ConsultaProvider>().update();
       }
     });
     super.initState();

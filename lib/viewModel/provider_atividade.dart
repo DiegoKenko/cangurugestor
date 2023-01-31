@@ -23,9 +23,9 @@ class AtividadeProvider extends ChangeNotifier {
       FirestoreAtividade()
           .atualizarAtividadePaciente(atividade, atividade.paciente.id);
     } else {
-      Atividade atividade = await FirestoreAtividade()
-          .novaAtividadePaciente(this.atividade, this.atividade.paciente.id);
-      atividade = atividade;
+      Atividade a = await FirestoreAtividade()
+          .novaAtividadePaciente(atividade, atividade.paciente.id);
+      atividade = a;
       notifyListeners();
     }
   }
