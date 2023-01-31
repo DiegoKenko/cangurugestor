@@ -3,7 +3,7 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_dropdown.dart';
-import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
@@ -59,6 +59,7 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
             if (context.read<LoginProvider>().editAtividade) {
               atividadeProvider.update();
             }
+            context.read<TarefasProvider>().clear();
             atividadeProvider.clear();
             Navigator.of(context).pop();
           },
@@ -138,9 +139,8 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
         child: Builder(builder: (context) {
           tarefasProvider.load();
           var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa tarefa) => ItemContainer(
-                    title: '${tarefa.date} - ${tarefa.time}',
-                    subtitle: tarefa.observacao,
+              .map((Tarefa tarefa) => ItemContainerTarefa(
+                    tarefa: tarefa,
                     onTap: () {
                       showDialog(
                         context: context,
@@ -255,6 +255,7 @@ class _DadosAtividadeState extends State<DadosAtividade> {
     _duracaoUMController.dispose();
     _frequenciaQtdeController.dispose();
     _frequenciaUMController.dispose();
+    
 
     super.dispose();
   }

@@ -4,7 +4,7 @@ import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/form_dropdown.dart';
-import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
@@ -64,6 +64,7 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
               if (context.read<LoginProvider>().editMedicamento) {
                 medicamentoProvider.update();
               }
+              context.read<TarefasProvider>().clear();
               medicamentoProvider.clear();
               Navigator.pop(context);
             },
@@ -144,9 +145,8 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
         child: Builder(builder: (context) {
           tarefasProvider.load();
           var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa tarefa) => ItemContainer(
-                    title: '${tarefa.date} - ${tarefa.time}',
-                    subtitle: tarefa.observacao,
+              .map((Tarefa tarefa) => ItemContainerTarefa(
+                    tarefa: tarefa,
                     onTap: () {
                       showDialog(
                         context: context,

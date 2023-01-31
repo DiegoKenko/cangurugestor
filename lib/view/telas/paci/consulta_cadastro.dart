@@ -3,7 +3,7 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
-import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
@@ -61,6 +61,7 @@ class _CadastroConsultaState extends State<CadastroConsulta>
             if (context.read<LoginProvider>().editConsulta) {
               consultaProvider.update();
             }
+            context.read<TarefasProvider>().clear();
             consultaProvider.clear();
             Navigator.of(context).pop();
           },
@@ -140,9 +141,8 @@ class _TarefasConsultaState extends State<TarefasConsulta> {
         child: Builder(builder: (context) {
           tarefasProvider.load();
           var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa tarefa) => ItemContainer(
-                    title: '${tarefa.date} - ${tarefa.time}',
-                    subtitle: tarefa.observacao,
+              .map((Tarefa tarefa) => ItemContainerTarefa(
+                    tarefa: tarefa,
                     onTap: () {
                       showDialog(
                         context: context,
@@ -313,7 +313,7 @@ class _DadosConsultaState extends State<DadosConsulta> {
             textInputType: TextInputType.name,
             enabled: true,
             controller: _descricaoController,
-            labelText: 'Nome',
+            labelText: 'Descrição',
           ),
           FormCadastro(
             obrigatorio: true,

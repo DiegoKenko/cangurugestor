@@ -59,8 +59,24 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: const [Locale('pt', 'BR')],
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
+            centerTitle: true,
             color: corPad1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(25),
+              ),
+            ),
             iconTheme: IconThemeData(color: corBranco),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: corPad1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 2.5, color: corPad1),
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
           tabBarTheme: const TabBarTheme(
             labelColor: corPreto,
@@ -68,19 +84,7 @@ class _MyAppState extends State<MyApp> {
               border: Border(
                 bottom: BorderSide(
                   color: corPad1,
-                  width: 3,
-                ),
-                left: BorderSide(
-                  color: corPad1,
-                  width: 1,
-                ),
-                right: BorderSide(
-                  color: corPad1,
-                  width: 1,
-                ),
-                top: BorderSide(
-                  color: corPad1,
-                  width: 0.5,
+                  width: 4,
                 ),
               ),
             ),

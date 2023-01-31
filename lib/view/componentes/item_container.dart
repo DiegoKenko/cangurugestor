@@ -5,6 +5,7 @@ class ItemContainer extends StatelessWidget {
   final String title;
   final String subtitle;
   final Widget? trailing;
+  final Widget? leading;
   final Function()? onTap;
   const ItemContainer({
     Key? key,
@@ -12,6 +13,7 @@ class ItemContainer extends StatelessWidget {
     this.subtitle = '',
     this.onTap,
     this.trailing,
+    this.leading,
   }) : super(key: key);
 
   @override
@@ -20,13 +22,18 @@ class ItemContainer extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: Card(
         shadowColor: corPad1,
-        elevation: 5,
+        elevation: 10,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(
+            color: corPad1,
+            width: 0.5,
+          ),
         ),
         child: InkWell(
           onTap: onTap,
           child: ListTile(
+            leading: leading,
             trailing: trailing,
             subtitle: Text(subtitle),
             title: Container(

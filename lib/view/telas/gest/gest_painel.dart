@@ -100,6 +100,9 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
                     return const Text('nenhum cuidador cadastrado');
                   } else {
                     return ItemContainer(
+                      leading: const CircleAvatar(
+                        backgroundImage: AssetImage('assets/avatar.png'),
+                      ),
                       title: gestorProvider.cuidadores[index].nome,
                       subtitle: gestorProvider.cuidadores[index].sobrenome,
                       onTap: () {
@@ -159,6 +162,9 @@ class ClientesGestor extends StatelessWidget {
                 itemCount: gestorProvider.clientes.length,
                 itemBuilder: (context, index) {
                   return ItemContainer(
+                    leading: const CircleAvatar(
+                      backgroundImage: AssetImage('assets/avatar.png'),
+                    ),
                     onTap: () {
                       context.read<ResponsavelProvider>().responsavel =
                           gestorProvider.clientes[index];

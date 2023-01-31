@@ -41,6 +41,9 @@ class FirestoreResponsavel {
   Future<List<Paciente>> todosPacientesResponsavel(
       Responsavel responsavel) async {
     List<Paciente> pacientesRet = [];
+    if (responsavel.id.isEmpty) {
+      return pacientesRet;
+    }
     await firestore.collection('responsaveis').doc(responsavel.id).get().then(
       (doc) {
         if (doc.data() != null) {
@@ -58,6 +61,9 @@ class FirestoreResponsavel {
       for (var element in responsavel.idPacientes) {
         DocumentSnapshot<Map<String, dynamic>> docPaciente =
             await firestore.collection('pacientes').doc(element).get();
+        if (docPaciente.data() == null) {
+          continue;
+        }
         Paciente paciente = Paciente.fromMap(docPaciente.data()!);
         paciente.id = docPaciente.id;
 

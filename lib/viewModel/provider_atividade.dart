@@ -17,6 +17,9 @@ class AtividadeProvider extends ChangeNotifier {
 
   void update() async {
     if (atividade.id.isNotEmpty) {
+      if (atividade.descricao.isEmpty) {
+        return;
+      }
       FirestoreAtividade()
           .atualizarAtividadePaciente(atividade, atividade.paciente.id);
     } else {

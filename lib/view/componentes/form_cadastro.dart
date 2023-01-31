@@ -67,7 +67,10 @@ class _FormCadastroState extends State<FormCadastro> {
           label: Text(widget.labelText.toUpperCase()),
           labelStyle: kLabelStyle,
           focusColor: Colors.white,
-          border: const OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: corPad1),
+          ),
         ),
       ),
     );

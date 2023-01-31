@@ -36,6 +36,9 @@ class ResponsavelProvider extends ChangeNotifier {
   }
 
   void addPaciente(Paciente paciente) {
+    if (responsavel.idPacientes.contains(paciente.id)) {
+      return;
+    }
     responsavel.idPacientes.add(paciente.id);
     update();
   }

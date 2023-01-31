@@ -54,9 +54,10 @@ class GoogleLogin extends MethodLogin {
 
   @override
   Future<Pessoa> loadUser() async {
-    var cred = await getCredentials();
-    Pessoa user =
-        await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!);
+    //var cred = await getCredentials();
+    // Pessoa user = await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!); */
+    Pessoa user = await FirestoreLogin()
+        .autenticarUsuarioEmail('diegoandrade@inora.com.br');
     return user;
   }
 }

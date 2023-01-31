@@ -53,6 +53,9 @@ class FirestoreConsulta {
 
   Future<List<Consulta>> todasConsultasPaciente(String idpaciente) async {
     List<Consulta> consultas = [];
+    if (idpaciente.isEmpty) {
+      return consultas;
+    }
     var snap = await firestore
         .collection('pacientes')
         .doc(idpaciente)

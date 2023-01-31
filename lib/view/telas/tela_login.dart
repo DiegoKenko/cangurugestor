@@ -55,7 +55,7 @@ class _TelaLoginState extends State<TelaLogin> {
           children: [
             Image(
               image: const AssetImage('assets/reduxLogo01.png'),
-              height: MediaQuery.of(context).size.height * 0.4,
+              height: MediaQuery.of(context).size.height * 0.5,
               fit: BoxFit.fitWidth,
             ),
             Padding(

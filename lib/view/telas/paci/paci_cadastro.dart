@@ -37,7 +37,6 @@ class _CadastroPacienteState extends State<CadastroPaciente>
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
-
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
         if (context.read<LoginProvider>().editPaciente) {
@@ -53,6 +52,12 @@ class _CadastroPacienteState extends State<CadastroPaciente>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     final ResponsavelProvider responsavelProvider =
@@ -65,9 +70,10 @@ class _CadastroPacienteState extends State<CadastroPaciente>
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             if (context.read<LoginProvider>().editPaciente) {
-              context.read<PacienteProvider>().update().then((value) => context
+              context.read<PacienteProvider>().update();
+              context
                   .read<ResponsavelProvider>()
-                  .addPaciente(context.read<PacienteProvider>().paciente));
+                  .addPaciente(context.read<PacienteProvider>().paciente);
             }
             pacienteProvider.clear();
             Navigator.of(context).pop();
@@ -156,7 +162,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                 itemBuilder: (context, index) {
                   return ItemContainer(
                     title: pacienteProvider.cuidadores[index].nome,
-                    subtitle: pacienteProvider.cuidadores[index].email,
+                    subtitle: pacienteProvider.cuidadores[index].sobrenome,
                   );
                 },
               ),
@@ -508,8 +514,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _nascimentoController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
@@ -534,16 +538,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
       context.read<PacienteProvider>().paciente.nascimento =
           _nascimentoController.text;
     });
-    _emailController.addListener(() {
-      // Listener para atualizar o email do responsável
-      context.read<PacienteProvider>().paciente.email = _emailController.text;
-    });
-    _telefoneController.addListener(() {
-      // Listener para atualizar o telefone do responsável
-      context.read<PacienteProvider>().paciente.telefone =
-          _telefoneController.text;
-    });
-
     _ruaController.addListener(() {
       // Listener para atualizar a rua do responsável
       context.read<PacienteProvider>().paciente.rua = _ruaController.text;
@@ -605,8 +599,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
     _cpfController.dispose();
     _nomeController.dispose();
     _nascimentoController.dispose();
-    _emailController.dispose();
-    _telefoneController.dispose();
     _ruaController.dispose();
     _bairroController.dispose();
     _numeroRuaController.dispose();
@@ -623,8 +615,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
     _cpfController.text = pacienteProvider.paciente.cpf;
     _nomeController.text = pacienteProvider.paciente.nome;
     _nascimentoController.text = pacienteProvider.paciente.nascimento;
-    _emailController.text = pacienteProvider.paciente.email;
-    _telefoneController.text = pacienteProvider.paciente.telefone;
     _cepController.text = pacienteProvider.paciente.cep;
     _ruaController.text = pacienteProvider.paciente.rua;
     _bairroController.text = pacienteProvider.paciente.bairro;
@@ -663,22 +653,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
               dataUltima: DateTime(DateTime.now().year),
               controller: _nascimentoController,
               labelText: 'Data de nascimento',
-            ),
-            FormCadastro(
-              enabled: true,
-              controller: _emailController,
-              labelText: 'e-mail',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              enabled: true,
-              controller: _telefoneController,
-              labelText: 'Celular',
-              textInputType: TextInputType.number,
-              inputFormatters: [
-                MaskTextInputFormatter(
-                    mask: "## #####-####", filter: {"#": RegExp(r'[0-9]')})
-              ],
             ),
             FormCadastro(
               enabled: true,

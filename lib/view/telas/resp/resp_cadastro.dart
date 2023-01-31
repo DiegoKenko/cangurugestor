@@ -146,6 +146,9 @@ class PacientesResponsavel extends StatelessWidget {
                   itemCount: responsavelProvider.responsavel.pacientes.length,
                   itemBuilder: (context, index) {
                     return ItemContainer(
+                      leading: const CircleAvatar(
+                        backgroundImage: AssetImage('assets/avatar.png'),
+                      ),
                       onTap: () {
                         context.read<PacienteProvider>().paciente =
                             responsavelProvider.responsavel.pacientes[index];

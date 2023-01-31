@@ -42,14 +42,14 @@ class FirestorePaciente {
     return paciente;
   }
 
-  void atualizarPaciente(Paciente paciente) {
-    firestore.collection('pacientes').doc(paciente.id).get().then(
-      (snapshot) {
-        if (snapshot.exists) {
-          snapshot.reference.update(paciente.toMap());
-        }
-      },
-    );
+  Future<void> atualizarPaciente(Paciente paciente) async {
+    if (paciente.id.isEmpty) {
+      return;
+    }
+    await firestore
+        .collection('pacientes')
+        .doc(paciente.id)
+        .update(paciente.toMap());
   }
 
   Future<void> excluirPaciente(

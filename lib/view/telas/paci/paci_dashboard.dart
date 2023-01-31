@@ -97,7 +97,21 @@ class TarefasPeriodo extends StatelessWidget {
       return ListView.builder(
           itemCount: provider.tarefas.length,
           itemBuilder: (context, index) {
-            return ItemContainerTarefa(tarefa: provider.tarefas[index]);
+            return ItemContainerTarefa(
+              tarefa: provider.tarefas[index],
+              onTap: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    isDismissible: false,
+                    elevation: 10,
+                    context: context,
+                    builder: (context) {
+                      return TarefaBottomSheet(
+                        tarefa: provider.tarefas[index],
+                      );
+                    });
+              },
+            );
           });
     });
   }

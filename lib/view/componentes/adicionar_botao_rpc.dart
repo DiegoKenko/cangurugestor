@@ -15,11 +15,13 @@ class _BotaoCadastroState extends State<BotaoCadastro> {
     return GestureDetector(
       onTap: widget.onPressed,
       child: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: corPreto, width: 1),
-            bottom: BorderSide(color: corPreto, width: 1),
+        width: MediaQuery.of(context).size.width * 0.5,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: corPad1,
+            width: 1,
           ),
+          borderRadius: BorderRadius.circular(50),
         ),
         child: Center(
           child: Padding(

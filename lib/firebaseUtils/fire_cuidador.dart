@@ -39,6 +39,9 @@ class FirestoreCuidador {
 
   Future<List<Paciente>> todosPacientesCuidador(Cuidador cuidador) async {
     List<Paciente> pacientes = [];
+    if (cuidador.id.isEmpty) {
+      return pacientes;
+    }
     DocumentSnapshot<Map<String, dynamic>> doc =
         await firestore.collection('cuidadores').doc(cuidador.id).get();
     for (String element in doc.data()!['idPacientes']) {

@@ -35,6 +35,9 @@ class MedicamentoProvider extends ChangeNotifier {
 
   Future<void> update() async {
     if (medicamento.id.isNotEmpty) {
+      if (medicamento.nome.isEmpty) {
+        return;
+      }
       FirestoreMedicamento()
           .atualizarMedicamentoPaciente(medicamento, paciente.id);
       notifyListeners();

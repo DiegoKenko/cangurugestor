@@ -67,6 +67,7 @@ flutter:
     - assets/reduxLogo01.png
     - assets/google_icon.png
     - assets/apple_icon.png
+    - assets/avatar.png
   uses-material-design: true
 
 

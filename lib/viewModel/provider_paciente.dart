@@ -29,7 +29,7 @@ class PacienteProvider extends ChangeNotifier {
 
   Future<void> update() async {
     if (_paciente.id.isNotEmpty) {
-      FirestorePaciente().atualizarPaciente(_paciente);
+      await FirestorePaciente().atualizarPaciente(_paciente);
       notifyListeners();
     } else {
       Paciente pac =

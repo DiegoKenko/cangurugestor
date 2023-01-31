@@ -244,7 +244,6 @@ class _DadosCuidadorState extends State<DadosCuidador> {
     _cidadeController.dispose();
     _estadoController.dispose();
     _cepController.dispose();
-
     super.dispose();
   }
 
