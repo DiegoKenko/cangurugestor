@@ -8,37 +8,35 @@ const int privilegioGestor = 1;
 const int privilegioResponsavel = 2;
 const int privilegioCuidador = 3;
 
-enum EnumIntervalo {
-  minutos,
-  horas,
-  dias,
-  semanas,
-  meses,
-}
+enum EnumIntervalo { minutos, horas, dias, semanas, meses }
 
-enum EnumClasse {
-  gestor,
-  responsavel,
-  cuidador,
-  paciente,
-  naoDefinido,
-}
+enum EnumClasse { gestor, responsavel, cuidador, paciente, naoDefinido }
 
-enum EnumTarefa {
-  medicamento,
-  atividade,
-  consulta,
-  nenhuma,
-}
+enum EnumTarefa { medicamento, atividade, consulta, nenhuma }
 
-enum EnumFiltroDataTarefa {
-  ontem,
-  hoje,
-  amanha,
-  proxSemana,
-}
+enum EnumFiltroDataTarefa { ontem, hoje, amanha, proxSemana }
 
 enum EnumStatus { concluido, emAberto, nenhum }
+
+enum EnumActivity { tarefa, login, nenhum }
+
+extension ClasseDescricao on EnumClasse {
+  String get name => describeEnum(this);
+  String get collection {
+    switch (this) {
+      case EnumClasse.gestor:
+        return 'gestores';
+      case EnumClasse.responsavel:
+        return 'responsaveis';
+      case EnumClasse.cuidador:
+        return 'cuidadores';
+      case EnumClasse.paciente:
+        return 'pacientes';
+      default:
+        return 'erro';
+    }
+  }
+}
 
 extension TarefaDescricao on EnumTarefa {
   String get name => describeEnum(this);

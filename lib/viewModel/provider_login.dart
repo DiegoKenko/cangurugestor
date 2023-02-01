@@ -9,6 +9,7 @@ import 'package:cangurugestor/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/view/telas/resp/resp_painel.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
+import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cangurugestor/global.dart' as global;
 
@@ -58,6 +59,7 @@ class LoginProvider extends ChangeNotifier {
     _isLogged = true;
     _hasError = false;
     _isLoading = false;
+    ActivityViewModel.login(_login.user);
     notifyListeners();
   }
 

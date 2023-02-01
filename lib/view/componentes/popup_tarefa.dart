@@ -3,6 +3,8 @@ import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_hora.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
+import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
+import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -60,6 +62,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
               _horaController.text,
             );
             widget.tarefa.observacao = _obsController.text;
+
             context.read<TarefasProvider>().updateTarefa(widget.tarefa);
             Navigator.pop(context);
           },
