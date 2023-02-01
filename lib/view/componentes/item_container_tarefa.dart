@@ -4,6 +4,7 @@ import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
+import 'package:cangurugestor/viewModel/provider_login.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
@@ -155,37 +156,39 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                     child: FilledButton(
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Text(
-                        'Cancelar',
+                        'Voltar',
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: FilledButton(
-                      onPressed: () {
-                        Tarefa t = widget.tarefa;
-                        if (!t.concluida) {
-                          t.dataConclusao =
-                              DateFormat('dd/MM/yyyy').format(DateTime.now());
-                          t.horaConclusao =
-                              DateFormat('HH:mm').format(DateTime.now());
-                          t.concluida = true;
-                          ActivityViewModel.tarefaCuidador(
-                              t,
-                              context.read<CuidadorProvider>().cuidador,
-                              context.read<PacienteProvider>().paciente);
-                        }
-                        context.read<TarefasProvider>().updateTarefa(t);
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(widget.tarefa.concluida
-                          ? 'Atualizar'
-                          : 'Realizar tarefa'),
-                    ),
-                  ),
-                ),
+                context.read<LoginProvider>().realizarTarefa
+                    ? Expanded(
+                        flex: 1,
+                        child: Center(
+                          child: FilledButton(
+                            onPressed: () {
+                              Tarefa t = widget.tarefa;
+                              if (!t.concluida) {
+                                t.dataConclusao = DateFormat('dd/MM/yyyy')
+                                    .format(DateTime.now());
+                                t.horaConclusao =
+                                    DateFormat('HH:mm').format(DateTime.now());
+                                t.concluida = true;
+                                ActivityViewModel.tarefaCuidador(
+                                    t,
+                                    context.read<CuidadorProvider>().cuidador,
+                                    context.read<PacienteProvider>().paciente);
+                              }
+                              context.read<TarefasProvider>().updateTarefa(t);
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(widget.tarefa.concluida
+                                ? 'Atualizar'
+                                : 'Realizar tarefa'),
+                          ),
+                        ),
+                      )
+                    : Container(),
               ],
             )
           ],

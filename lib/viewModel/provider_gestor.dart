@@ -47,4 +47,11 @@ class GestorProvider extends ChangeNotifier {
       await _firestoreGestor.update(gestor);
     }
   }
+
+  void clear() {
+    gestor = Gestor();
+    _clientes = [];
+    _cuidadores = [];
+    _cuidadoresDisponiveis = [];
+  }
 }

@@ -83,7 +83,7 @@ class _PacienteDashboardState extends State<PacienteDashboard>
   }
 }
 
-class TarefasPeriodo extends StatelessWidget {
+class TarefasPeriodo extends StatefulWidget {
   const TarefasPeriodo({
     super.key,
     required this.data,
@@ -91,29 +91,37 @@ class TarefasPeriodo extends StatelessWidget {
   final EnumFiltroDataTarefa data;
 
   @override
+  State<TarefasPeriodo> createState() => _TarefasPeriodoState();
+}
+
+class _TarefasPeriodoState extends State<TarefasPeriodo> {
+  @override
   Widget build(BuildContext context) {
     final TarefasProvider provider = context.watch<TarefasProvider>();
-    return Builder(builder: (context) {
-      provider.loadTodasTarefasFiltro(data);
-      return ListView.builder(
-          itemCount: provider.tarefas.length,
-          itemBuilder: (context, index) {
-            return ItemContainerTarefa(
-              tarefa: provider.tarefas[index],
-              onTap: () {
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    isDismissible: false,
-                    elevation: 10,
-                    context: context,
-                    builder: (context) {
-                      return TarefaBottomSheet(
-                        tarefa: provider.tarefas[index],
-                      );
-                    });
-              },
-            );
-          });
-    });
+    return FutureBuilder(
+      builder: (builder, snap) {
+        var tarefas = snap.data ?? [];
+        return ListView.builder(
+            itemCount: tarefas.length,
+            itemBuilder: (context, index) {
+              return ItemContainerTarefa(
+                tarefa: tarefas[index],
+                onTap: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      isDismissible: false,
+                      elevation: 10,
+                      context: context,
+                      builder: (context) {
+                        return TarefaBottomSheet(
+                          tarefa: tarefas[index],
+                        );
+                      });
+                },
+              );
+            });
+      },
+      future: provider.getTodasTarefasFiltro(widget.data),
+    );
   }
 }

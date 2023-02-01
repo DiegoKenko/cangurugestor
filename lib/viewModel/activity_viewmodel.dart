@@ -1,5 +1,4 @@
 import 'package:cangurugestor/firebaseUtils/fire_activity.dart';
-import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/activity.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';

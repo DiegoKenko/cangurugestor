@@ -51,6 +51,14 @@ class LoginProvider extends ChangeNotifier {
     return _login.privilegio == global.privilegioGestor;
   }
 
+  bool get editTarefa {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
+  bool get realizarTarefa {
+    return _login.privilegio == global.privilegioCuidador;
+  }
+
   set method(MethodLogin method) {
     _login.method = method;
   }

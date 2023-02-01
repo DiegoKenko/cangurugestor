@@ -159,4 +159,31 @@ class TarefasProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<List<Tarefa>> getTodasTarefasFiltro(
+      EnumFiltroDataTarefa filtro) async {
+    List<Tarefa> tarefas = [];
+    if (paciente.id.isNotEmpty) {
+      switch (filtro) {
+        case EnumFiltroDataTarefa.ontem:
+          tarefas = await FirestoreTarefa().todasTarefasOntem(paciente);
+          break;
+        case EnumFiltroDataTarefa.hoje:
+          tarefas = await FirestoreTarefa().todasTarefasHoje(paciente);
+          break;
+        case EnumFiltroDataTarefa.amanha:
+          tarefas = await FirestoreTarefa().todasTarefasAmanha(paciente);
+          break;
+        case EnumFiltroDataTarefa.proxSemana:
+          tarefas = await FirestoreTarefa().todasTarefasSemana(paciente);
+          break;
+        default:
+          tarefas = await FirestoreTarefa().todasTarefasOntem(paciente);
+      }
+    } else {
+      tarefas = [];
+    }
+
+    return tarefas;
+  }
 }

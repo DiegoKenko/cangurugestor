@@ -66,10 +66,14 @@ class LoginAcitivity extends Activity {
 class TarefaActivity extends Activity {
   String tarefaId = '';
   String pacienteId = '';
+  String tarefaDescription = '';
+  String pacienteName = '';
 
   TarefaActivity(
       {this.tarefaId = '',
       this.pacienteId = '',
+      this.tarefaDescription = '',
+      this.pacienteName = '',
       String userId = '',
       String activityId = '',
       String activityDescription = '',
@@ -85,7 +89,9 @@ class TarefaActivity extends Activity {
 
   TarefaActivity.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     tarefaId = json['tarefaId'];
+    tarefaDescription = json['tarefaDescription'];
     pacienteId = json['pacienteId'];
+    pacienteName = json['pacienteName'];
   }
 
   @override
@@ -93,6 +99,9 @@ class TarefaActivity extends Activity {
     final Map<String, dynamic> data = super.toJson();
     data['tarefaId'] = tarefaId;
     data['pacienteId'] = pacienteId;
+    data['tarefaDescription'] = tarefaDescription;
+    data['pacienteName'] = pacienteName;
+
     return data;
   }
 }

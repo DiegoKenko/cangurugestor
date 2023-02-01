@@ -1,7 +1,15 @@
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
+import 'package:cangurugestor/viewModel/provider_atividade.dart';
+import 'package:cangurugestor/viewModel/provider_consulta.dart';
+import 'package:cangurugestor/viewModel/provider_cuidador.dart';
+import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/provider_medicamento.dart';
+import 'package:cangurugestor/viewModel/provider_paciente.dart';
+import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +44,15 @@ class CanguruDrawer extends StatelessWidget {
                   ),
                   onTap: () {
                     context.read<LoginProvider>().logout();
+                    context.read<GestorProvider>().clear();
+                    context.read<PacienteProvider>().clear();
+                    context.read<ResponsavelProvider>().clear();
+                    context.read<CuidadorProvider>().clear();
+                    context.read<MedicamentoProvider>().clear();
+                    context.read<AtividadeProvider>().clear();
+                    context.read<ConsultaProvider>().clear();
+                    context.read<TarefasProvider>().clear();
+
                     Navigator.of(context).pushReplacement(
                       AnimatedPageTransition(
                         page: const TelaLogin(),

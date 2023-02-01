@@ -6,6 +6,9 @@ import 'package:flutter/cupertino.dart';
 
 class ResponsavelProvider extends ChangeNotifier {
   Responsavel responsavel = Responsavel();
+  List<Paciente> _pacientes = [];
+
+  List<Paciente> get pacientes => _pacientes;
 
   void setGestor(Gestor gest) {
     responsavel.gestor = gest;
@@ -41,5 +44,11 @@ class ResponsavelProvider extends ChangeNotifier {
     }
     responsavel.idPacientes.add(paciente.id);
     update();
+  }
+
+  void todosPacientes() async {
+    _pacientes =
+        await FirestoreResponsavel().todosPacientesResponsavel(responsavel);
+    notifyListeners();
   }
 }
