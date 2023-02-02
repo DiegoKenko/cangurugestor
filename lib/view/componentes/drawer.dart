@@ -1,5 +1,6 @@
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
+import 'package:cangurugestor/view/telas/tela_relatorio.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
@@ -11,14 +12,15 @@ import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 class CanguruDrawer extends StatelessWidget {
   const CanguruDrawer({
     Key? key,
-    this.drawerListTile = const [],
+    this.profile = const [],
   }) : super(key: key);
-  final List<Widget> drawerListTile;
+  final List<Widget> profile;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +32,62 @@ class CanguruDrawer extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                flex: 9,
+                flex: 1,
                 child: Column(
-                  children: drawerListTile,
+                  children: profile,
                 ),
               ),
               Expanded(
+                flex: 1,
+                child: context.read<LoginProvider>().gerarRelatorio
+                    ? DrawerListTile(
+                        title: const Text(
+                          'Relatórios',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              AnimatedPageTransition(
+                                  page: const RelatorioTela()));
+                        })
+                    : Container(),
+              ),
+              Expanded(
+                flex: 6,
+                child: Container(),
+              ),
+              Flexible(
+                flex: 1,
+                child: FutureBuilder(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (context, snap) {
+                      if (snap.hasData) {
+                        return DrawerListTile(
+                          title: const Text(
+                            'Sobre',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onTap: () async {
+                            showAboutDialog(
+                                context: context,
+                                applicationName: snap.data!.appName,
+                                applicationVersion:
+                                    'versão ${snap.data!.version}',
+                                applicationIcon:
+                                    const Icon(Icons.phone_android),
+                                applicationLegalese: 'DESENVOLVIDO POR: \n\n'
+                                    'Inora Softwares LTDA \n'
+                                    'www.inora.com.br \n'
+                                    'cnpj: 48.738.803/0001-74');
+                          },
+                        );
+                      } else {
+                        return Container();
+                      }
+                    }),
+              ),
+              Flexible(
                 flex: 1,
                 child: DrawerListTile(
                   title: const Text(

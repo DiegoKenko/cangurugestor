@@ -282,15 +282,36 @@ class _FichaPacienteState extends State<FichaPaciente>
     return TabCanguru(
       direction: VerticalDirection.up,
       controller: _tabControllerTarefa,
-      tabs: const [
+      tabs: [
         Tab(
-          child: kIconMedicamento,
+          child: Column(
+            children: const [
+              kIconMedicamento,
+              Text(
+                'Medicamentos',
+              )
+            ],
+          ),
         ),
         Tab(
-          child: kIconConsulta,
+          child: Column(
+            children: const [
+              kIconConsulta,
+              Text(
+                'Consultas',
+              )
+            ],
+          ),
         ),
         Tab(
-          child: kIconAtividade,
+          child: Column(
+            children: const [
+              kIconAtividade,
+              Text(
+                'Atividades',
+              )
+            ],
+          ),
         ),
       ],
       views: const [

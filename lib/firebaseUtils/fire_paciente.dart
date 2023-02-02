@@ -30,6 +30,9 @@ class FirestorePaciente {
 
   Future<Paciente> incluirPaciente(
       Responsavel responsavel, Paciente paciente) async {
+    if (paciente.nome.isEmpty) {
+      return paciente;
+    }
     var doc = await firestore.collection('pacientes').add(paciente.toMap());
     paciente.id = doc.id;
 

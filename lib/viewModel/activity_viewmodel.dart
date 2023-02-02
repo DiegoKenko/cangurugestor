@@ -7,22 +7,21 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:intl/intl.dart';
 
 class ActivityViewModel {
-  Activity activity = Activity();
 
   ActivityViewModel.login(Pessoa user) {
-    activity = LoginAcitivity(
+    LoginActivity activity = LoginActivity(
       userId: user.id,
       activityId: user.id,
       activityDate: DateFormat('dd/MM/yyyy').format(DateTime.now()),
       activityTime: DateFormat('HH:mm').format(DateTime.now()),
     );
 
-    FirestoreActivity().addActivity(activity);
+    FirestoreActivity().addLoginActivity(activity);
   }
 
   ActivityViewModel.tarefaCuidador(
       Tarefa tarefa, Cuidador cuidador, Paciente paciente) {
-    activity = TarefaActivity(
+    TarefaActivity activity = TarefaActivity(
       tarefaId: tarefa.id,
       pacienteId: paciente.id,
       userId: cuidador.id,
@@ -30,6 +29,6 @@ class ActivityViewModel {
       activityDate: DateFormat('dd/MM/yyyy').format(DateTime.now()),
       activityTime: DateFormat('HH:mm').format(DateTime.now()),
     );
-    FirestoreActivity().addActivity(activity);
+    FirestoreActivity().addTarefaActivity(activity);
   }
 }

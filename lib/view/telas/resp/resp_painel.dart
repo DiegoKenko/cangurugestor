@@ -32,7 +32,7 @@ class _PainelResponsavelState extends State<PainelResponsavel>
         context.watch<ResponsavelProvider>();
     return Scaffold(
       drawer: CanguruDrawer(
-        drawerListTile: [
+        profile: [
           DrawerListTile(
             title: Column(
               children: [

@@ -8,6 +8,9 @@ class FirestoreGestor {
 
   Future<List<Responsavel>> todosClientesGestor(Gestor gestor) async {
     List<Responsavel> resps = [];
+    if (gestor.id.isEmpty) {
+      return resps;
+    }
     await firestore.collection('gestores').doc(gestor.id).get().then((doc) {
       if (doc.data() != null) {
         gestor = Gestor.fromMap(doc.data()!);

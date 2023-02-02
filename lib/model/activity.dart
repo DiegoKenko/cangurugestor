@@ -40,8 +40,8 @@ class Activity {
   }
 }
 
-class LoginAcitivity extends Activity {
-  LoginAcitivity(
+class LoginActivity extends Activity {
+  LoginActivity(
       {String userId = '',
       String activityId = '',
       String activityDate = '',
@@ -54,7 +54,7 @@ class LoginAcitivity extends Activity {
             activityDate: activityDate,
             activityTime: activityTime);
 
-  LoginAcitivity.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  LoginActivity.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   Map<String, dynamic> toJson() {

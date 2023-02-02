@@ -6,7 +6,8 @@ import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/responsavel.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
+
 
 class PacienteProvider extends ChangeNotifier {
   Paciente _paciente = Paciente();

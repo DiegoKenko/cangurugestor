@@ -31,7 +31,7 @@ class _PainelCuidadorState extends State<PainelCuidador>
     final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
     return Scaffold(
       drawer: CanguruDrawer(
-        drawerListTile: [
+        profile: [
           DrawerListTile(
             title: Column(
               children: [

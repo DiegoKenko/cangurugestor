@@ -26,7 +26,7 @@ class FirestoreLogin {
 
   Future<void> atualizaLoginCuidador(Cuidador cuidador) async {
     final LoginUser user = LoginUser.fromCuidador(cuidador);
-    if (user.doc.isNotEmpty) {
+    if (user.doc.isNotEmpty && user.email != 'anonimo@inora.com.br') {
       await firestore
           .collection('login')
           .where('doc', isEqualTo: user.doc)

@@ -25,7 +25,7 @@ class GestorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void todosClientes() async {
+  Future<void> todosClientes() async {
     _clientes = await _firestoreGestor.todosClientesGestor(gestor);
     notifyListeners();
   }

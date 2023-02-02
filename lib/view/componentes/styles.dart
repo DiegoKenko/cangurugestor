@@ -27,6 +27,13 @@ final kTituloStyle = TextStyle(
   fontSize: 18,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
+final kTituloStyleVerde = TextStyle(
+  color: corPad1,
+  letterSpacing: 3,
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
 
 final kSubTituloStyle = TextStyle(
   color: corPreto,

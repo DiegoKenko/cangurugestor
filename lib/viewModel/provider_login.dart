@@ -59,6 +59,10 @@ class LoginProvider extends ChangeNotifier {
     return _login.privilegio == global.privilegioCuidador;
   }
 
+  bool get gerarRelatorio {
+    return _login.privilegio == global.privilegioGestor;
+  }
+
   set method(MethodLogin method) {
     _login.method = method;
   }

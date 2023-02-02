@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreActivity {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> addActivity(Activity activity) async {
+  Future<void> addLoginActivity(LoginActivity activity) async {
     if (activity.userId.isEmpty) {
       return;
     }
@@ -17,18 +17,29 @@ class FirestoreActivity {
         .add(activity.toJson());
   }
 
-  Future<List<LoginAcitivity>> historicoLoginCuidador(Cuidador cuidador) async {
-    final List<LoginAcitivity> list = <LoginAcitivity>[];
+  Future<void> addTarefaActivity(TarefaActivity activity) async {
+    if (activity.userId.isEmpty) {
+      return;
+    }
+    await firestore
+        .collection(activity.classe.collection)
+        .doc(activity.userId)
+        .collection('activities')
+        .add(activity.toJson());
+  }
+
+  Future<List<LoginActivity>> historicoLoginCuidador(Cuidador cuidador) async {
+    final List<LoginActivity> list = <LoginActivity>[];
     QuerySnapshot<Map<String, dynamic>> doc = await firestore
         .collection('cuidadores')
         .doc(cuidador.id)
         .collection('activities')
         .where('name', isEqualTo: 'login')
-        .orderBy('data')
+        .orderBy('date')
         .orderBy('time')
         .get();
     for (var element in doc.docs) {
-      list.add(LoginAcitivity.fromJson(element.data()));
+      list.add(LoginActivity.fromJson(element.data()));
     }
     return list;
   }
@@ -41,7 +52,7 @@ class FirestoreActivity {
         .doc(cuidador.id)
         .collection('activities')
         .where('name', isEqualTo: 'tarefa')
-        .orderBy('data')
+        .orderBy('date')
         .orderBy('time')
         .get();
     for (var element in doc.docs) {
