@@ -48,7 +48,8 @@ class _TelaLoginState extends State<TelaLogin> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -101,128 +102,125 @@ class _ButtonLoginEmailSenhaState extends State<ButtonLoginEmailSenha> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.5,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() {
-                  _tapped = !_tapped;
-                });
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(corBranco),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    side: const BorderSide(
-                      color: corPad1,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+          child: OutlinedButton(
+            onPressed: () {
+              setState(() {
+                _tapped = !_tapped;
+              });
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(corBranco),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  side: const BorderSide(
+                    color: corPad1,
+                    width: 1,
                   ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const <Widget>[
-                    Icon(Icons.mail, color: corPreto, size: 26.0),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        'E-mail e senha',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
             ),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const <Widget>[
+                  Icon(Icons.mail, color: corPreto, size: 26.0),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      'E-mail e senha',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          _tapped
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: _emailController,
-                                decoration: const InputDecoration(
-                                  labelText: 'E-mail',
-                                  labelStyle: TextStyle(color: corPreto),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: corPad1),
-                                  ),
+        ),
+        _tapped
+            ? Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(
+                                labelText: 'E-mail',
+                                labelStyle: TextStyle(color: corPreto),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: corPad1),
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: _senhaController,
-                                obscureText: !_showPassword,
-                                decoration: InputDecoration(
-                                  labelText: 'Senha',
-                                  labelStyle: const TextStyle(color: corPreto),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: corPad1),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _showPassword = !_showPassword;
-                                      });
-                                    },
-                                    icon: Icon(
-                                      _showPassword
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      color: corPreto,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 30,
-                      child: Center(
-                        child: IconButton(
-                          onPressed: () {
-                            context.read<LoginProvider>().method =
-                                EmailSenhaLogin(
-                              _emailController.text,
-                              _senhaController.text,
-                            );
-                            context.read<LoginProvider>().login();
-                          },
-                          icon: const Icon(
-                            Icons.chevron_right,
-                            size: 50,
-                            color: corPad1,
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _senhaController,
+                              obscureText: !_showPassword,
+                              decoration: InputDecoration(
+                                labelText: 'Senha',
+                                labelStyle: const TextStyle(color: corPreto),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: corPad1),
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _showPassword = !_showPassword;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    _showPassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: corPreto,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () {
+                          context.read<LoginProvider>().method =
+                              EmailSenhaLogin(
+                            _emailController.text,
+                            _senhaController.text,
+                          );
+                          context.read<LoginProvider>().login();
+                        },
+                        icon: const Icon(
+                          Icons.chevron_right,
+                          size: 50,
+                          color: corPad1,
                         ),
                       ),
                     ),
-                  ],
-                )
-              : Container(),
-        ],
-      ),
+                  ),
+                ],
+              )
+            : Container(),
+      ],
     );
   }
 }
@@ -290,42 +288,39 @@ class ButtonLogin extends StatelessWidget {
       context.read<LoginProvider>().login();
     }
 
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.5,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: OutlinedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(corBranco),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                side: const BorderSide(
-                  color: corPad1,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(20),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: OutlinedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(corBranco),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              side: const BorderSide(
+                color: corPad1,
+                width: 1,
               ),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
-          onPressed: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                image,
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    text,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+        ),
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              image,
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
