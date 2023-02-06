@@ -1,16 +1,16 @@
 # cangurugestor
 
-A new Flutter project.
+An app to manage caretaking services.
+With canguru it is possible to manage your patients their medicines and schedule task for their caretakers.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+There are 3 proposal in this app.
 
-A few resources to get you started if this is your first Flutter project:
+1 - for maganer, who hires caretakers.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+2 - for caretakers, who take care of patients.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+3 - for clients, who has patients to take care of.
+
+all of then can be used in the same app, according to the user role, registered previously.
