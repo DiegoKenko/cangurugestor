@@ -52,71 +52,73 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
         context.watch<MedicamentoProvider>();
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
 
-    return Builder(builder: (context) {
-      medicamentoProvider.setPaciente(pacienteProvider.paciente);
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.read<LoginProvider>().editMedicamento) {
-                medicamentoProvider.update();
-              }
-              context.read<TarefasProvider>().clear();
-              medicamentoProvider.clear();
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.delete),
+    return Builder(
+      builder: (context) {
+        medicamentoProvider.setPaciente(pacienteProvider.paciente);
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                medicamentoProvider.delete();
+                if (context.read<LoginProvider>().editMedicamento) {
+                  medicamentoProvider.update();
+                }
+                context.read<TarefasProvider>().clear();
                 medicamentoProvider.clear();
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
             ),
-          ],
-          centerTitle: true,
-          title: Column(
-            children: [
-              Text(
-                medicamentoProvider.medicamento.nome.toUpperCase(),
-                style: kTitleAppBarStyle,
-              ),
-              Text(
-                'medicamento',
-                style: kSubtitleAppBarStyle,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  medicamentoProvider.delete();
+                  medicamentoProvider.clear();
+                  Navigator.of(context).pop();
+                },
               ),
             ],
-          ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 30),
-            child: TabCanguru(
-              controller: _tabController,
-              tabs: const [
-                Tab(
-                  text: 'Dados',
+            centerTitle: true,
+            title: Column(
+              children: [
+                Text(
+                  medicamentoProvider.medicamento.nome.toUpperCase(),
+                  style: kTitleAppBarStyle,
                 ),
-                Tab(
-                  text: 'Tarefas',
-                ),
-              ],
-              views: const [
-                Tab(
-                  child: DadosMedicamento(),
-                ),
-                Tab(
-                  child: TarefasMedicamento(),
+                Text(
+                  'medicamento',
+                  style: kSubtitleAppBarStyle,
                 ),
               ],
             ),
           ),
-        ),
-      );
-    });
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 30),
+              child: TabCanguru(
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    text: 'Dados',
+                  ),
+                  Tab(
+                    text: 'Tarefas',
+                  ),
+                ],
+                views: const [
+                  Tab(
+                    child: DadosMedicamento(),
+                  ),
+                  Tab(
+                    child: TarefasMedicamento(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -140,10 +142,12 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
-        child: Builder(builder: (context) {
-          tarefasProvider.load();
-          var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa tarefa) => ItemContainerTarefa(
+        child: Builder(
+          builder: (context) {
+            tarefasProvider.load();
+            var widgetTarefaSalvas = tarefasProvider.tarefas
+                .map(
+                  (Tarefa tarefa) => ItemContainerTarefa(
                     tarefa: tarefa,
                     onTap: () {
                       showDialog(
@@ -153,31 +157,34 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
                         ),
                       );
                     },
-                  ))
-              .toList();
-          if (context.read<LoginProvider>().editMedicamento) {
-            return Column(
-              children: [
-                ...widgetTarefaSalvas,
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: BotaoCadastro(
-                    onPressed: () {
-                      tarefasProvider.novaTarefaMedicamento(
-                          context.read<MedicamentoProvider>().medicamento);
-                    },
                   ),
-                ),
-              ],
-            );
-          } else {
-            return Column(
-              children: [
-                ...widgetTarefaSalvas,
-              ],
-            );
-          }
-        }),
+                )
+                .toList();
+            if (context.read<LoginProvider>().editMedicamento) {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BotaoCadastro(
+                      onPressed: () {
+                        tarefasProvider.novaTarefaMedicamento(
+                          context.read<MedicamentoProvider>().medicamento,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -209,26 +216,29 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
     });
     _doseController.addListener(() {
       context.read<MedicamentoProvider>().medicamento.dose = double.parse(
-          _doseController.text.isEmpty ? '0' : _doseController.text);
+        _doseController.text.isEmpty ? '0' : _doseController.text,
+      );
     });
     _intervaloQtdeController.addListener(() {
       context.read<MedicamentoProvider>().medicamento.intervaloQuantidade =
-          double.parse(_intervaloQtdeController.text.isEmpty
-              ? '0'
-              : _intervaloQtdeController.text);
+          double.parse(
+        _intervaloQtdeController.text.isEmpty
+            ? '0'
+            : _intervaloQtdeController.text,
+      );
     });
     _intervaloUMController.addListener(() {
       context.read<MedicamentoProvider>().medicamento.intervalo =
           EnumIntervalo.values.firstWhere(
-              (EnumIntervalo element) =>
-                  element.name == _intervaloUMController.text,
-              orElse: () => EnumIntervalo.minutos);
+        (EnumIntervalo element) => element.name == _intervaloUMController.text,
+        orElse: () => EnumIntervalo.minutos,
+      );
     });
     _inicioController.addListener(() {
       context.read<MedicamentoProvider>().medicamento.dataInicio =
-          DateFormat('dd/MM/yyyy').parse(_inicioController.text.isEmpty
-              ? '01/01/2023'
-              : _inicioController.text);
+          DateFormat('dd/MM/yyyy').parse(
+        _inicioController.text.isEmpty ? '01/01/2023' : _inicioController.text,
+      );
     });
     _observacaoController.addListener(() {
       context.read<MedicamentoProvider>().medicamento.observacao =
@@ -261,9 +271,10 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
             ? EnumIntervalo.minutos.name
             : medicamentoProvider.medicamento.intervalo.name;
     _inicioController.text = DateFormat('dd/MM/yyyy').format(
-        medicamentoProvider.medicamento.dataInicio == null
-            ? DateTime.now()
-            : medicamentoProvider.medicamento.dataInicio!);
+      medicamentoProvider.medicamento.dataInicio == null
+          ? DateTime.now()
+          : medicamentoProvider.medicamento.dataInicio!,
+    );
     _observacaoController.text = medicamentoProvider.medicamento.observacao;
     return SingleChildScrollView(
       child: Column(

@@ -11,21 +11,21 @@ class Responsavel extends Pessoa {
   String idContrato = '';
   Gestor gestor = Gestor();
 
-  Responsavel(
-      {String cpf = '',
-      String nome = '',
-      String nascimento = '',
-      String email = '',
-      String telefone = '',
-      String rua = '',
-      String numeroRua = '',
-      String cep = '',
-      String complementoRua = '',
-      String bairro = '',
-      String cidade = '',
-      String estado = '',
-      this.idContrato = ''})
-      : super(
+  Responsavel({
+    String cpf = '',
+    String nome = '',
+    String nascimento = '',
+    String email = '',
+    String telefone = '',
+    String rua = '',
+    String numeroRua = '',
+    String cep = '',
+    String complementoRua = '',
+    String bairro = '',
+    String cidade = '',
+    String estado = '',
+    this.idContrato = '',
+  }) : super(
           cpf: cpf,
           rua: rua,
           numeroRua: numeroRua,

@@ -43,19 +43,23 @@ class _RelatorioTelaState extends State<RelatorioTela> {
               ),
               Expanded(
                 child: Consumer<RelatorioProviderGestor>(
-                    builder: (context, provider, _) {
-                  return ListView.builder(
+                  builder: (context, provider, _) {
+                    return ListView.builder(
                       shrinkWrap: true,
                       itemCount: provider.cuidadores.length,
                       itemBuilder: (context, index) {
                         return ChangeNotifierProvider(
                           create: (context) => RelatorioProviderCuidador(
-                              cuidador: provider.cuidadores[index]),
+                            cuidador: provider.cuidadores[index],
+                          ),
                           child: ExpansionCuidador(
-                              cuidador: provider.cuidadores[index]),
+                            cuidador: provider.cuidadores[index],
+                          ),
                         );
-                      });
-                }),
+                      },
+                    );
+                  },
+                ),
               )
             ],
           ),
@@ -87,47 +91,51 @@ class _ExpansionCuidadorState extends State<ExpansionCuidador>
   Widget build(BuildContext context) {
     final RelatorioProviderCuidador provider =
         context.watch<RelatorioProviderCuidador>();
-    return ExpansionTile(
-      title: Text(provider.cuidador.nome),
-      children: [
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SizedBox(
-              height: 50,
-              child: Text('Acessos'),
-            ),
-          ),
-        ),
-        ...provider.logins
-            .map((LoginActivity e) =>
-                Text('${e.activityDate} as ${e.activityTime}'))
-            .toList(),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SizedBox(
-              height: 50,
-              child: Text('Tarefas'),
-            ),
-          ),
-        ),
-        ...provider.atendimentos
-            .map(
-              (TarefaActivity e) => ListTile(
-                title: Text('${e.activityDate} as ${e.activityTime}'),
-                subtitle: Text(e.pacienteName),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ExpansionTile(
+        title: Text(provider.cuidador.nome),
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                child: Text('Acessos', style: kSubtitleReportStyle),
               ),
-            )
-            .toList(),
-      ],
-      onExpansionChanged: (value) {
-        if (value) {
-          provider.load();
-        }
-      },
+            ),
+          ),
+          ...provider.logins
+              .map(
+                (LoginActivity e) =>
+                    Text('${e.activityDate} as ${e.activityTime}'),
+              )
+              .toList(),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                child: Text(
+                  'Tarefas',
+                  style: kSubtitleReportStyle,
+                ),
+              ),
+            ),
+          ),
+          ...provider.atendimentos
+              .map(
+                (TarefaActivity e) =>
+                    Text('${e.activityDate} as ${e.activityTime}'),
+              )
+              .toList(),
+        ],
+        onExpansionChanged: (value) {
+          if (value) {
+            provider.load();
+          }
+        },
+      ),
     );
   }
 }

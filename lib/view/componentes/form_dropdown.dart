@@ -7,13 +7,13 @@ class FormDropDown extends StatefulWidget {
   final String value;
   final String hintText;
   final InputBorder? borda = const OutlineInputBorder();
-  const FormDropDown(
-      {Key? key,
-      required this.lista,
-      required this.controller,
-      required this.value,
-      required this.hintText})
-      : super(key: key);
+  const FormDropDown({
+    Key? key,
+    required this.lista,
+    required this.controller,
+    required this.value,
+    required this.hintText,
+  }) : super(key: key);
 
   @override
   State<FormDropDown> createState() => _FormDropDownState();

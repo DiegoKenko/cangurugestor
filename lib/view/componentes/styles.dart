@@ -81,6 +81,14 @@ final kSubtitleAppBarStyle = TextStyle(
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
 
+final kSubtitleReportStyle = TextStyle(
+  color: corPreto,
+  fontSize: 16,
+  wordSpacing: 2,
+  letterSpacing: 2,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
+
 final kBoxDecorationStyle = BoxDecoration(
   borderRadius: BorderRadius.circular(5.0),
   border: Border.all(

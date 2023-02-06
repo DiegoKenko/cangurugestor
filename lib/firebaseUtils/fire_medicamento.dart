@@ -13,7 +13,7 @@ class FirestoreMedicamento {
         .where('tipo', isEqualTo: 'medicamento')
         .where('data',
             isGreaterThanOrEqualTo:
-                DateFormat('yyyy-MM-dd').format(DateTime.now()))
+                DateFormat('yyyy-MM-dd').format(DateTime.now(),),)
         .get()
         .then((value) {
       for (var doc in value.docs) {
@@ -23,7 +23,7 @@ class FirestoreMedicamento {
   }
 
   void atualizarMedicamentoPaciente(
-      Medicamento medicamento, String idPaciente) {
+      Medicamento medicamento, String idPaciente,) {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -40,7 +40,7 @@ class FirestoreMedicamento {
   }
 
   Future<Medicamento> novoMedicamentoPaciente(
-      Medicamento medicamento, String idPaciente) async {
+      Medicamento medicamento, String idPaciente,) async {
     var med = await firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -62,7 +62,7 @@ class FirestoreMedicamento {
   }
 
   Future<Medicamento> medicamentoPaciente(
-      String idMedicamento, String idPaciente) async {
+      String idMedicamento, String idPaciente,) async {
     Medicamento med = Medicamento();
     await firestore
         .collection('pacientes')

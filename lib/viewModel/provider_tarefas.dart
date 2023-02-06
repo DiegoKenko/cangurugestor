@@ -40,8 +40,9 @@ class TarefasProvider extends ChangeNotifier {
         dateTime: _tarefas.last.dateTime.add(
           Duration(
             minutes: enumIntervaloEmMinutos(
-                    medicamento.intervalo, medicamento.intervaloQuantidade)
-                .toInt(),
+              medicamento.intervalo,
+              medicamento.intervaloQuantidade,
+            ).toInt(),
           ),
         ),
         nome: medicamento.nome,
@@ -96,8 +97,9 @@ class TarefasProvider extends ChangeNotifier {
         dateTime: _tarefas.last.dateTime.add(
           Duration(
             minutes: enumIntervaloEmMinutos(
-                    atividade.frequenciaMedida, atividade.frequenciaQuantidade)
-                .toInt(),
+              atividade.frequenciaMedida,
+              atividade.frequenciaQuantidade,
+            ).toInt(),
           ),
         ),
         nome: atividade.descricao,
@@ -161,7 +163,8 @@ class TarefasProvider extends ChangeNotifier {
   }
 
   Future<List<Tarefa>> getTodasTarefasFiltro(
-      EnumFiltroDataTarefa filtro) async {
+    EnumFiltroDataTarefa filtro,
+  ) async {
     List<Tarefa> tarefas = [];
     if (paciente.id.isNotEmpty) {
       switch (filtro) {

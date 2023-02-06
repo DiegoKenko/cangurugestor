@@ -14,7 +14,7 @@ class FirestoreAtividade {
   }
 
   Future<Atividade> novaAtividadePaciente(
-      Atividade atividade, String idPaciente) async {
+      Atividade atividade, String idPaciente,) async {
     var ativ = await firestore
         .collection('pacientes')
         .doc(idPaciente)

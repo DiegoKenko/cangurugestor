@@ -152,35 +152,37 @@ class ClientesGestor extends StatelessWidget {
     return Column(
       children: <Widget>[
         Expanded(
-          child: Builder(builder: (context) {
-            gestorProvider.todosClientes();
-            if (gestorProvider.clientes.isEmpty) {
-              return const Text('nenhum cliente cadastrado');
-            } else {
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: gestorProvider.clientes.length,
-                itemBuilder: (context, index) {
-                  return ItemContainer(
-                    leading: const CircleAvatar(
-                      backgroundImage: AssetImage('assets/avatar.png'),
-                    ),
-                    onTap: () {
-                      context.read<ResponsavelProvider>().responsavel =
-                          gestorProvider.clientes[index];
-                      Navigator.push(
-                        context,
-                        AnimatedPageTransition(
-                          page: const CadastroResponsavel(),
-                        ),
-                      );
-                    },
-                    title: gestorProvider.clientes[index].nome,
-                  );
-                },
-              );
-            }
-          }),
+          child: Builder(
+            builder: (context) {
+              gestorProvider.todosClientes();
+              if (gestorProvider.clientes.isEmpty) {
+                return const Text('nenhum cliente cadastrado');
+              } else {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: gestorProvider.clientes.length,
+                  itemBuilder: (context, index) {
+                    return ItemContainer(
+                      leading: const CircleAvatar(
+                        backgroundImage: AssetImage('assets/avatar.png'),
+                      ),
+                      onTap: () {
+                        context.read<ResponsavelProvider>().responsavel =
+                            gestorProvider.clientes[index];
+                        Navigator.push(
+                          context,
+                          AnimatedPageTransition(
+                            page: const CadastroResponsavel(),
+                          ),
+                        );
+                      },
+                      title: gestorProvider.clientes[index].nome,
+                    );
+                  },
+                );
+              }
+            },
+          ),
         ),
         SizedBox(
           height: 50,

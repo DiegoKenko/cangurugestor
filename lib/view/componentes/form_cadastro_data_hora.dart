@@ -10,15 +10,15 @@ class FormCadastroDataHora extends StatelessWidget {
   final void Function(TimeOfDay time)? onTimeChanged;
 
   final bool enabled;
-  const FormCadastroDataHora(
-      {Key? key,
-      this.enabled = true,
-      this.onDateChanged,
-      this.onTimeChanged,
-      required this.controllerHora,
-      required this.controllerData,
-      required this.onDismissed})
-      : super(key: key);
+  const FormCadastroDataHora({
+    Key? key,
+    this.enabled = true,
+    this.onDateChanged,
+    this.onTimeChanged,
+    required this.controllerHora,
+    required this.controllerData,
+    required this.onDismissed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

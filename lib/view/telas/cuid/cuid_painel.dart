@@ -71,26 +71,28 @@ class PacientesCuidador extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
-    return Builder(builder: (context) {
-      cuidadorProvider.todosPacientes();
-      return ListView.builder(
-        itemCount: cuidadorProvider.pacientes.length,
-        itemBuilder: ((context, index) {
-          return ItemContainer(
-            title: cuidadorProvider.pacientes[index].nome,
-            onTap: () {
-              context.read<PacienteProvider>().clear();
-              context.read<PacienteProvider>().paciente =
-                  cuidadorProvider.pacientes[index];
-              Navigator.of(context).push(
-                AnimatedPageTransition(
-                  page: const PacienteDashboard(),
-                ),
-              );
-            },
-          );
-        }),
-      );
-    });
+    return Builder(
+      builder: (context) {
+        cuidadorProvider.todosPacientes();
+        return ListView.builder(
+          itemCount: cuidadorProvider.pacientes.length,
+          itemBuilder: ((context, index) {
+            return ItemContainer(
+              title: cuidadorProvider.pacientes[index].nome,
+              onTap: () {
+                context.read<PacienteProvider>().clear();
+                context.read<PacienteProvider>().paciente =
+                    cuidadorProvider.pacientes[index];
+                Navigator.of(context).push(
+                  AnimatedPageTransition(
+                    page: const PacienteDashboard(),
+                  ),
+                );
+              },
+            );
+          }),
+        );
+      },
+    );
   }
 }

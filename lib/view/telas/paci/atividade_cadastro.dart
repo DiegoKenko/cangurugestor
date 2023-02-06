@@ -136,10 +136,12 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
-        child: Builder(builder: (context) {
-          tarefasProvider.load();
-          var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa tarefa) => ItemContainerTarefa(
+        child: Builder(
+          builder: (context) {
+            tarefasProvider.load();
+            var widgetTarefaSalvas = tarefasProvider.tarefas
+                .map(
+                  (Tarefa tarefa) => ItemContainerTarefa(
                     tarefa: tarefa,
                     onTap: () {
                       showDialog(
@@ -149,31 +151,34 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
                         ),
                       );
                     },
-                  ))
-              .toList();
-          if (context.read<LoginProvider>().editAtividade) {
-            return Column(
-              children: [
-                ...widgetTarefaSalvas,
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: BotaoCadastro(
-                    onPressed: () {
-                      tarefasProvider.novaTarefaAtividade(
-                          context.read<AtividadeProvider>().atividade);
-                    },
                   ),
-                ),
-              ],
-            );
-          } else {
-            return Column(
-              children: [
-                ...widgetTarefaSalvas,
-              ],
-            );
-          }
-        }),
+                )
+                .toList();
+            if (context.read<LoginProvider>().editAtividade) {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BotaoCadastro(
+                      onPressed: () {
+                        tarefasProvider.novaTarefaAtividade(
+                          context.read<AtividadeProvider>().atividade,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -223,24 +228,26 @@ class _DadosAtividadeState extends State<DadosAtividade> {
       // Listener para atualizar a descrição da atividade
       context.read<AtividadeProvider>().atividade.duracaoMedida =
           EnumIntervalo.values.firstWhere(
-              (EnumIntervalo element) =>
-                  element.name == _duracaoUMController.text,
-              orElse: () => EnumIntervalo.minutos);
+        (EnumIntervalo element) => element.name == _duracaoUMController.text,
+        orElse: () => EnumIntervalo.minutos,
+      );
     });
     _frequenciaQtdeController.addListener(() {
       // Listener para atualizar a descrição da atividade
       context.read<AtividadeProvider>().atividade.frequenciaQuantidade =
-          double.parse(_frequenciaQtdeController.text.isEmpty
-              ? '0'
-              : _frequenciaQtdeController.text);
+          double.parse(
+        _frequenciaQtdeController.text.isEmpty
+            ? '0'
+            : _frequenciaQtdeController.text,
+      );
     });
     _frequenciaUMController.addListener(() {
       // Listener para atualizar a descrição da atividade
       context.read<AtividadeProvider>().atividade.frequenciaMedida =
           EnumIntervalo.values.firstWhere(
-              (EnumIntervalo element) =>
-                  element.name == _frequenciaUMController.text,
-              orElse: () => EnumIntervalo.minutos);
+        (EnumIntervalo element) => element.name == _frequenciaUMController.text,
+        orElse: () => EnumIntervalo.minutos,
+      );
     });
 
     super.initState();

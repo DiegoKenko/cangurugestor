@@ -44,11 +44,13 @@ class Atividade {
     intensidade = map['intensidade'];
     frequenciaQuantidade = map['frequenciaQuantidade'];
     duracaoMedida = EnumIntervalo.values.firstWhere(
-        (element) => element.name == map['duracaoMedida'],
-        orElse: () => EnumIntervalo.minutos);
+      (element) => element.name == map['duracaoMedida'],
+      orElse: () => EnumIntervalo.minutos,
+    );
     frequenciaMedida = EnumIntervalo.values.firstWhere(
-        (element) => element.name == map['frequenciaMedida'],
-        orElse: () => EnumIntervalo.minutos);
+      (element) => element.name == map['frequenciaMedida'],
+      orElse: () => EnumIntervalo.minutos,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -61,8 +63,8 @@ class Atividade {
       'tipo': tipo,
       'duracaoQuantidade': duracaoQuantidade,
       'frequenciaQuantidade': frequenciaQuantidade,
-      'duracaoMedida': duracaoMedida.toString().split(".").last,
-      'frequenciaMedida': frequenciaMedida.toString().split(".").last,
+      'duracaoMedida': duracaoMedida.toString().split('.').last,
+      'frequenciaMedida': frequenciaMedida.toString().split('.').last,
     };
   }
 }

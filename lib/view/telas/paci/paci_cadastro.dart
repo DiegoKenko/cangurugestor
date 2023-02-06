@@ -168,9 +168,12 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
               ),
             ),
             loginProvider.editPaciente
-                ? BotaoCadastro(onPressed: () {
-                    context.read<GestorProvider>().todosCuidadoresDisponiveis();
-                    showModalBottomSheet(
+                ? BotaoCadastro(
+                    onPressed: () {
+                      context
+                          .read<GestorProvider>()
+                          .todosCuidadoresDisponiveis();
+                      showModalBottomSheet(
                         isScrollControlled: true,
                         isDismissible: false,
                         elevation: 10,
@@ -179,77 +182,83 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                           return SizedBox(
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: Consumer<PacienteProvider>(
-                                builder: (context, provider, _) {
-                              return SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      color: corPad1,
-                                      height: 40,
-                                      width: double.infinity,
-                                      child: Center(
-                                        child: Row(
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.arrow_back,
-                                                color: corBranco,
+                              builder: (context, provider, _) {
+                                return SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        color: corPad1,
+                                        height: 40,
+                                        width: double.infinity,
+                                        child: Center(
+                                          child: Row(
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.arrow_back,
+                                                  color: corBranco,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            const Expanded(
-                                              child: Center(
-                                                child: Text(
-                                                  'Cuidadores disponíveis',
+                                              const Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    'Cuidadores disponíveis',
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Column(
-                                      children:
-                                          gestorProvider.cuidadoresDisponiveis
-                                              .map(
-                                                (Cuidador e) => ItemContainer(
-                                                  onTap: () {},
-                                                  title: e.nome,
-                                                  trailing: provider
-                                                          .paciente.idCuidadores
-                                                          .contains(e.id)
-                                                      ? ElevatedButton(
-                                                          onPressed: () {
-                                                            provider
-                                                                .removeCuidadorPaciente(
-                                                                    e);
-                                                          },
-                                                          child: const Text(
-                                                            'Remover',
+                                      Column(
+                                        children:
+                                            gestorProvider.cuidadoresDisponiveis
+                                                .map(
+                                                  (Cuidador e) => ItemContainer(
+                                                    onTap: () {},
+                                                    title: e.nome,
+                                                    trailing: provider.paciente
+                                                            .idCuidadores
+                                                            .contains(e.id)
+                                                        ? ElevatedButton(
+                                                            onPressed: () {
+                                                              provider
+                                                                  .removeCuidadorPaciente(
+                                                                e,
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              'Remover',
+                                                            ),
+                                                          )
+                                                        : ElevatedButton(
+                                                            onPressed: () {
+                                                              provider
+                                                                  .addCuidadorPaciente(
+                                                                e,
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              'Adicionar',
+                                                            ),
                                                           ),
-                                                        )
-                                                      : ElevatedButton(
-                                                          onPressed: () {
-                                                            provider
-                                                                .addCuidadorPaciente(
-                                                                    e);
-                                                          },
-                                                          child: const Text(
-                                                              'Adicionar'),
-                                                        ),
-                                                ),
-                                              )
-                                              .toList(),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
+                                                  ),
+                                                )
+                                                .toList(),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           );
-                        }));
-                  })
+                        }),
+                      );
+                    },
+                  )
                 : Container(),
           ],
         );
@@ -341,37 +350,39 @@ class AtividadesPaciente extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: Builder(builder: (context) {
-            pacienteProvider.loadAtividades();
-            if (pacienteProvider.paciente.atividades.isEmpty) {
-              return const Center(
-                child: Text('Nenhuma atividade cadastrada'),
-              );
-            } else {
-              return ListView.builder(
-                itemCount: pacienteProvider.paciente.atividades.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      context.read<AtividadeProvider>().atividade =
-                          pacienteProvider.paciente.atividades[index];
-                      Navigator.of(context).push(
-                        AnimatedPageTransition(
-                          page: const CadastroAtividade(),
-                        ),
-                      );
-                    },
-                    child: ItemContainer(
-                      title:
-                          pacienteProvider.paciente.atividades[index].descricao,
-                      subtitle:
-                          pacienteProvider.paciente.atividades[index].local,
-                    ),
-                  );
-                },
-              );
-            }
-          }),
+          child: Builder(
+            builder: (context) {
+              pacienteProvider.loadAtividades();
+              if (pacienteProvider.paciente.atividades.isEmpty) {
+                return const Center(
+                  child: Text('Nenhuma atividade cadastrada'),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: pacienteProvider.paciente.atividades.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        context.read<AtividadeProvider>().atividade =
+                            pacienteProvider.paciente.atividades[index];
+                        Navigator.of(context).push(
+                          AnimatedPageTransition(
+                            page: const CadastroAtividade(),
+                          ),
+                        );
+                      },
+                      child: ItemContainer(
+                        title: pacienteProvider
+                            .paciente.atividades[index].descricao,
+                        subtitle:
+                            pacienteProvider.paciente.atividades[index].local,
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ),
         ),
         loginProvider.editPaciente
             ? SizedBox(
@@ -406,37 +417,39 @@ class ConsultasPaciente extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: Builder(builder: (context) {
-            pacienteProvider.loadConsultas();
-            if (pacienteProvider.paciente.consultas.isEmpty) {
-              return const Center(
-                child: Text(
-                  'Nenhuma consulta cadastrada',
-                ),
-              );
-            } else {
-              return ListView.builder(
-                itemCount: pacienteProvider.paciente.consultas.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      context.read<ConsultaProvider>().consulta =
-                          pacienteProvider.paciente.consultas[index];
-                      Navigator.of(context).push(
-                        AnimatedPageTransition(
-                          page: const CadastroConsulta(),
-                        ),
-                      );
-                    },
-                    child: ItemContainer(
-                      title:
-                          pacienteProvider.paciente.consultas[index].descricao,
-                    ),
-                  );
-                },
-              );
-            }
-          }),
+          child: Builder(
+            builder: (context) {
+              pacienteProvider.loadConsultas();
+              if (pacienteProvider.paciente.consultas.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'Nenhuma consulta cadastrada',
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: pacienteProvider.paciente.consultas.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        context.read<ConsultaProvider>().consulta =
+                            pacienteProvider.paciente.consultas[index];
+                        Navigator.of(context).push(
+                          AnimatedPageTransition(
+                            page: const CadastroConsulta(),
+                          ),
+                        );
+                      },
+                      child: ItemContainer(
+                        title: pacienteProvider
+                            .paciente.consultas[index].descricao,
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ),
         ),
         loginProvider.editPaciente
             ? SizedBox(
@@ -468,57 +481,61 @@ class MedicamentosPaciente extends StatelessWidget {
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     final LoginProvider loginProvider = context.watch<LoginProvider>();
-    return Column(children: [
-      Expanded(
-        child: Builder(
-          builder: (context) {
-            pacienteProvider.loadMedicamentos();
-            if (pacienteProvider.paciente.medicamentos.isEmpty) {
-              return const Center(
-                child: Text('Nenhum medicamento cadastrado'),
-              );
-            }
-            {
-              return ListView.builder(
-                itemCount: pacienteProvider.paciente.medicamentos.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      context.read<MedicamentoProvider>().setMedicamento(
-                          pacienteProvider.paciente.medicamentos[index]);
+    return Column(
+      children: [
+        Expanded(
+          child: Builder(
+            builder: (context) {
+              pacienteProvider.loadMedicamentos();
+              if (pacienteProvider.paciente.medicamentos.isEmpty) {
+                return const Center(
+                  child: Text('Nenhum medicamento cadastrado'),
+                );
+              }
+              {
+                return ListView.builder(
+                  itemCount: pacienteProvider.paciente.medicamentos.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        context.read<MedicamentoProvider>().setMedicamento(
+                              pacienteProvider.paciente.medicamentos[index],
+                            );
+                        Navigator.of(context).push(
+                          AnimatedPageTransition(
+                            page: const CadastroMedicamento(),
+                          ),
+                        );
+                      },
+                      child: ItemContainer(
+                        title:
+                            pacienteProvider.paciente.medicamentos[index].nome,
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ),
+        loginProvider.editPaciente
+            ? SizedBox(
+                height: 40,
+                child: Center(
+                  child: BotaoCadastro(
+                    onPressed: () {
                       Navigator.of(context).push(
                         AnimatedPageTransition(
                           page: const CadastroMedicamento(),
                         ),
                       );
                     },
-                    child: ItemContainer(
-                      title: pacienteProvider.paciente.medicamentos[index].nome,
-                    ),
-                  );
-                },
-              );
-            }
-          },
-        ),
-      ),
-      loginProvider.editPaciente
-          ? SizedBox(
-              height: 40,
-              child: Center(
-                child: BotaoCadastro(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      AnimatedPageTransition(
-                        page: const CadastroMedicamento(),
-                      ),
-                    );
-                  },
+                  ),
                 ),
-              ),
-            )
-          : Container(),
-    ]);
+              )
+            : Container(),
+      ],
+    );
   }
 }
 
@@ -655,7 +672,9 @@ class _DadosPacienteState extends State<DadosPaciente> {
               labelText: 'CPF',
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '###.###.###-##',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
               textInputType: TextInputType.phone,
             ),
@@ -682,7 +701,9 @@ class _DadosPacienteState extends State<DadosPaciente> {
               hintText: '000000-000',
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "#####-###", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '#####-###',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
               textInputType: TextInputType.text,
             ),

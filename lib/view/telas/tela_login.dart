@@ -49,7 +49,8 @@ class _TelaLoginState extends State<TelaLogin> {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.1),
+              horizontal: MediaQuery.of(context).size.width * 0.1,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -245,7 +246,7 @@ class ButtonLoginApple extends StatelessWidget {
   Widget build(BuildContext context) {
     return ButtonLogin(
       image: const Image(
-        image: AssetImage("assets/apple_icon.png"),
+        image: AssetImage('assets/apple_icon.png'),
         height: 26.0,
       ),
       text: 'Entrar com Apple ID',
@@ -261,7 +262,7 @@ class ButtonLoginGoogle extends StatelessWidget {
   Widget build(BuildContext context) {
     return ButtonLogin(
       image: const Image(
-        image: AssetImage("assets/google_icon.png"),
+        image: AssetImage('assets/google_icon.png'),
         height: 26.0,
       ),
       text: 'Entrar com Google',

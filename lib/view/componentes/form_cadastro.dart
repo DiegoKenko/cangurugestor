@@ -17,21 +17,21 @@ class FormCadastro extends StatefulWidget {
   final Function? onTap;
   final Function(String)? onChanged;
   final Function()? onEditingComplete;
-  const FormCadastro(
-      {Key? key,
-      required this.controller,
-      required this.labelText,
-      this.onEditingComplete,
-      this.onChanged,
-      this.enabled = false,
-      this.hintText,
-      this.icon,
-      this.obrigatorio = false,
-      this.onTap,
-      this.multiLine = false,
-      this.inputFormatters,
-      required this.textInputType})
-      : super(key: key);
+  const FormCadastro({
+    Key? key,
+    required this.controller,
+    required this.labelText,
+    this.onEditingComplete,
+    this.onChanged,
+    this.enabled = false,
+    this.hintText,
+    this.icon,
+    this.obrigatorio = false,
+    this.onTap,
+    this.multiLine = false,
+    this.inputFormatters,
+    required this.textInputType,
+  }) : super(key: key);
 
   @override
   State<FormCadastro> createState() => _FormCadastroState();

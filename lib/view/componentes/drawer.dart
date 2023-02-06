@@ -47,10 +47,13 @@ class CanguruDrawer extends StatelessWidget {
                         ),
                         onTap: () {
                           Navigator.push(
-                              context,
-                              AnimatedPageTransition(
-                                  page: const RelatorioTela()));
-                        })
+                            context,
+                            AnimatedPageTransition(
+                              page: const RelatorioTela(),
+                            ),
+                          );
+                        },
+                      )
                     : Container(),
               ),
               Expanded(
@@ -60,32 +63,32 @@ class CanguruDrawer extends StatelessWidget {
               Flexible(
                 flex: 1,
                 child: FutureBuilder(
-                    future: PackageInfo.fromPlatform(),
-                    builder: (context, snap) {
-                      if (snap.hasData) {
-                        return DrawerListTile(
-                          title: const Text(
-                            'Sobre',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onTap: () async {
-                            showAboutDialog(
-                                context: context,
-                                applicationName: snap.data!.appName,
-                                applicationVersion:
-                                    'versão ${snap.data!.version}',
-                                applicationIcon:
-                                    const Icon(Icons.phone_android),
-                                applicationLegalese: 'DESENVOLVIDO POR: \n\n'
-                                    'Inora Softwares LTDA \n'
-                                    'www.inora.com.br \n'
-                                    'cnpj: 48.738.803/0001-74');
-                          },
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }),
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snap) {
+                    if (snap.hasData) {
+                      return DrawerListTile(
+                        title: const Text(
+                          'Sobre',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onTap: () async {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: snap.data!.appName,
+                            applicationVersion: 'versão ${snap.data!.version}',
+                            applicationIcon: const Icon(Icons.phone_android),
+                            applicationLegalese: 'DESENVOLVIDO POR: \n\n'
+                                'Inora Softwares LTDA \n'
+                                'www.inora.com.br \n'
+                                'cnpj: 48.738.803/0001-74',
+                          );
+                        },
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
               ),
               Flexible(
                 flex: 1,

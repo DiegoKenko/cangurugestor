@@ -11,19 +11,21 @@ class Activity {
   String activityTime = '';
   DateTime activityDateTime = DateTime.now();
 
-  Activity(
-      {this.userId = '',
-      this.activityId = '',
-      this.activityName = EnumActivity.nenhum,
-      this.activityDescription = '',
-      this.activityDate = '',
-      this.activityTime = ''});
+  Activity({
+    this.userId = '',
+    this.activityId = '',
+    this.activityName = EnumActivity.nenhum,
+    this.activityDescription = '',
+    this.activityDate = '',
+    this.activityTime = '',
+  });
 
   Activity.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
     activityName = EnumActivity.values.firstWhere(
-        (element) => element.name == json['name'],
-        orElse: () => EnumActivity.nenhum);
+      (element) => element.name == json['name'],
+      orElse: () => EnumActivity.nenhum,
+    );
     activityDescription = json['description'];
     activityDate = json['date'];
     activityTime = json['time'];
@@ -41,18 +43,19 @@ class Activity {
 }
 
 class LoginActivity extends Activity {
-  LoginActivity(
-      {String userId = '',
-      String activityId = '',
-      String activityDate = '',
-      String activityTime = ''})
-      : super(
-            userId: userId,
-            activityId: activityId,
-            activityName: EnumActivity.login,
-            activityDescription: 'login realizado',
-            activityDate: activityDate,
-            activityTime: activityTime);
+  LoginActivity({
+    String userId = '',
+    String activityId = '',
+    String activityDate = '',
+    String activityTime = '',
+  }) : super(
+          userId: userId,
+          activityId: activityId,
+          activityName: EnumActivity.login,
+          activityDescription: 'login realizado',
+          activityDate: activityDate,
+          activityTime: activityTime,
+        );
 
   LoginActivity.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
@@ -69,23 +72,24 @@ class TarefaActivity extends Activity {
   String tarefaDescription = '';
   String pacienteName = '';
 
-  TarefaActivity(
-      {this.tarefaId = '',
-      this.pacienteId = '',
-      this.tarefaDescription = '',
-      this.pacienteName = '',
-      String userId = '',
-      String activityId = '',
-      String activityDescription = '',
-      String activityDate = '',
-      String activityTime = ''})
-      : super(
-            userId: userId,
-            activityId: activityId,
-            activityName: EnumActivity.tarefa,
-            activityDescription: 'tarefa realizada',
-            activityDate: activityDate,
-            activityTime: activityTime);
+  TarefaActivity({
+    this.tarefaId = '',
+    this.pacienteId = '',
+    this.tarefaDescription = '',
+    this.pacienteName = '',
+    String userId = '',
+    String activityId = '',
+    String activityDescription = '',
+    String activityDate = '',
+    String activityTime = '',
+  }) : super(
+          userId: userId,
+          activityId: activityId,
+          activityName: EnumActivity.tarefa,
+          activityDescription: 'tarefa realizada',
+          activityDate: activityDate,
+          activityTime: activityTime,
+        );
 
   TarefaActivity.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     tarefaId = json['tarefaId'];

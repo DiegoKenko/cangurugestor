@@ -20,17 +20,18 @@ class Consulta {
   bool ativo = true;
   DateTime dataRealizada = DateTime.now();
 
-  Consulta(
-      {this.observacao = '',
-      this.descricao = '',
-      this.rua = '',
-      this.numeroRua = '',
-      this.bairro = '',
-      this.cidade = '',
-      this.estado = '',
-      this.cep = '',
-      this.complementoRua = '',
-      this.medico = ''});
+  Consulta({
+    this.observacao = '',
+    this.descricao = '',
+    this.rua = '',
+    this.numeroRua = '',
+    this.bairro = '',
+    this.cidade = '',
+    this.estado = '',
+    this.cep = '',
+    this.complementoRua = '',
+    this.medico = '',
+  });
 
   Consulta.fromMap(Map<String, dynamic> json) {
     ativo = json['ativo'];

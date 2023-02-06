@@ -102,24 +102,26 @@ class _TarefasPeriodoState extends State<TarefasPeriodo> {
       builder: (builder, snap) {
         var tarefas = snap.data ?? [];
         return ListView.builder(
-            itemCount: tarefas.length,
-            itemBuilder: (context, index) {
-              return ItemContainerTarefa(
-                tarefa: tarefas[index],
-                onTap: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      isDismissible: false,
-                      elevation: 10,
-                      context: context,
-                      builder: (context) {
-                        return TarefaBottomSheet(
-                          tarefa: tarefas[index],
-                        );
-                      });
-                },
-              );
-            });
+          itemCount: tarefas.length,
+          itemBuilder: (context, index) {
+            return ItemContainerTarefa(
+              tarefa: tarefas[index],
+              onTap: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  isDismissible: false,
+                  elevation: 10,
+                  context: context,
+                  builder: (context) {
+                    return TarefaBottomSheet(
+                      tarefa: tarefas[index],
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
       },
       future: provider.getTodasTarefasFiltro(widget.data),
     );

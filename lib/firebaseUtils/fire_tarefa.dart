@@ -28,7 +28,7 @@ class FirestoreTarefa {
   }
 
   Future<void> criaMultiplasTarefas(
-      Paciente paciente, List<Tarefa> tarefas) async {
+      Paciente paciente, List<Tarefa> tarefas,) async {
     for (var tarefa in tarefas) {
       await firestore
           .collection('pacientes')
@@ -48,7 +48,7 @@ class FirestoreTarefa {
   }
 
   Future<List<Tarefa>> todasTarefasItem(
-      Paciente paciente, String tipo, String idItem) async {
+      Paciente paciente, String tipo, String idItem,) async {
     List<Tarefa> tarefas = [];
     QuerySnapshot querySnapshot = await firestore
         .collection('pacientes')
@@ -84,7 +84,7 @@ class FirestoreTarefa {
         .collection('tarefas')
         .where('date',
             isEqualTo: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().subtract(const Duration(days: 1))))
+                .format(DateTime.now().subtract(const Duration(days: 1))),)
         .orderBy('dateTime')
         .get();
 
@@ -103,7 +103,7 @@ class FirestoreTarefa {
         .doc(paciente.id)
         .collection('tarefas')
         .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()))
+            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()),)
         .orderBy('dateTime')
         .get();
 
@@ -123,7 +123,7 @@ class FirestoreTarefa {
         .collection('tarefas')
         .where('date',
             isEqualTo: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().add(const Duration(days: 1))))
+                .format(DateTime.now().add(const Duration(days: 1))),)
         .orderBy('dateTime')
         .get();
 
@@ -145,7 +145,7 @@ class FirestoreTarefa {
             isGreaterThan: DateFormat('dd/MM/yyyy')
                 .format(DateTime.now().add(const Duration(days: 1))),
             isLessThanOrEqualTo: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().add(const Duration(days: 7))))
+                .format(DateTime.now().add(const Duration(days: 7))),)
         .orderBy('date')
         .get();
 

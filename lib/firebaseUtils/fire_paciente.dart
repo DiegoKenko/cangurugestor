@@ -29,7 +29,7 @@ class FirestorePaciente {
   }
 
   Future<Paciente> incluirPaciente(
-      Responsavel responsavel, Paciente paciente) async {
+      Responsavel responsavel, Paciente paciente,) async {
     if (paciente.nome.isEmpty) {
       return paciente;
     }
@@ -56,7 +56,7 @@ class FirestorePaciente {
   }
 
   Future<void> excluirPaciente(
-      Responsavel responsavel, Paciente paciente) async {
+      Responsavel responsavel, Paciente paciente,) async {
     firestore.collection('responsaveis').doc(responsavel.id).update({
       'idPacientes': FieldValue.arrayRemove([paciente.id])
     });
@@ -64,7 +64,7 @@ class FirestorePaciente {
   }
 
   Future<List<Tarefa>> todasTarefasPaciente(
-      String idPaciente, EnumTarefa enumTarefa) async {
+      String idPaciente, EnumTarefa enumTarefa,) async {
     List<Tarefa> tarefas = [];
     // Busca proximas tarefas abertas
     await firestore
@@ -73,7 +73,7 @@ class FirestorePaciente {
         .collection('tarefas')
         .where('tipo', isEqualTo: enumTarefa.name)
         .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()))
+            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()),)
         .where('concluida', isEqualTo: false)
         .orderBy('dateTime')
         .get()
@@ -116,7 +116,7 @@ class FirestorePaciente {
               var medicamento = Medicamento.fromMap(e.data());
               medicamento.id = e.id;
               return medicamento;
-            }).toList());
+            }).toList(),);
   }
 
   Stream<List<Atividade>> todasAtividadesPaciente(String idPaciente) {
@@ -126,7 +126,7 @@ class FirestorePaciente {
         .collection('atividades')
         .snapshots()
         .map((event) =>
-            event.docs.map((e) => Atividade.fromMap(e.data())).toList());
+            event.docs.map((e) => Atividade.fromMap(e.data())).toList(),);
   }
 
   Stream<List<Consulta>> todasConsultasPaciente(String idPaciente) {
@@ -139,7 +139,7 @@ class FirestorePaciente {
               var consulta = Consulta.fromMap(e.data());
               consulta.id = e.id;
               return consulta;
-            }).toList());
+            }).toList(),);
   }
 
   Future<List<Cuidador>> todosCuidadoresPaciente(Paciente paciente) async {

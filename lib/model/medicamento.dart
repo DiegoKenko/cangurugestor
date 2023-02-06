@@ -44,8 +44,9 @@ class Medicamento {
     dose = double.parse(map['dose'].toString());
     intervaloQuantidade = double.parse(map['intervaloQuantidade'].toString());
     intervalo = EnumIntervalo.values.firstWhere(
-        (element) => element.name == map['intervalo'],
-        orElse: () => EnumIntervalo.minutos);
+      (element) => element.name == map['intervalo'],
+      orElse: () => EnumIntervalo.minutos,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -59,7 +60,7 @@ class Medicamento {
       'ativo': ativo,
       'dose': dose,
       'intervaloQuantidade': intervaloQuantidade,
-      'intervalo': intervalo.toString().split(".").last,
+      'intervalo': intervalo.toString().split('.').last,
     };
   }
 }

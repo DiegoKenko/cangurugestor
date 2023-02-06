@@ -55,7 +55,7 @@ class FirestoreGestor {
   }
 
   Future<List<Cuidador>> todosCuidadoresPaciente(
-      Gestor gestor, String idPaciente) async {
+      Gestor gestor, String idPaciente,) async {
     List<Cuidador> cuidadores = [];
     if (gestor.id.isEmpty) {
       return cuidadores;

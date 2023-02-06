@@ -31,9 +31,9 @@ class _ItemContainerTarefaState extends State<ItemContainerTarefa> {
     Widget wStatus = Container();
 
     wStatus = StatusTarefa(
-        status: widget.tarefa.concluida
-            ? EnumStatus.concluido
-            : EnumStatus.emAberto);
+      status:
+          widget.tarefa.concluida ? EnumStatus.concluido : EnumStatus.emAberto,
+    );
 
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -143,7 +143,8 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                 children: [
                   widget.tarefa.concluida
                       ? Text(
-                          'realizado em ${widget.tarefa.dataConclusao} as ${widget.tarefa.horaConclusao}')
+                          'realizado em ${widget.tarefa.dataConclusao} as ${widget.tarefa.horaConclusao}',
+                        )
                       : const Text('em aberto'),
                 ],
               ),
@@ -175,16 +176,19 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                                     DateFormat('HH:mm').format(DateTime.now());
                                 t.concluida = true;
                                 ActivityViewModel.tarefaCuidador(
-                                    t,
-                                    context.read<CuidadorProvider>().cuidador,
-                                    context.read<PacienteProvider>().paciente);
+                                  t,
+                                  context.read<CuidadorProvider>().cuidador,
+                                  context.read<PacienteProvider>().paciente,
+                                );
                               }
                               context.read<TarefasProvider>().updateTarefa(t);
                               Navigator.of(context).pop();
                             },
-                            child: Text(widget.tarefa.concluida
-                                ? 'Atualizar'
-                                : 'Realizar tarefa'),
+                            child: Text(
+                              widget.tarefa.concluida
+                                  ? 'Atualizar'
+                                  : 'Realizar tarefa',
+                            ),
                           ),
                         ),
                       )
@@ -241,9 +245,9 @@ class StatusTarefa extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(status == EnumStatus.concluido
-                  ? 'realizado'
-                  : 'não realizado'),
+              Text(
+                status == EnumStatus.concluido ? 'realizado' : 'não realizado',
+              ),
             ],
           ),
         ),

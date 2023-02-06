@@ -5,7 +5,7 @@ class FirestoreConsulta {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> atualizarConsultaPaciente(
-      Consulta consulta, String idPaciente) async {
+      Consulta consulta, String idPaciente,) async {
     await firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -22,7 +22,7 @@ class FirestoreConsulta {
   }
 
   Future<Consulta> consultaPaciente(
-      String idConsulta, String idPaciente) async {
+      String idConsulta, String idPaciente,) async {
     var consulta = Consulta();
     var snapshot = await firestore
         .collection('pacientes')
@@ -38,7 +38,7 @@ class FirestoreConsulta {
   }
 
   Future<Consulta> novaConsultaPaciente(
-      Consulta consulta, String idPaciente) async {
+      Consulta consulta, String idPaciente,) async {
     if (idPaciente.isEmpty) {
       return consulta;
     }

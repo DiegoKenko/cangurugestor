@@ -45,7 +45,7 @@ class FirestoreActivity {
   }
 
   Future<List<TarefaActivity>> historicoAtendimentoCuidador(
-      Cuidador cuidador) async {
+      Cuidador cuidador,) async {
     final List<TarefaActivity> list = <TarefaActivity>[];
     QuerySnapshot<Map<String, dynamic>> doc = await firestore
         .collection('cuidadores')

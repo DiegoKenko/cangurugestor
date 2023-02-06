@@ -59,8 +59,9 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
             icon: const Icon(Icons.delete),
             onPressed: () {
               context.read<ResponsavelProvider>().delete(
-                  responsavelProvider.responsavel.gestor,
-                  responsavelProvider.responsavel);
+                    responsavelProvider.responsavel.gestor,
+                    responsavelProvider.responsavel,
+                  );
               Navigator.of(context).pop();
             },
           ),
@@ -347,7 +348,9 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
               labelText: 'CPF',
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '###.###.###-##',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
               textInputType: TextInputType.phone,
             ),
@@ -380,7 +383,9 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
               textInputType: TextInputType.number,
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "## #####-####", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '## #####-####',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
             ),
             FormCadastro(
@@ -390,7 +395,9 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
               hintText: '000000-000',
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "#####-###", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '#####-###',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
               textInputType: TextInputType.text,
             ),

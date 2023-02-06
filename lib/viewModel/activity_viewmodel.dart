@@ -7,7 +7,6 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:intl/intl.dart';
 
 class ActivityViewModel {
-
   ActivityViewModel.login(Pessoa user) {
     LoginActivity activity = LoginActivity(
       userId: user.id,
@@ -20,7 +19,10 @@ class ActivityViewModel {
   }
 
   ActivityViewModel.tarefaCuidador(
-      Tarefa tarefa, Cuidador cuidador, Paciente paciente) {
+    Tarefa tarefa,
+    Cuidador cuidador,
+    Paciente paciente,
+  ) {
     TarefaActivity activity = TarefaActivity(
       tarefaId: tarefa.id,
       pacienteId: paciente.id,

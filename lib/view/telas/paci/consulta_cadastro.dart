@@ -136,10 +136,12 @@ class _TarefasConsultaState extends State<TarefasConsulta> {
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
-        child: Builder(builder: (context) {
-          tarefasProvider.load();
-          var widgetTarefaSalvas = tarefasProvider.tarefas
-              .map((Tarefa tarefa) => ItemContainerTarefa(
+        child: Builder(
+          builder: (context) {
+            tarefasProvider.load();
+            var widgetTarefaSalvas = tarefasProvider.tarefas
+                .map(
+                  (Tarefa tarefa) => ItemContainerTarefa(
                     tarefa: tarefa,
                     onTap: () {
                       showDialog(
@@ -149,29 +151,32 @@ class _TarefasConsultaState extends State<TarefasConsulta> {
                         ),
                       );
                     },
-                  ))
-              .toList();
-          if (context.read<LoginProvider>().editConsulta) {
-            return Column(
-              children: [
-                ...widgetTarefaSalvas,
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: BotaoCadastro(
-                    onPressed: () {
-                      tarefasProvider.novaTarefaConsulta(
-                          context.read<ConsultaProvider>().consulta);
-                    },
                   ),
-                ),
-              ],
-            );
-          } else {
-            return Column(
-              children: widgetTarefaSalvas,
-            );
-          }
-        }),
+                )
+                .toList();
+            if (context.read<LoginProvider>().editConsulta) {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BotaoCadastro(
+                      onPressed: () {
+                        tarefasProvider.novaTarefaConsulta(
+                          context.read<ConsultaProvider>().consulta,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: widgetTarefaSalvas,
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -334,7 +339,9 @@ class _DadosConsultaState extends State<DadosConsulta> {
             hintText: '000000-000',
             inputFormatters: [
               MaskTextInputFormatter(
-                  mask: "#####-###", filter: {"#": RegExp(r'[0-9]')})
+                mask: '#####-###',
+                filter: {'#': RegExp(r'[0-9]')},
+              )
             ],
             textInputType: TextInputType.text,
           ),

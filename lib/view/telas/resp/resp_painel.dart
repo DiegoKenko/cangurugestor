@@ -36,8 +36,10 @@ class _PainelResponsavelState extends State<PainelResponsavel>
           DrawerListTile(
             title: Column(
               children: [
-                Text(responsavelProvider.responsavel.nome,
-                    style: kTitleAppBarStyle),
+                Text(
+                  responsavelProvider.responsavel.nome,
+                  style: kTitleAppBarStyle,
+                ),
                 Text('responsavel', style: kSubtitleAppBarStyle),
               ],
             ),
@@ -80,26 +82,28 @@ class PacientesCuidador extends StatelessWidget {
   Widget build(BuildContext context) {
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
-    return Builder(builder: (context) {
-      responsavelProvider.todosPacientes();
-      return ListView.builder(
-        itemCount: responsavelProvider.pacientes.length,
-        itemBuilder: ((context, index) {
-          return ItemContainer(
-            title: responsavelProvider.pacientes[index].nome,
-            onTap: () {
-              context.read<PacienteProvider>().clear();
-              context.read<PacienteProvider>().paciente =
-                  responsavelProvider.pacientes[index];
-              Navigator.of(context).push(
-                AnimatedPageTransition(
-                  page: const PacienteDashboard(),
-                ),
-              );
-            },
-          );
-        }),
-      );
-    });
+    return Builder(
+      builder: (context) {
+        responsavelProvider.todosPacientes();
+        return ListView.builder(
+          itemCount: responsavelProvider.pacientes.length,
+          itemBuilder: ((context, index) {
+            return ItemContainer(
+              title: responsavelProvider.pacientes[index].nome,
+              onTap: () {
+                context.read<PacienteProvider>().clear();
+                context.read<PacienteProvider>().paciente =
+                    responsavelProvider.pacientes[index];
+                Navigator.of(context).push(
+                  AnimatedPageTransition(
+                    page: const PacienteDashboard(),
+                  ),
+                );
+              },
+            );
+          }),
+        );
+      },
+    );
   }
 }

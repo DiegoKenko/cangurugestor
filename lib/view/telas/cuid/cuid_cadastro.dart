@@ -111,17 +111,19 @@ class PacientesCuidador extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
-    return Builder(builder: (context) {
-      cuidadorProvider.todosPacientes();
-      return ListView.builder(
-        itemCount: cuidadorProvider.pacientes.length,
-        itemBuilder: (context, index) {
-          return ItemContainer(
-            title: cuidadorProvider.pacientes[index].nome,
-          );
-        },
-      );
-    });
+    return Builder(
+      builder: (context) {
+        cuidadorProvider.todosPacientes();
+        return ListView.builder(
+          itemCount: cuidadorProvider.pacientes.length,
+          itemBuilder: (context, index) {
+            return ItemContainer(
+              title: cuidadorProvider.pacientes[index].nome,
+            );
+          },
+        );
+      },
+    );
   }
 }
 
@@ -274,7 +276,9 @@ class _DadosCuidadorState extends State<DadosCuidador> {
               labelText: 'CPF',
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "###.###.###-##", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '###.###.###-##',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
               textInputType: TextInputType.phone,
             ),
@@ -307,7 +311,9 @@ class _DadosCuidadorState extends State<DadosCuidador> {
               textInputType: TextInputType.number,
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "## #####-####", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '## #####-####',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
             ),
             FormCadastro(
@@ -317,7 +323,9 @@ class _DadosCuidadorState extends State<DadosCuidador> {
               hintText: '000000-000',
               inputFormatters: [
                 MaskTextInputFormatter(
-                    mask: "#####-###", filter: {"#": RegExp(r'[0-9]')})
+                  mask: '#####-###',
+                  filter: {'#': RegExp(r'[0-9]')},
+                )
               ],
               textInputType: TextInputType.text,
             ),
