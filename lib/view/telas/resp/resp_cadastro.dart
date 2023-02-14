@@ -9,7 +9,7 @@ import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/telas/paci/paci_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +47,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (context.read<LoginProvider>().editResponsavel) {
+            if (context.read<AuthBloc>().state.login.editaResponsavel) {
               responsavelProvider.update();
             }
             responsavelProvider.clear();

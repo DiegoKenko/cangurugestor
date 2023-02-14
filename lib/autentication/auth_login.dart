@@ -1,22 +1,20 @@
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/model/pessoa.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class MethodLogin {
   MethodLogin();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  bool userLogged = false;
 
-  void userStatus() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      userLogged = user != null;
-    });
+  Stream<User?> stateChange() => _auth.authStateChanges();
+
+  void logout() async {
+    if (_auth.currentUser != null) {
+      await _auth.signOut();
+    }
   }
 
-  void logout() {}
   void login() {}
   void loadUser() {}
 }
@@ -43,15 +41,15 @@ class GoogleLogin extends MethodLogin {
 
   @override
   Future<void> logout() async {
+    await _googleSignIn.signOut();
     await _auth.signOut();
   }
 
   @override
   Future<Pessoa> loadUser() async {
-    //var cred = await getCredentials();
-    // Pessoa user = await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!); */
-    Pessoa user = await FirestoreLogin()
-        .autenticarUsuarioEmail('diegoandrade@inora.com.br');
+    var cred = await getCredentials();
+    Pessoa user =
+        await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!);
     return user;
   }
 }

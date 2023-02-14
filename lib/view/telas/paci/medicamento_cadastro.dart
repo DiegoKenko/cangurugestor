@@ -8,7 +8,7 @@ import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
@@ -33,7 +33,7 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (context.read<LoginProvider>().editMedicamento) {
+      if (context.read<AuthBloc>().state.login.editaMedicamento) {
         context.read<MedicamentoProvider>().update();
       }
     });
@@ -60,7 +60,7 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                if (context.read<LoginProvider>().editMedicamento) {
+                if (context.read<AuthBloc>().state.login.editaMedicamento) {
                   medicamentoProvider.update();
                 }
                 context.read<TarefasProvider>().clear();
@@ -160,7 +160,7 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
                   ),
                 )
                 .toList();
-            if (context.read<LoginProvider>().editMedicamento) {
+            if (context.read<AuthBloc>().state.login.editaMedicamento) {
               return Column(
                 children: [
                   ...widgetTarefaSalvas,

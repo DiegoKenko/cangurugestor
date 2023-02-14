@@ -8,7 +8,7 @@ import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +31,7 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (context.read<LoginProvider>().editAtividade) {
+      if (context.read<AuthBloc>().state.login.editaAtividade) {
         context.read<AtividadeProvider>().update();
       }
     });
@@ -56,7 +56,7 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (context.read<LoginProvider>().editAtividade) {
+            if (context.read<AuthBloc>().state.login.editaAtividade) {
               atividadeProvider.update();
             }
             context.read<TarefasProvider>().clear();
@@ -154,7 +154,7 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
                   ),
                 )
                 .toList();
-            if (context.read<LoginProvider>().editAtividade) {
+            if (context.read<AuthBloc>().state.login.editaAtividade) {
               return Column(
                 children: [
                   ...widgetTarefaSalvas,

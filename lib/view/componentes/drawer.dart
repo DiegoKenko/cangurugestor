@@ -6,7 +6,7 @@ import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
@@ -15,12 +15,25 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
-class CanguruDrawer extends StatelessWidget {
+class CanguruDrawer extends StatefulWidget {
   const CanguruDrawer({
     Key? key,
     this.profile = const [],
   }) : super(key: key);
   final List<Widget> profile;
+
+  @override
+  State<CanguruDrawer> createState() => _CanguruDrawerState();
+}
+
+class _CanguruDrawerState extends State<CanguruDrawer> {
+  late final AuthBloc _authBloc;
+
+  @override
+  void initState() {
+    _authBloc = context.read<AuthBloc>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +47,12 @@ class CanguruDrawer extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Column(
-                  children: profile,
+                  children: widget.profile,
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: context.read<LoginProvider>().gerarRelatorio
+                child: _authBloc.state.login.gerarRelatorioCuidador
                     ? DrawerListTile(
                         title: const Text(
                           'Relatórios',
@@ -98,7 +111,7 @@ class CanguruDrawer extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {
-                    context.read<LoginProvider>().logout();
+                    _authBloc.add(LogoutEvent());
                     context.read<GestorProvider>().clear();
                     context.read<PacienteProvider>().clear();
                     context.read<ResponsavelProvider>().clear();

@@ -1,16 +1,8 @@
 import 'package:cangurugestor/autentication/auth_login.dart';
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/responsavel.dart';
-import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
-import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({Key? key}) : super(key: key);
@@ -22,27 +14,6 @@ class TelaLogin extends StatefulWidget {
 class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
-
-    loginProvider.addListener(() {
-      if (loginProvider.isLogged) {
-        if (loginProvider.classe == EnumClasse.gestor) {
-          context.read<GestorProvider>().gestor = loginProvider.user as Gestor;
-        } else if (loginProvider.classe == EnumClasse.responsavel) {
-          context.read<ResponsavelProvider>().responsavel =
-              loginProvider.user as Responsavel;
-        } else if (loginProvider.classe == EnumClasse.cuidador) {
-          context.read<CuidadorProvider>().cuidador =
-              loginProvider.user as Cuidador;
-        }
-        Navigator.of(context).push(
-          AnimatedPageTransition(
-            page: loginProvider.route,
-          ),
-        );
-      }
-    });
-
     return Scaffold(
       backgroundColor: corBranco,
       body: SafeArea(
@@ -60,30 +31,37 @@ class _TelaLoginState extends State<TelaLogin> {
                   height: MediaQuery.of(context).size.height * 0.5,
                   fit: BoxFit.fitWidth,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(height: 20.0),
-                    !loginProvider.isLoading
-                        ? const ButtonLoginGoogle()
-                        : const CircularProgressIndicator(color: corPad1),
-                    !loginProvider.isLoading
-                        ? const ButtonLoginApple()
-                        : Container(),
-                    !loginProvider.isLoading
-                        ? const ButtonLoginAnonymous()
-                        : Container(),
-                    !loginProvider.isLoading
-                        ? const ButtonLoginEmailSenha()
-                        : Container(),
-                  ],
-                ),
+                const LoginButtons(),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class LoginButtons extends StatelessWidget {
+  const LoginButtons({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final AuthBloc auth = AuthBloc();
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        const SizedBox(height: 20.0),
+        auth.state.loading
+            ? const CircularProgressIndicator(color: corPad1)
+            : const ButtonLoginGoogle(),
+        auth.state.loading ? Container() : const ButtonLoginApple(),
+        auth.state.loading ? Container() : const ButtonLoginAnonymous(),
+        auth.state.loading ? Container() : const ButtonLoginEmailSenha(),
+      ],
     );
   }
 }
@@ -203,12 +181,14 @@ class _ButtonLoginEmailSenhaState extends State<ButtonLoginEmailSenha> {
                     child: Center(
                       child: IconButton(
                         onPressed: () {
-                          context.read<LoginProvider>().method =
+                          BlocProvider.of<AuthBloc>(context).add(
+                            LoginEvent(
                               EmailSenhaLogin(
-                            _emailController.text,
-                            _senhaController.text,
+                                _emailController.text,
+                                _senhaController.text,
+                              ),
+                            ),
                           );
-                          context.read<LoginProvider>().login();
                         },
                         icon: const Icon(
                           Icons.chevron_right,
@@ -271,7 +251,7 @@ class ButtonLoginGoogle extends StatelessWidget {
   }
 }
 
-class ButtonLogin extends StatelessWidget {
+class ButtonLogin extends StatefulWidget {
   const ButtonLogin({
     Key? key,
     required this.image,
@@ -283,12 +263,12 @@ class ButtonLogin extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    void onPressed() {
-      context.read<LoginProvider>().method = methodLogin;
-      context.read<LoginProvider>().login();
-    }
+  State<ButtonLogin> createState() => _ButtonLoginState();
+}
 
+class _ButtonLoginState extends State<ButtonLogin> {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: OutlinedButton(
@@ -304,17 +284,23 @@ class ButtonLogin extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: onPressed,
+        onPressed: () {
+          BlocProvider.of<AuthBloc>(context).add(
+            LoginEvent(
+              widget.methodLogin,
+            ),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              image,
+              widget.image,
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  text,
+                  widget.text,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,

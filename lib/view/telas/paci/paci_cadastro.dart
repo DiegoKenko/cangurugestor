@@ -13,7 +13,7 @@ import 'package:cangurugestor/view/telas/paci/medicamento_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
@@ -39,7 +39,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
       if (context.read<PacienteProvider>().paciente.id.isEmpty) {
-        if (context.read<LoginProvider>().editPaciente) {
+        if (context.read<AuthBloc>().state.login.editaPaciente) {
           context.read<PacienteProvider>().update().then((value) {
             context
                 .read<ResponsavelProvider>()
@@ -62,14 +62,13 @@ class _CadastroPacienteState extends State<CadastroPaciente>
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
     pacienteProvider.responsavel = responsavelProvider.responsavel;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (context.read<LoginProvider>().editPaciente) {
+            if (context.read<AuthBloc>().state.login.editaPaciente) {
               context.read<PacienteProvider>().update();
               context
                   .read<ResponsavelProvider>()
@@ -80,7 +79,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
           },
         ),
         actions: [
-          loginProvider.editPaciente
+          context.read<AuthBloc>().state.login.editaPaciente
               ? IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
@@ -150,7 +149,6 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
   Widget build(BuildContext context) {
     final GestorProvider gestorProvider = context.watch<GestorProvider>();
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Builder(
       builder: (context) {
         pacienteProvider.loadCuidadores();
@@ -167,7 +165,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                 },
               ),
             ),
-            loginProvider.editPaciente
+            context.read<AuthBloc>().state.login.editaPaciente
                 ? BotaoCadastro(
                     onPressed: () {
                       context
@@ -346,7 +344,6 @@ class AtividadesPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Column(
       children: [
         Expanded(
@@ -384,7 +381,7 @@ class AtividadesPaciente extends StatelessWidget {
             },
           ),
         ),
-        loginProvider.editPaciente
+        context.read<AuthBloc>().state.login.editaPaciente
             ? SizedBox(
                 height: 40,
                 child: Center(
@@ -413,7 +410,6 @@ class ConsultasPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
     return Column(
       children: [
         Expanded(
@@ -451,7 +447,7 @@ class ConsultasPaciente extends StatelessWidget {
             },
           ),
         ),
-        loginProvider.editPaciente
+        context.read<AuthBloc>().state.login.editaPaciente
             ? SizedBox(
                 height: 40,
                 child: Center(
@@ -480,7 +476,7 @@ class MedicamentosPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    final LoginProvider loginProvider = context.watch<LoginProvider>();
+
     return Column(
       children: [
         Expanded(
@@ -518,7 +514,7 @@ class MedicamentosPaciente extends StatelessWidget {
             },
           ),
         ),
-        loginProvider.editPaciente
+        context.read<AuthBloc>().state.login.editaPaciente
             ? SizedBox(
                 height: 40,
                 child: Center(

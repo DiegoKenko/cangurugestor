@@ -6,7 +6,7 @@ import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +44,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (context.read<LoginProvider>().editCuidador) {
+            if (context.read<AuthBloc>().state.login.editaCuidador) {
               cuidadorProvider.update().then(
                     (value) => gestorProvider
                         .addCuidadorGestor(cuidadorProvider.cuidador),

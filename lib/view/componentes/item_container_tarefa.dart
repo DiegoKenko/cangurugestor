@@ -4,7 +4,7 @@ import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_login.dart';
+import 'package:cangurugestor/viewModel/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +98,7 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthBloc authBloc = context.watch<AuthBloc>();
     return SingleChildScrollView(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -162,7 +163,7 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                     ),
                   ),
                 ),
-                context.read<LoginProvider>().realizarTarefa
+                authBloc.state.login.realizaTarefa
                     ? Expanded(
                         flex: 1,
                         child: Center(
