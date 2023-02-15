@@ -53,6 +53,7 @@ dependencies:
   package_info: ^2.0.2
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +69,6 @@ flutter:
   assets:
     - assets/logo01.png
     - assets/imagemLogo01.png
-    - assets/reduxLogo01.png
     - assets/google_icon.png
     - assets/apple_icon.png
     - assets/avatar.png

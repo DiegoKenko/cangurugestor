@@ -55,9 +55,14 @@ class GoogleLogin extends MethodLogin {
 }
 
 class EmailSenhaLogin extends MethodLogin {
-  final String email;
-  final String senha;
-  EmailSenhaLogin(this.email, this.senha);
+  String email;
+  EmailSenhaLogin({
+    required this.email,
+  });
+
+  EmailSenhaLogin.login({required this.email, required String senha}) {
+    _auth.signInWithEmailAndPassword(email: email, password: senha);
+  }
 
   @override
   Future<Pessoa> loadUser() async {

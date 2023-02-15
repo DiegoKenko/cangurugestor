@@ -43,6 +43,7 @@ class ResponsavelProvider extends ChangeNotifier {
       return;
     }
     responsavel.idPacientes.add(paciente.id);
+    responsavel.pacientes.add(paciente);
     update();
   }
 

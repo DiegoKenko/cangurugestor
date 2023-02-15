@@ -39,7 +39,8 @@ class FirestoreResponsavel {
   }
 
   Future<List<Paciente>> todosPacientesResponsavel(
-      Responsavel responsavel,) async {
+    Responsavel responsavel,
+  ) async {
     List<Paciente> pacientesRet = [];
     if (responsavel.id.isEmpty) {
       return pacientesRet;

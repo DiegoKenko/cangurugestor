@@ -30,42 +30,39 @@ class LoginEvent extends AuthEvent {
 }
 
 abstract class AuthState {
-  bool loading = false;
-  Login login = Login();
-  String error = '';
+  AuthState({
+    required this.loading,
+    required this.login,
+    this.error = '',
+  });
+
+  bool loading;
+  Login login;
+  String error;
 }
 
 class InitialAtuthState extends AuthState {
-  InitialAtuthState() {
-    loading = false;
-  }
+  InitialAtuthState() : super(loading: false, login: Login());
 }
 
 class LoadingAuthState extends AuthState {
-  LoadingAuthState() {
-    loading = true;
-  }
+  LoadingAuthState() : super(loading: true, login: Login());
 }
 
 class LoggedInAuthState extends AuthState {
-  LoggedInAuthState({required Login xLogin}) {
-    loading = false;
-    login = xLogin;
+  LoggedInAuthState({required Login xLogin})
+      : super(loading: false, login: xLogin) {
     ActivityViewModel.login(login.user);
   }
 }
 
 class NotLoggedInAuthState extends AuthState {
-  NotLoggedInAuthState() {
-    loading = false;
-  }
+  NotLoggedInAuthState() : super(loading: false, login: Login());
 }
 
 class ErrorAuthState extends AuthState {
-  ErrorAuthState({required message}) {
-    loading = false;
-    error = message;
-  }
+  ErrorAuthState({required message})
+      : super(loading: false, login: Login(), error: message);
 }
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -133,23 +130,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutEvent>(
       (event, emit) async {
         if (state.login.method is GoogleLogin) {
-          final GoogleLogin googleLogin = GoogleLogin();
-          await googleLogin.logout();
-          emit(NotLoggedInAuthState());
+          await GoogleLogin().logout();
         } else if (state.login.method is EmailSenhaLogin) {
-          final EmailSenhaLogin emailSenhaLogin =
-              state.login.method as EmailSenhaLogin;
-          await emailSenhaLogin.logout();
-          emit(NotLoggedInAuthState());
+          await EmailSenhaLogin(email: state.login.user.email).logout();
         } else if (state.login.method is AnonymousLogin) {
-          final AnonymousLogin anonymousLogin = AnonymousLogin();
-          await anonymousLogin.logout();
-          emit(NotLoggedInAuthState());
+          await AnonymousLogin().logout();
         } else {
           emit(
             ErrorAuthState(message: 'Não foi possível fazer o logout!'),
           );
         }
+        emit(NotLoggedInAuthState());
       },
     );
   }

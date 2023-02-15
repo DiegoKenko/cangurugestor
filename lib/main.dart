@@ -64,8 +64,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => CuidadorProvider()),
       ],
       child: BlocProvider(
-        //create: (context) => AuthBloc()..add(InitEvent()),
-        create: (context) => AuthBloc(),
+        create: (context) => AuthBloc()..add(InitEvent()),
         child: MaterialApp(
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
           supportedLocales: const [Locale('pt', 'BR')],
@@ -147,6 +146,12 @@ class _MyAppState extends State<MyApp> {
                       state.login.user as Cuidador;
                 }
                 return state.login.route;
+              } else if (state is LoadingAuthState) {
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               }
               return const TelaLogin();
             },

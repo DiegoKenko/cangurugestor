@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class AtividadeProvider extends ChangeNotifier {
   Atividade atividade = Atividade();
 
-  void delete() async {
+  Future<void> delete() async {
     FirestoreAtividade()
         .excluirAtividadePaciente(atividade.id, atividade.paciente.id);
     notifyListeners();
@@ -15,7 +15,7 @@ class AtividadeProvider extends ChangeNotifier {
     atividade = Atividade();
   }
 
-  void update() async {
+  Future<void> update() async {
     if (atividade.id.isNotEmpty) {
       if (atividade.descricao.isEmpty) {
         return;

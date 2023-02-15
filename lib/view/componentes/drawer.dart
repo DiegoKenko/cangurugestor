@@ -27,14 +27,6 @@ class CanguruDrawer extends StatefulWidget {
 }
 
 class _CanguruDrawerState extends State<CanguruDrawer> {
-  late final AuthBloc _authBloc;
-
-  @override
-  void initState() {
-    _authBloc = context.read<AuthBloc>();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -52,22 +44,23 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
               ),
               Expanded(
                 flex: 1,
-                child: _authBloc.state.login.gerarRelatorioCuidador
-                    ? DrawerListTile(
-                        title: const Text(
-                          'Relatórios',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            AnimatedPageTransition(
-                              page: const RelatorioTela(),
+                child:
+                    context.read<AuthBloc>().state.login.gerarRelatorioCuidador
+                        ? DrawerListTile(
+                            title: const Text(
+                              'Relatórios',
+                              style: TextStyle(color: Colors.white),
                             ),
-                          );
-                        },
-                      )
-                    : Container(),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                AnimatedPageTransition(
+                                  page: const RelatorioTela(),
+                                ),
+                              );
+                            },
+                          )
+                        : Container(),
               ),
               Expanded(
                 flex: 6,
@@ -111,7 +104,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {
-                    _authBloc.add(LogoutEvent());
+                    context.read<AuthBloc>().add(LogoutEvent());
                     context.read<GestorProvider>().clear();
                     context.read<PacienteProvider>().clear();
                     context.read<ResponsavelProvider>().clear();

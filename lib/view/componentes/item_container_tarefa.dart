@@ -98,7 +98,6 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthBloc authBloc = context.watch<AuthBloc>();
     return SingleChildScrollView(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -163,7 +162,7 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                     ),
                   ),
                 ),
-                authBloc.state.login.realizaTarefa
+                context.read<AuthBloc>().state.login.realizaTarefa
                     ? Expanded(
                         flex: 1,
                         child: Center(

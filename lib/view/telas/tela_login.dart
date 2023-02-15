@@ -27,7 +27,7 @@ class _TelaLoginState extends State<TelaLogin> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image(
-                  image: const AssetImage('assets/reduxLogo01.png'),
+                  image: const AssetImage('assets/logo01.png'),
                   height: MediaQuery.of(context).size.height * 0.5,
                   fit: BoxFit.fitWidth,
                 ),
@@ -48,19 +48,23 @@ class LoginButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthBloc auth = AuthBloc();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         const SizedBox(height: 20.0),
-        auth.state.loading
+        context.read<AuthBloc>().state.loading
             ? const CircularProgressIndicator(color: corPad1)
             : const ButtonLoginGoogle(),
-        auth.state.loading ? Container() : const ButtonLoginApple(),
-        auth.state.loading ? Container() : const ButtonLoginAnonymous(),
-        auth.state.loading ? Container() : const ButtonLoginEmailSenha(),
+        context.read<AuthBloc>().state.loading
+            ? Container()
+            : const ButtonLoginApple(),
+        context.read<AuthBloc>().state.loading
+            ? Container()
+            : const ButtonLoginAnonymous(),
+        context.read<AuthBloc>().state.loading
+            ? Container()
+            : const ButtonLoginEmailSenha(),
       ],
     );
   }
@@ -181,14 +185,13 @@ class _ButtonLoginEmailSenhaState extends State<ButtonLoginEmailSenha> {
                     child: Center(
                       child: IconButton(
                         onPressed: () {
-                          BlocProvider.of<AuthBloc>(context).add(
-                            LoginEvent(
-                              EmailSenhaLogin(
-                                _emailController.text,
-                                _senhaController.text,
-                              ),
-                            ),
-                          );
+                          context.read<AuthBloc>().add(
+                                LoginEvent(
+                                  EmailSenhaLogin(
+                                    email: _emailController.text,
+                                  ),
+                                ),
+                              );
                         },
                         icon: const Icon(
                           Icons.chevron_right,
@@ -285,11 +288,11 @@ class _ButtonLoginState extends State<ButtonLogin> {
           ),
         ),
         onPressed: () {
-          BlocProvider.of<AuthBloc>(context).add(
-            LoginEvent(
-              widget.methodLogin,
-            ),
-          );
+          context.read<AuthBloc>().add(
+                LoginEvent(
+                  widget.methodLogin,
+                ),
+              );
         },
         child: Padding(
           padding: const EdgeInsets.all(10),

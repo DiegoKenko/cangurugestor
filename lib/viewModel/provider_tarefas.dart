@@ -17,6 +17,7 @@ class TarefasProvider extends ChangeNotifier {
 
   void _addTarefa(Tarefa tarefa) async {
     await FirestoreTarefa().insert(paciente, tarefa);
+    notifyListeners();
   }
 
   void updateTarefa(Tarefa tarefa) {
@@ -125,11 +126,12 @@ class TarefasProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void load() async {
+  Future<void> load() async {
     if (paciente.id != '' && tipo != EnumTarefa.nenhuma && idItem.isNotEmpty) {
       _tarefas = await FirestoreTarefa()
           .todasTarefasItem(paciente, tipo.collection, idItem);
-      notifyListeners();
+    } else {
+      _tarefas = [];
     }
   }
 
