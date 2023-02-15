@@ -6,6 +6,7 @@ import 'package:cangurugestor/model/login.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

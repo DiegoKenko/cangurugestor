@@ -35,6 +35,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
   runApp(const MyApp());
 }
 

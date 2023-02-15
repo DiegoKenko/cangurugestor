@@ -104,7 +104,6 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {
-                    context.read<AuthBloc>().add(LogoutEvent());
                     context.read<GestorProvider>().clear();
                     context.read<PacienteProvider>().clear();
                     context.read<ResponsavelProvider>().clear();
@@ -113,12 +112,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     context.read<AtividadeProvider>().clear();
                     context.read<ConsultaProvider>().clear();
                     context.read<TarefasProvider>().clear();
-
-                    Navigator.of(context).pushReplacement(
-                      AnimatedPageTransition(
-                        page: const TelaLogin(),
-                      ),
-                    );
+                    context.read<AuthBloc>().add(LogoutEvent());
                   },
                 ),
               ),

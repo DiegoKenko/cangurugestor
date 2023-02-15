@@ -59,12 +59,12 @@ class LoginButtons extends StatelessWidget {
         context.read<AuthBloc>().state.loading
             ? Container()
             : const ButtonLoginApple(),
-        context.read<AuthBloc>().state.loading
+        /*      context.read<AuthBloc>().state.loading
             ? Container()
             : const ButtonLoginAnonymous(),
         context.read<AuthBloc>().state.loading
             ? Container()
-            : const ButtonLoginEmailSenha(),
+            : const ButtonLoginEmailSenha(), */
       ],
     );
   }

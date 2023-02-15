@@ -33,6 +33,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+
 android {
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
@@ -79,8 +80,9 @@ flutter {
     source '../..'
 }
 
-dependencies {
+dependencies {úb
     implementation platform('com.google.firebase:firebase-bom:31.0.1')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.android.material:material:1.8.0'
 }

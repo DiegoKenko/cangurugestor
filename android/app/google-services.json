@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "783192734543-6l3d9mvn60lm2r3srgllceu3e8fhdji1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inora.canguru",
+            "certificate_hash": "f187f4abf61f8a8ae7b4ef76fa76c0d0fb764901"
+          }
+        },
+        {
           "client_id": "783192734543-unft306n8ilpkdln9vo6q61sp9fdaesm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
