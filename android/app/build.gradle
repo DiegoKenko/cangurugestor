@@ -57,7 +57,7 @@ android {
         multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
+        versionCode 2
         versionName flutterVersionName
     }
 
@@ -80,7 +80,7 @@ flutter {
     source '../..'
 }
 
-dependencies {úb
+dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.0.1')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.firebase:firebase-analytics'

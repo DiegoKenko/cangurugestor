@@ -16,7 +16,7 @@ class ResponsavelProvider extends ChangeNotifier {
 
   void update() {
     if (responsavel.id.isEmpty) {
-      FirestoreResponsavel().incluirResponsavel(responsavel);
+      FirestoreResponsavel().create(responsavel);
     } else {
       FirestoreResponsavel().atualizarResponavel(responsavel);
     }

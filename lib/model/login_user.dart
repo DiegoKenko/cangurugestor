@@ -1,4 +1,5 @@
 import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 
 class LoginUser {
@@ -8,6 +9,12 @@ class LoginUser {
   String email = '';
   bool ativo = false;
 
+  LoginUser.fromGestor(Gestor gestor) {
+    doc = gestor.id;
+    funcao = 'gestor';
+    email = gestor.email;
+    ativo = gestor.ativo;
+  }
   LoginUser.fromResponsavel(Responsavel responsavel) {
     doc = responsavel.id;
     funcao = 'responsavel';

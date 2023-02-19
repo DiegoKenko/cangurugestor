@@ -6,7 +6,7 @@ import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/bloc_auth.dart';
+import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +28,11 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController.addListener(() {
+      if (context.read<AuthBloc>().state.login.editaCuidador) {
+        context.read<CuidadorProvider>().update();
+      }
+    });
 
     super.initState();
   }
@@ -44,6 +49,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            if (cuidadorProvider.cuidador.nome.isEmpty) {
+              Navigator.of(context).pop();
+              return;
+            }
             if (context.read<AuthBloc>().state.login.editaCuidador) {
               cuidadorProvider.update().then(
                     (value) => gestorProvider

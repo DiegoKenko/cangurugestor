@@ -1,0 +1,26 @@
+import 'package:cangurugestor/firebaseUtils/firebase_auth_constants.dart';
+import 'package:cangurugestor/global.dart';
+import 'package:flutter/material.dart' show immutable;
+
+@immutable
+abstract class AuthEvent {}
+
+class LogoutEvent extends AuthEvent {
+  LogoutEvent();
+}
+
+class InitEvent extends AuthEvent {
+  InitEvent();
+}
+
+class LoginEvent extends AuthEvent {
+  final EnumMethodAuthID methodAuthID;
+  LoginEvent(this.methodAuthID);
+}
+
+class CreateLoginEvent extends AuthEvent {
+  final EnumClasse classeEscolhida;
+  CreateLoginEvent(
+    this.classeEscolhida,
+  );
+}

@@ -1,10 +1,13 @@
+import 'package:cangurugestor/bloc/bloc_auth_event.dart';
+import 'package:cangurugestor/bloc/bloc_auth_state.dart';
 import 'package:cangurugestor/firebase_options.dart';
 import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
-import 'package:cangurugestor/viewModel/bloc_auth.dart';
+import 'package:cangurugestor/bloc/bloc_auth.dart';
+import 'package:cangurugestor/view/componentes/tooltip_login.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
@@ -64,8 +67,10 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => TarefasProvider()),
         ChangeNotifierProvider(create: (context) => CuidadorProvider()),
       ],
-      child: BlocProvider(
-        create: (context) => AuthBloc()..add(InitEvent()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => AuthBloc()..add(InitEvent())),
+        ],
         child: MaterialApp(
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
           supportedLocales: const [Locale('pt', 'BR')],
@@ -132,19 +137,22 @@ class _MyAppState extends State<MyApp> {
                   ),
                 );
               }
+              if (state is FirstLoginAuthState) {
+                firstLoginDialog(context);
+              }
             },
             builder: (context, state) {
               /// precisa melhorar isso aqui
               if (state is LoggedInAuthState) {
                 if (state.login.classe == EnumClasse.gestor) {
                   context.read<GestorProvider>().gestor =
-                      state.login.user as Gestor;
+                      state.login.pessoa as Gestor;
                 } else if (state.login.classe == EnumClasse.responsavel) {
                   context.read<ResponsavelProvider>().responsavel =
-                      state.login.user as Responsavel;
+                      state.login.pessoa as Responsavel;
                 } else if (state.login.classe == EnumClasse.cuidador) {
                   context.read<CuidadorProvider>().cuidador =
-                      state.login.user as Cuidador;
+                      state.login.pessoa as Cuidador;
                 }
                 return state.login.route;
               } else if (state is LoadingAuthState) {
@@ -156,6 +164,137 @@ class _MyAppState extends State<MyApp> {
               }
               return const TelaLogin();
             },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> firstLoginDialog(BuildContext context) {
+    EnumClasse? enumClasse;
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (enumClasse != null) {
+                context.read<AuthBloc>().add(CreateLoginEvent(enumClasse!));
+              }
+              Navigator.of(context).pop();
+            },
+            child: const Text('Confirmar'),
+          ),
+        ],
+        title: Column(
+          children: const [
+            Text('Bem vindo', style: TextStyle(fontSize: 15)),
+            Text(
+              'Selecione o seu perfil',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: TooltipClassePessoa(
+                        tip:
+                            'É de minha responsabilidade gerir cuidadores de idosos, e seus cuidados aos pacientes dos meus clientes.',
+                        title: 'Gestor',
+                      ),
+                    ),
+                    Radio(
+                      visualDensity: const VisualDensity(
+                        horizontal: VisualDensity.minimumDensity,
+                        vertical: VisualDensity.minimumDensity,
+                      ),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: EnumClasse.gestor,
+                      fillColor: MaterialStateProperty.all(corPad1),
+                      groupValue: enumClasse,
+                      onChanged: (classe) {
+                        setState(() {
+                          enumClasse = classe as EnumClasse;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: TooltipClassePessoa(
+                        tip:
+                            'Sou um cuidador de pessoas. Sou responsável por um ou mais pacientes.',
+                        title: 'Cuidador',
+                      ),
+                    ),
+                    Radio(
+                      visualDensity: const VisualDensity(
+                        horizontal: VisualDensity.minimumDensity,
+                        vertical: VisualDensity.minimumDensity,
+                      ),
+                      fillColor: MaterialStateProperty.all(corPad1),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: EnumClasse.cuidador,
+                      groupValue: enumClasse,
+                      onChanged: (classe) {
+                        setState(() {
+                          enumClasse = classe as EnumClasse;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: TooltipClassePessoa(
+                        tip:
+                            'O paciente que necessita de cuidados é meu familiar ou conhecido, e eu sou o responsável por ele.',
+                        title: 'Responsável',
+                      ),
+                    ),
+                    Radio(
+                      visualDensity: const VisualDensity(
+                        horizontal: VisualDensity.minimumDensity,
+                        vertical: VisualDensity.minimumDensity,
+                      ),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: EnumClasse.responsavel,
+                      fillColor: MaterialStateProperty.all(corPad1),
+                      groupValue: enumClasse,
+                      onChanged: (classe) {
+                        setState(() {
+                          enumClasse = classe as EnumClasse;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

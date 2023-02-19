@@ -13,7 +13,7 @@ import 'package:cangurugestor/view/telas/paci/medicamento_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/bloc_auth.dart';
+import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
