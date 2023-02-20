@@ -737,24 +737,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
               labelText: 'Estado',
               textInputType: TextInputType.text,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Ativo',
-                    style: TextStyle(color: corPad1, fontSize: 15),
-                  ),
-                ),
-                Switch(
-                  value: pacienteProvider.paciente.ativo,
-                  onChanged: (value) {
-                    pacienteProvider.paciente.ativo = value;
-                  },
-                ),
-              ],
-            ),
           ],
         ),
       ),

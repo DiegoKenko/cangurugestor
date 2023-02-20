@@ -1,6 +1,7 @@
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/bloc/bloc_auth_event.dart';
 import 'package:cangurugestor/firebaseUtils/firebase_auth_constants.dart';
+import 'package:cangurugestor/view/componentes/circular_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +53,7 @@ class LoginButtons extends StatelessWidget {
     return Builder(
       builder: (context) {
         if (context.read<AuthBloc>().state.loading) {
-          return const CircularProgressIndicator(color: corPad1);
+          return const CircularProgressCanguru();
         } else {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,7 @@
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/popup_delete.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
@@ -22,7 +23,6 @@ class CadastroCuidador extends StatefulWidget {
 
 class _CadastroCuidadorState extends State<CadastroCuidador>
     with SingleTickerProviderStateMixin {
-  bool ativo = true;
   late TabController _tabController;
 
   @override
@@ -371,24 +371,6 @@ class _DadosCuidadorState extends State<DadosCuidador> {
               controller: _estadoController,
               labelText: 'Estado',
               textInputType: TextInputType.text,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Ativo',
-                    style: TextStyle(color: corPad1, fontSize: 15),
-                  ),
-                ),
-                Switch(
-                  value: cuidadorProvider.cuidador.ativo,
-                  onChanged: (value) {
-                    cuidadorProvider.cuidador.ativo = value;
-                  },
-                ),
-              ],
             ),
           ],
         ),

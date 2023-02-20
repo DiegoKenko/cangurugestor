@@ -1,6 +1,5 @@
 import 'package:cangurugestor/model/login.dart';
 import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthState {
   AuthState({

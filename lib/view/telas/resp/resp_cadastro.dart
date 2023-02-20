@@ -4,6 +4,7 @@ import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/popup_delete.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
@@ -443,24 +444,6 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
               controller: _estadoController,
               labelText: 'Estado',
               textInputType: TextInputType.text,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Ativo',
-                    style: TextStyle(color: corPad1, fontSize: 15),
-                  ),
-                ),
-                Switch(
-                  value: responsavelProvider.responsavel.ativo,
-                  onChanged: (value) {
-                    responsavelProvider.responsavel.ativo = value;
-                  },
-                ),
-              ],
             ),
           ],
         ),

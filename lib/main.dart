@@ -5,6 +5,7 @@ import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/view/componentes/circular_progress.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/view/componentes/tooltip_login.dart';
@@ -158,7 +159,7 @@ class _MyAppState extends State<MyApp> {
               } else if (state is LoadingAuthState) {
                 return const Scaffold(
                   body: Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressCanguru(),
                   ),
                 );
               }

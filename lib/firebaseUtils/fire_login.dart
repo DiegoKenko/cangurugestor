@@ -10,39 +10,41 @@ class FirestoreLogin {
 
   Future<void> atualizaLoginGestor(Gestor gestor) async {
     final LoginUser user = LoginUser.fromGestor(gestor);
-
-    await firestore
-        .collection('login')
-        .where('doc', isEqualTo: user.doc)
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        value.docs.first.reference.update(user.toMap());
-      } else {
-        firestore.collection('login').add(user.toMap());
-      }
-    });
+    if (user.doc.isNotEmpty && user.email.isNotEmpty) {
+      await firestore
+          .collection('login')
+          .where('doc', isEqualTo: user.doc)
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          value.docs.first.reference.update(user.toMap());
+        } else {
+          firestore.collection('login').add(user.toMap());
+        }
+      });
+    }
   }
 
   Future<void> atualizaLoginResponsavel(Responsavel responsavel) async {
     final LoginUser user = LoginUser.fromResponsavel(responsavel);
-
-    await firestore
-        .collection('login')
-        .where('doc', isEqualTo: user.doc)
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        value.docs.first.reference.update(user.toMap());
-      } else {
-        firestore.collection('login').add(user.toMap());
-      }
-    });
+    if (user.doc.isNotEmpty && user.email.isNotEmpty) {
+      await firestore
+          .collection('login')
+          .where('doc', isEqualTo: user.doc)
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          value.docs.first.reference.update(user.toMap());
+        } else {
+          firestore.collection('login').add(user.toMap());
+        }
+      });
+    }
   }
 
   Future<void> atualizaLoginCuidador(Cuidador cuidador) async {
     final LoginUser user = LoginUser.fromCuidador(cuidador);
-    if (user.doc.isNotEmpty) {
+    if (user.doc.isNotEmpty && user.email.isNotEmpty) {
       await firestore
           .collection('login')
           .where('doc', isEqualTo: user.doc)
