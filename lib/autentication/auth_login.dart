@@ -1,25 +1,10 @@
-import 'package:cangurugestor/firebaseUtils/fire_login.dart';
-import 'package:cangurugestor/model/pessoa.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class MethodLogin {
-  MethodLogin();
+class GoogleLogin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Stream<User?> stateChange() => _auth.authStateChanges();
-
-  void logout() async {
-    if (_auth.currentUser != null) {
-      await _auth.signOut();
-    }
-  }
-
-  void login() {}
-  void loadUser() {}
-}
-
-class GoogleLogin extends MethodLogin {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<UserCredential> getCredentials() async {
@@ -39,61 +24,19 @@ class GoogleLogin extends MethodLogin {
     return await _auth.signInWithCredential(credential);
   }
 
-  @override
   Future<void> logout() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
   }
 
-  @override
-  Future<Pessoa> loadUser() async {
+  Future<User?> loadUser() async {
     var cred = await getCredentials();
-    Pessoa user =
-        await FirestoreLogin().autenticarUsuarioEmail(cred.user!.email!);
-    return user;
+    return cred.user;
   }
 }
 
-class EmailSenhaLogin extends MethodLogin {
-  String email;
-  EmailSenhaLogin({
-    required this.email,
-  });
+class AppleLogin {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  EmailSenhaLogin.login({required this.email, required String senha}) {
-    _auth.signInWithEmailAndPassword(email: email, password: senha);
-  }
-
-  @override
-  Future<Pessoa> loadUser() async {
-    Pessoa user = await FirestoreLogin().autenticarUsuarioEmail(email);
-    return user;
-  }
-
-  @override
-  Future<void> logout() async {
-    if (_auth.currentUser != null) {
-      await _auth.signOut();
-    }
-  }
-}
-
-class AppleIDLogin extends MethodLogin {}
-
-class PhoneLogin extends MethodLogin {}
-
-class AnonymousLogin extends MethodLogin {
-  @override
-  Future<Pessoa> loadUser() async {
-    Pessoa user =
-        await FirestoreLogin().autenticarUsuarioEmail('anonimo@inora.com.br');
-    return user;
-  }
-
-  @override
-  Future<void> logout() async {
-    if (_auth.currentUser != null) {
-      await _auth.signOut();
-    }
-  }
+  Stream<User?> stateChange() => _auth.authStateChanges();
 }

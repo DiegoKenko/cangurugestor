@@ -1,10 +1,23 @@
+import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
+import 'package:cangurugestor/model/pessoa.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreGestor {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<Gestor> create(Pessoa pessoa) async {
+    Gestor gestor = Gestor.fromPessoa(pessoa);
+    DocumentReference<Map<String, dynamic>> doc =
+        await firestore.collection('gestores').add(gestor.toMap());
+    gestor.id = doc.id;
+
+    FirestoreLogin().atualizaLoginGestor(gestor);
+
+    return gestor;
+  }
 
   Future<List<Responsavel>> todosClientesGestor(Gestor gestor) async {
     List<Responsavel> resps = [];
@@ -55,7 +68,9 @@ class FirestoreGestor {
   }
 
   Future<List<Cuidador>> todosCuidadoresPaciente(
-      Gestor gestor, String idPaciente,) async {
+    Gestor gestor,
+    String idPaciente,
+  ) async {
     List<Cuidador> cuidadores = [];
     if (gestor.id.isEmpty) {
       return cuidadores;
@@ -75,12 +90,6 @@ class FirestoreGestor {
       }
     }
     return cuidadores;
-  }
-
-  Future<Gestor> create(Gestor gestor) async {
-    var doc = await firestore.collection('gestores').add(gestor.toMap());
-    gestor.id = doc.id;
-    return gestor;
   }
 
   Future<Gestor> read(String id) async {

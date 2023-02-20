@@ -137,6 +137,7 @@ class TarefasProvider extends ChangeNotifier {
 
   Future<void> delete(Tarefa tarefa) async {
     await FirestoreTarefa().delete(paciente.id, tarefa.id);
+    notifyListeners();
   }
 
   Future<void> loadTodasTarefasFiltro(EnumFiltroDataTarefa filtro) async {

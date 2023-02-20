@@ -33,6 +33,23 @@ class Cuidador extends Pessoa {
           rua: rua,
         );
 
+  Cuidador.fromPessoa(Pessoa pessoa) {
+    id = pessoa.id;
+    nome = pessoa.nome;
+    email = pessoa.email;
+    ativo = pessoa.ativo;
+    email = pessoa.email;
+    telefone = pessoa.telefone;
+    nascimento = pessoa.nascimento;
+    rua = pessoa.rua;
+    numeroRua = pessoa.numeroRua;
+    complementoRua = pessoa.complementoRua;
+    bairro = pessoa.bairro;
+    cidade = pessoa.cidade;
+    cep = pessoa.cep;
+    estado = pessoa.estado;
+  }
+
   Cuidador.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     id = map['id'] ?? '';
     idPacientes = map['idPacientes'];

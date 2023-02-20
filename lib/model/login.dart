@@ -1,6 +1,8 @@
-import 'package:cangurugestor/autentication/auth_login.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/pessoa.dart';
+import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/view/telas/resp/resp_painel.dart';
@@ -8,18 +10,30 @@ import 'package:cangurugestor/view/telas/tela_login.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Login {
   Login();
   Login.init(
+    this.pessoa,
     this.user,
-    this.method,
-    this.classe,
   );
-  MethodLogin method = MethodLogin();
-  Pessoa user = Pessoa();
-  EnumClasse classe = EnumClasse.naoDefinido;
+  User? user;
+  Pessoa pessoa = Pessoa();
+
+  EnumClasse get classe {
+    if (pessoa is Gestor) {
+      return EnumClasse.gestor;
+    } else if (pessoa is Cuidador) {
+      return EnumClasse.cuidador;
+    } else if (pessoa is Responsavel) {
+      return EnumClasse.responsavel;
+    } else {
+      return EnumClasse.naoDefinido;
+    }
+  }
+
   Widget get route {
     if (classe == EnumClasse.gestor) {
       return const PainelGestor();

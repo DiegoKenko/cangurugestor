@@ -1,12 +1,13 @@
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
+import 'package:cangurugestor/view/componentes/popup_delete.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/bloc_auth.dart';
+import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -22,12 +23,16 @@ class CadastroCuidador extends StatefulWidget {
 
 class _CadastroCuidadorState extends State<CadastroCuidador>
     with SingleTickerProviderStateMixin {
-  bool ativo = true;
   late TabController _tabController;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController.addListener(() {
+      if (context.read<AuthBloc>().state.login.editaCuidador) {
+        context.read<CuidadorProvider>().update();
+      }
+    });
 
     super.initState();
   }
@@ -44,6 +49,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            if (cuidadorProvider.cuidador.nome.isEmpty) {
+              Navigator.of(context).pop();
+              return;
+            }
             if (context.read<AuthBloc>().state.login.editaCuidador) {
               cuidadorProvider.update().then(
                     (value) => gestorProvider
@@ -362,24 +371,6 @@ class _DadosCuidadorState extends State<DadosCuidador> {
               controller: _estadoController,
               labelText: 'Estado',
               textInputType: TextInputType.text,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Ativo',
-                    style: TextStyle(color: corPad1, fontSize: 15),
-                  ),
-                ),
-                Switch(
-                  value: cuidadorProvider.cuidador.ativo,
-                  onChanged: (value) {
-                    cuidadorProvider.cuidador.ativo = value;
-                  },
-                ),
-              ],
             ),
           ],
         ),

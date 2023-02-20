@@ -1,12 +1,12 @@
+import 'package:cangurugestor/bloc/bloc_auth_event.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/telas/tela_relatorio.dart';
-import 'package:cangurugestor/view/telas/tela_login.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/bloc_auth.dart';
+import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
@@ -86,7 +86,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                             applicationLegalese: 'DESENVOLVIDO POR: \n\n'
                                 'Inora Softwares LTDA \n'
                                 'www.inora.com.br \n'
-                                'cnpj: 48.738.803/0001-74',
+                                'cnpj: 48.738.803/0001-74 \n\n',
                           );
                         },
                       );
@@ -104,7 +104,6 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {
-                    context.read<AuthBloc>().add(LogoutEvent());
                     context.read<GestorProvider>().clear();
                     context.read<PacienteProvider>().clear();
                     context.read<ResponsavelProvider>().clear();
@@ -113,12 +112,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     context.read<AtividadeProvider>().clear();
                     context.read<ConsultaProvider>().clear();
                     context.read<TarefasProvider>().clear();
-
-                    Navigator.of(context).pushReplacement(
-                      AnimatedPageTransition(
-                        page: const TelaLogin(),
-                      ),
-                    );
+                    context.read<AuthBloc>().add(LogoutEvent());
                   },
                 ),
               ),

@@ -46,6 +46,7 @@ class GestorProvider extends ChangeNotifier {
       gestor.idCuidadores.add(cuidador.id);
       await _firestoreGestor.update(gestor);
     }
+    notifyListeners();
   }
 
   void clear() {

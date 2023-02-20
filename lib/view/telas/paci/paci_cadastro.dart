@@ -13,7 +13,7 @@ import 'package:cangurugestor/view/telas/paci/medicamento_cadastro.dart';
 import 'package:cangurugestor/viewModel/provider_atividade.dart';
 import 'package:cangurugestor/viewModel/provider_consulta.dart';
 import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/bloc_auth.dart';
+import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
@@ -736,24 +736,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
               controller: _estadoController,
               labelText: 'Estado',
               textInputType: TextInputType.text,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Ativo',
-                    style: TextStyle(color: corPad1, fontSize: 15),
-                  ),
-                ),
-                Switch(
-                  value: pacienteProvider.paciente.ativo,
-                  onChanged: (value) {
-                    pacienteProvider.paciente.ativo = value;
-                  },
-                ),
-              ],
             ),
           ],
         ),

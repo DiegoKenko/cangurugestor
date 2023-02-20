@@ -37,16 +37,21 @@ class _PainelGestorState extends State<PainelGestor>
     final GestorProvider gestorProvider = Provider.of<GestorProvider>(context);
 
     return Scaffold(
-      drawer: const CanguruDrawer(),
+      drawer: CanguruDrawer(
+        profile: [
+          DrawerListTile(
+            title: Column(
+              children: [
+                Text(gestorProvider.gestor.nome, style: kTitleAppBarStyle),
+                Text('gestor', style: kSubtitleAppBarStyle),
+              ],
+            ),
+            onTap: null,
+          ),
+        ],
+      ),
       appBar: AppBar(
         backgroundColor: corPad1,
-        title: Column(
-          children: [
-            Text(gestorProvider.gestor.nome, style: kTitleAppBarStyle),
-            Text('gestor', style: kSubtitleAppBarStyle),
-          ],
-        ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: TabCanguru(
@@ -89,16 +94,16 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
 
     return Column(
       children: [
-        Builder(
-          builder: ((context) {
-            gestorProvider.todosCuidadores();
-            return Expanded(
-              child: ListView.builder(
-                itemCount: gestorProvider.cuidadores.length,
-                itemBuilder: (context, index) {
-                  if (gestorProvider.cuidadores.isEmpty) {
-                    return const Text('nenhum cuidador cadastrado');
-                  } else {
+        Expanded(
+          child: Builder(
+            builder: ((context) {
+              gestorProvider.todosCuidadores();
+              if (gestorProvider.cuidadores.isEmpty) {
+                return const Text('nenhum cuidador cadastrado');
+              } else {
+                return ListView.builder(
+                  itemCount: gestorProvider.cuidadores.length,
+                  itemBuilder: (context, index) {
                     return ItemContainer(
                       leading: const CircleAvatar(
                         backgroundImage: AssetImage('assets/avatar.png'),
@@ -115,11 +120,11 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
                         );
                       },
                     );
-                  }
-                },
-              ),
-            );
-          }),
+                  },
+                );
+              }
+            }),
+          ),
         ),
         SizedBox(
           height: 50,

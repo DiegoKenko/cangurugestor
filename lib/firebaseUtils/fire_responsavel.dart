@@ -9,7 +9,7 @@ class FirestoreResponsavel {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirestoreLogin firestoreLogin = FirestoreLogin();
 
-  Future<Responsavel> incluirResponsavel(Responsavel responsavel) async {
+  Future<Responsavel> create(Responsavel responsavel) async {
     var doc =
         await firestore.collection('responsaveis').add(responsavel.toMap());
     responsavel.id = doc.id;
@@ -60,6 +60,9 @@ class FirestoreResponsavel {
           await firestore.collection('responsaveis').doc(responsavel.id).get();
       responsavel = Responsavel.fromMap(doc.data()!);
       for (var element in responsavel.idPacientes) {
+        if (element.isEmpty) {
+          return [];
+        }
         DocumentSnapshot<Map<String, dynamic>> docPaciente =
             await firestore.collection('pacientes').doc(element).get();
         if (docPaciente.data() == null) {

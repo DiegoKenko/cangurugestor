@@ -5,6 +5,22 @@ class Gestor extends Pessoa {
   List<String> idCuidadores = [];
   Gestor();
 
+  Gestor.fromPessoa(Pessoa pessoa) {
+    id = pessoa.id;
+    nome = pessoa.nome;
+    ativo = pessoa.ativo;
+    email = pessoa.email;
+    telefone = pessoa.telefone;
+    nascimento = pessoa.nascimento;
+    rua = pessoa.rua;
+    numeroRua = pessoa.numeroRua;
+    complementoRua = pessoa.complementoRua;
+    bairro = pessoa.bairro;
+    cidade = pessoa.cidade;
+    cep = pessoa.cep;
+    estado = pessoa.estado;
+  }
+
   Gestor.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     cpf = map['cpf'];
     nome = map['nome'];
