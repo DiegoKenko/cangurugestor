@@ -10,7 +10,6 @@ import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
-import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
@@ -111,7 +110,6 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     context.read<MedicamentoProvider>().clear();
                     context.read<AtividadeProvider>().clear();
                     context.read<ConsultaProvider>().clear();
-                    context.read<TarefasProvider>().clear();
                     context.read<AuthBloc>().add(LogoutEvent());
                   },
                 ),

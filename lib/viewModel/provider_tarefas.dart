@@ -15,13 +15,14 @@ class TarefasProvider extends ChangeNotifier {
 
   List<Tarefa> get tarefas => _tarefas;
 
-  void _addTarefa(Tarefa tarefa) async {
+  Future<void> _addTarefa(Tarefa tarefa) async {
+    _tarefas.add(tarefa);
     await FirestoreTarefa().insert(paciente, tarefa);
     notifyListeners();
   }
 
-  void updateTarefa(Tarefa tarefa) {
-    FirestoreTarefa().update(paciente, tarefa);
+  Future<void> updateTarefa(Tarefa tarefa) async {
+    await FirestoreTarefa().update(paciente, tarefa);
     notifyListeners();
   }
 
@@ -113,11 +114,6 @@ class TarefasProvider extends ChangeNotifier {
     _addTarefa(tarefa);
   }
 
-  void removeTarefa(Tarefa tarefa) {
-    _tarefas.remove(tarefa);
-    notifyListeners();
-  }
-
   void clear() {
     _tarefas.clear();
     paciente = Paciente();
@@ -136,6 +132,10 @@ class TarefasProvider extends ChangeNotifier {
   }
 
   Future<void> delete(Tarefa tarefa) async {
+    if (tarefa.id.isEmpty) {
+      return;
+    }
+    _tarefas.removeWhere((element) => element.id == tarefa.id);
     await FirestoreTarefa().delete(paciente.id, tarefa.id);
     notifyListeners();
   }

@@ -69,10 +69,11 @@ class _CadastroPacienteState extends State<CadastroPaciente>
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             if (context.read<AuthBloc>().state.login.editaPaciente) {
-              context.read<PacienteProvider>().update();
-              context
-                  .read<ResponsavelProvider>()
-                  .addPaciente(context.read<PacienteProvider>().paciente);
+              context.read<PacienteProvider>().update().then(
+                    (value) => context
+                        .read<ResponsavelProvider>()
+                        .addPaciente(context.read<PacienteProvider>().paciente),
+                  );
             }
             pacienteProvider.clear();
             Navigator.of(context).pop();
@@ -83,7 +84,8 @@ class _CadastroPacienteState extends State<CadastroPaciente>
               ? IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    pacienteProvider.delete();
+                    responsavelProvider
+                        .removePaciente(pacienteProvider.paciente);
                     pacienteProvider.clear();
                     Navigator.of(context).pop();
                   },

@@ -23,12 +23,11 @@ class FirestoreResponsavel {
     return responsavel;
   }
 
-  Future<void> atualizarResponavel(Responsavel responsavel) async {
-    await firestore.collection('responsaveis').doc(responsavel.id).get().then(
-      (snapshot) {
-        snapshot.reference.update(responsavel.toMap());
-      },
-    );
+  Future<void> atualizaResponavel(Responsavel responsavel) async {
+    await firestore
+        .collection('responsaveis')
+        .doc(responsavel.id)
+        .update(responsavel.toMap());
 
     if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
       await firestore.collection('gestores').doc(responsavel.gestor.id).update({
@@ -61,7 +60,7 @@ class FirestoreResponsavel {
       responsavel = Responsavel.fromMap(doc.data()!);
       for (var element in responsavel.idPacientes) {
         if (element.isEmpty) {
-          return [];
+          continue;
         }
         DocumentSnapshot<Map<String, dynamic>> docPaciente =
             await firestore.collection('pacientes').doc(element).get();
