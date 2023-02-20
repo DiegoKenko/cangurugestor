@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 
 class ResponsavelProvider extends ChangeNotifier {
   Responsavel responsavel = Responsavel();
-  List<Paciente> _pacientes = [];
+  final List<Paciente> _pacientes = [];
 
   List<Paciente> get pacientes => _pacientes;
 
@@ -18,7 +18,7 @@ class ResponsavelProvider extends ChangeNotifier {
     if (responsavel.id.isEmpty) {
       FirestoreResponsavel().create(responsavel);
     } else {
-      FirestoreResponsavel().atualizarResponavel(responsavel);
+      FirestoreResponsavel().atualizaResponavel(responsavel);
     }
     notifyListeners();
   }
@@ -47,9 +47,9 @@ class ResponsavelProvider extends ChangeNotifier {
     update();
   }
 
-  void todosPacientes() async {
-    _pacientes =
-        await FirestoreResponsavel().todosPacientesResponsavel(responsavel);
-    notifyListeners();
+  void removePaciente(Paciente paciente) {
+    responsavel.idPacientes.remove(paciente.id);
+    responsavel.pacientes.remove(paciente);
+    update();
   }
 }

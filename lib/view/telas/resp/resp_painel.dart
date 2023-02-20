@@ -84,7 +84,7 @@ class PacientesCuidador extends StatelessWidget {
         context.watch<ResponsavelProvider>();
     return Builder(
       builder: (context) {
-        responsavelProvider.todosPacientes();
+        responsavelProvider.loadPacientes();
         return ListView.builder(
           itemCount: responsavelProvider.pacientes.length,
           itemBuilder: ((context, index) {

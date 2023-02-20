@@ -76,12 +76,6 @@ class Responsavel extends Pessoa {
 
   @override
   Map<String, dynamic> toMap() {
-    idPacientes = [];
-    for (var paciente in pacientes) {
-      if (!idPacientes.contains(paciente.id)) {
-        idPacientes.add(paciente.id);
-      }
-    }
     return {
       'ativo': ativo,
       'bairro': bairro,
