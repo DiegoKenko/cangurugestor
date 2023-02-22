@@ -23,10 +23,10 @@ class ConsultaProvider extends ChangeNotifier {
   }
 
   Future<void> update() async {
+    if (consulta.descricao.isEmpty) {
+      return;
+    }
     if (consulta.id.isNotEmpty) {
-      if (consulta.descricao.isEmpty) {
-        return;
-      }
       FirestoreConsulta()
           .atualizarConsultaPaciente(consulta, consulta.paciente.id);
       notifyListeners();

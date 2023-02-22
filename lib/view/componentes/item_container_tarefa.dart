@@ -62,7 +62,7 @@ class _ItemContainerTarefaState extends State<ItemContainerTarefa> {
                     ),
                   ),
                   child: Text(
-                    widget.tarefa.id,
+                    widget.tarefa.nome,
                   ),
                 ),
               ),

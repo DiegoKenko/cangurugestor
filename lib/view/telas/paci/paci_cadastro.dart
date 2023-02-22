@@ -441,6 +441,8 @@ class ConsultasPaciente extends StatelessWidget {
                       child: ItemContainer(
                         title: pacienteProvider
                             .paciente.consultas[index].descricao,
+                        subtitle:
+                            pacienteProvider.paciente.consultas[index].medico,
                       ),
                     );
                   },
@@ -508,6 +510,8 @@ class MedicamentosPaciente extends StatelessWidget {
                       child: ItemContainer(
                         title:
                             pacienteProvider.paciente.medicamentos[index].nome,
+                        subtitle: pacienteProvider
+                            .paciente.medicamentos[index].observacao,
                       ),
                     );
                   },

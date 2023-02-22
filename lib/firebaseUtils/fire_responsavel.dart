@@ -29,10 +29,15 @@ class FirestoreResponsavel {
         .doc(responsavel.id)
         .update(responsavel.toMap());
 
-    if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
-      await firestore.collection('gestores').doc(responsavel.gestor.id).update({
-        'idClientes': FieldValue.arrayUnion([responsavel.id])
-      });
+    if (responsavel.gestor.id.isNotEmpty) {
+      if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
+        await firestore
+            .collection('gestores')
+            .doc(responsavel.gestor.id)
+            .update({
+          'idClientes': FieldValue.arrayUnion([responsavel.id])
+        });
+      }
     }
     FirestoreLogin().atualizaLoginResponsavel(responsavel);
   }
