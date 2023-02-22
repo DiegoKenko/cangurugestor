@@ -3,6 +3,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreAtividade {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<Atividade> atividadePaciente(
+    String idAtividade,
+    String idPaciente,
+  ) async {
+    DocumentSnapshot<Map<String, dynamic>> snap = await firestore
+        .collection('pacientes')
+        .doc(idPaciente)
+        .collection('atividades')
+        .doc(idAtividade)
+        .get();
+    Atividade atividade = Atividade.fromMap(snap.data()!);
+    atividade.id = snap.id;
+    return atividade;
+  }
+
   void atualizarAtividadePaciente(Atividade atividade, String idPaciente) {
     firestore
         .collection('pacientes')
@@ -14,7 +30,9 @@ class FirestoreAtividade {
   }
 
   Future<Atividade> novaAtividadePaciente(
-      Atividade atividade, String idPaciente,) async {
+    Atividade atividade,
+    String idPaciente,
+  ) async {
     var ativ = await firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -25,8 +43,11 @@ class FirestoreAtividade {
     return atividade;
   }
 
-  void excluirAtividadePaciente(String idAtividade, String idPaciente) {
-    firestore
+  Future<void> excluirAtividadePaciente(
+    String idAtividade,
+    String idPaciente,
+  ) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('atividades')

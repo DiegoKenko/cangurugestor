@@ -57,7 +57,6 @@ class Tarefa {
   Map<String, dynamic> toMap() {
     return {
       'nome': nome,
-      'id': id,
       'idTipo': idTipo,
       'tipo': tipo.name,
       'descricao': descricao,

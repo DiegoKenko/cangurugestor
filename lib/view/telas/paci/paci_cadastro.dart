@@ -554,8 +554,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
   final TextEditingController _numeroRuaController = TextEditingController();
-  final TextEditingController _complementoRuaController =
-      TextEditingController();
+
   final TextEditingController _cidadeController = TextEditingController();
   final TextEditingController _estadoController = TextEditingController();
 
@@ -574,57 +573,31 @@ class _DadosPacienteState extends State<DadosPaciente> {
       context.read<PacienteProvider>().paciente.nascimento =
           _nascimentoController.text;
     });
-    _ruaController.addListener(() {
-      // Listener para atualizar a rua do responsável
-      context.read<PacienteProvider>().paciente.rua = _ruaController.text;
-    });
-    _bairroController.addListener(() {
-      // Listener para atualizar o bairro do responsável
-      context.read<PacienteProvider>().paciente.bairro = _bairroController.text;
-    });
+
     _numeroRuaController.addListener(() {
       // Listener para atualizar o número da rua do responsável
       context.read<PacienteProvider>().paciente.numeroRua =
           _numeroRuaController.text;
     });
-    _complementoRuaController.addListener(() {
-      // Listener para atualizar o complemento da rua do responsável
-      context.read<PacienteProvider>().paciente.complementoRua =
-          _complementoRuaController.text;
-    });
-    _cidadeController.addListener(() {
-      // Listener para atualizar a cidade do responsável
-      context.read<PacienteProvider>().paciente.cidade = _cidadeController.text;
-    });
-    _estadoController.addListener(() {
-      // Listener para atualizar o estado do responsável
-      context.read<PacienteProvider>().paciente.estado = _estadoController.text;
-    });
-    _cepController.addListener(() {
+
+    _cepController.addListener(() async {
       // Listener para atualizar o CEP do responsável
       context.read<PacienteProvider>().paciente.cep = _cepController.text;
       // Listener para atualizar os campos de endereço
       if (_cepController.text.length == 9) {
-        CepAPI.getCep(_cepController.text).then((value) {
-          if (value['cep'] != null) {
-            _ruaController.text = value['logradouro'];
-            _bairroController.text = value['bairro'];
-            _cidadeController.text = value['localidade'];
-            _estadoController.text = value['uf'];
-            context.read<PacienteProvider>().paciente.rua = value['logradouro'];
-            context.read<PacienteProvider>().paciente.bairro = value['bairro'];
-            context.read<PacienteProvider>().paciente.cidade =
-                value['localidade'];
-            context.read<PacienteProvider>().paciente.estado = value['uf'];
-
-            return;
-          } else {
-            _ruaController.text = '';
-            _bairroController.text = '';
-            _cidadeController.text = '';
-            _estadoController.text = '';
-          }
-        });
+        Map<dynamic, dynamic> value = await CepAPI.getCep(_cepController.text);
+        if (value['cep'] != null) {
+          _ruaController.text = value['logradouro'];
+          _bairroController.text = value['bairro'];
+          _cidadeController.text = value['localidade'];
+          _estadoController.text = value['uf'];
+          return;
+        } else {
+          _ruaController.text = '';
+          _bairroController.text = '';
+          _cidadeController.text = '';
+          _estadoController.text = '';
+        }
       }
     });
     super.initState();
@@ -632,17 +605,16 @@ class _DadosPacienteState extends State<DadosPaciente> {
 
   @override
   void dispose() {
+    super.dispose();
     _cpfController.dispose();
     _nomeController.dispose();
     _nascimentoController.dispose();
     _ruaController.dispose();
     _bairroController.dispose();
     _numeroRuaController.dispose();
-    _complementoRuaController.dispose();
     _cidadeController.dispose();
     _estadoController.dispose();
     _cepController.dispose();
-    super.dispose();
   }
 
   @override
@@ -655,7 +627,6 @@ class _DadosPacienteState extends State<DadosPaciente> {
     _ruaController.text = pacienteProvider.paciente.rua;
     _bairroController.text = pacienteProvider.paciente.bairro;
     _numeroRuaController.text = pacienteProvider.paciente.numeroRua;
-    _complementoRuaController.text = pacienteProvider.paciente.complementoRua;
     _cidadeController.text = pacienteProvider.paciente.cidade;
     _estadoController.text = pacienteProvider.paciente.estado;
 
@@ -705,39 +676,50 @@ class _DadosPacienteState extends State<DadosPaciente> {
               ],
               textInputType: TextInputType.text,
             ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _ruaController,
-              labelText: 'Endereço',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              enabled: true,
-              controller: _numeroRuaController,
-              labelText: 'Complemento',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _bairroController,
-              labelText: 'Bairro',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _cidadeController,
-              labelText: 'Cidade',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _estadoController,
-              labelText: 'Estado',
-              textInputType: TextInputType.text,
+            FutureBuilder(
+              future: _cepController.text.isEmpty
+                  ? Future.delayed(
+                      const Duration(seconds: 1),
+                    )
+                  : CepAPI.getCep(_cepController.text),
+              builder: (context, snap) {
+                if (snap.hasData) {
+                  _ruaController.text = snap.data['logradouro'];
+                  _bairroController.text = snap.data['bairro'];
+                  _cidadeController.text = snap.data['localidade'];
+                  _estadoController.text = snap.data['uf'];
+                }
+                return Column(
+                  children: [
+                    FormCadastro(
+                      controller: _ruaController,
+                      labelText: 'Endereço',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      enabled: true,
+                      controller: _numeroRuaController,
+                      labelText: 'Número/complemento',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      controller: _bairroController,
+                      labelText: 'Bairro',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      controller: _cidadeController,
+                      labelText: 'Cidade',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      controller: _estadoController,
+                      labelText: 'Estado',
+                      textInputType: TextInputType.text,
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),

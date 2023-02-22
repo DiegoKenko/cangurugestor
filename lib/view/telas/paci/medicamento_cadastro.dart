@@ -11,9 +11,11 @@ import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/provider_tarefas.dart';
+import 'package:cangurugestor/viewModel/bloc_lista_tarefas.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+// ignore: unnecessary_import
 import 'package:provider/provider.dart';
 
 class CadastroMedicamento extends StatefulWidget {
@@ -63,7 +65,6 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
                 if (context.read<AuthBloc>().state.login.editaMedicamento) {
                   medicamentoProvider.update();
                 }
-                context.read<TarefasProvider>().clear();
                 medicamentoProvider.clear();
                 Navigator.pop(context);
               },
@@ -132,58 +133,66 @@ class TarefasMedicamento extends StatefulWidget {
 }
 
 class _TarefasMedicamentoState extends State<TarefasMedicamento> {
+  final ListaTarefasBloc tarefasBloc = ListaTarefasBloc();
   @override
   Widget build(BuildContext context) {
-    final TarefasProvider tarefasProvider = context.watch<TarefasProvider>();
-    tarefasProvider.paciente = context.read<PacienteProvider>().paciente;
-    tarefasProvider.tipo = EnumTarefa.medicamento;
-    tarefasProvider.idItem = context.read<MedicamentoProvider>().medicamento.id;
-
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        child: Builder(
-          builder: (context) {
-            tarefasProvider.load();
-            var widgetTarefaSalvas = tarefasProvider.tarefas
-                .map(
-                  (Tarefa tarefa) => ItemContainerTarefa(
-                    tarefa: tarefa,
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => PopUpTarefa(
-                          tarefa: tarefa,
-                        ),
-                      );
-                    },
-                  ),
-                )
-                .toList();
-            if (context.read<AuthBloc>().state.login.editaMedicamento) {
-              return Column(
-                children: [
-                  ...widgetTarefaSalvas,
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: BotaoCadastro(
-                      onPressed: () {
-                        tarefasProvider.novaTarefaMedicamento(
-                          context.read<MedicamentoProvider>().medicamento,
-                        );
+    return BlocProvider<ListaTarefasBloc>(
+      create: (context) => tarefasBloc,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: BlocBuilder<ListaTarefasBloc, ListaTarefaState>(
+            bloc: tarefasBloc
+              ..add(
+                ListaTarefasLoadEvent(
+                  paciente: context.read<PacienteProvider>().paciente,
+                  tipo: EnumTarefa.medicamento,
+                  idTipo: context.read<MedicamentoProvider>().medicamento.id,
+                ),
+              ),
+            builder: (context, tarefasState) {
+              var widgetTarefaSalvas = tarefasState.tarefas
+                  .map(
+                    (Tarefa tarefa) => ItemContainerTarefa(
+                      tarefa: tarefa,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => PopUpTarefa(
+                            tarefa: tarefa,
+                          ),
+                        ).then((value) {
+                          setState(() {});
+                        });
                       },
                     ),
-                  ),
-                ],
-              );
-            } else {
-              return Column(
-                children: [
-                  ...widgetTarefaSalvas,
-                ],
-              );
-            }
-          },
+                  )
+                  .toList();
+              if (context.read<AuthBloc>().state.login.editaMedicamento) {
+                return Column(
+                  children: [
+                    ...widgetTarefaSalvas,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: BotaoCadastro(
+                        onPressed: () {
+                          tarefasBloc.add(
+                            ListaTarefasAddEvent(
+                              EnumTarefa.medicamento,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  children: widgetTarefaSalvas,
+                );
+              }
+            },
+          ),
         ),
       ),
     );

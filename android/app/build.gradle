@@ -57,7 +57,7 @@ android {
         multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 5
+        versionCode 6
         versionName flutterVersionName
     }
 
@@ -71,8 +71,8 @@ android {
     }
     buildTypes {
         release {
-           signingConfig signingConfigs.debug
-           //signingConfig signingConfigs.release
+           //signingConfig signingConfigs.debug
+           signingConfig signingConfigs.release
         }
     }
 }
