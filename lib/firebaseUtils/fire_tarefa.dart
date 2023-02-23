@@ -1,3 +1,4 @@
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,14 +7,16 @@ import 'package:intl/intl.dart';
 class FirestoreTarefa {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> insert(Paciente paciente, Tarefa tarefa) async {
+  Future<Tarefa> insert(Paciente paciente, Tarefa tarefa) async {
     if (paciente.id.isNotEmpty) {
-      await firestore
+      var doc = await firestore
           .collection('pacientes')
           .doc(paciente.id)
           .collection('tarefas')
           .add(tarefa.toMap());
+      tarefa.id = doc.id;
     }
+    return tarefa;
   }
 
   Future<void> update(Paciente paciente, Tarefa tarefa) async {
@@ -28,7 +31,9 @@ class FirestoreTarefa {
   }
 
   Future<void> criaMultiplasTarefas(
-      Paciente paciente, List<Tarefa> tarefas,) async {
+    Paciente paciente,
+    List<Tarefa> tarefas,
+  ) async {
     for (var tarefa in tarefas) {
       await firestore
           .collection('pacientes')
@@ -39,22 +44,27 @@ class FirestoreTarefa {
   }
 
   Future<void> delete(String idPaciente, String idTarefa) async {
-    firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('tarefas')
-        .doc(idTarefa)
-        .delete();
+    if (idTarefa.isNotEmpty && idPaciente.isNotEmpty) {
+      await firestore
+          .collection('pacientes')
+          .doc(idPaciente)
+          .collection('tarefas')
+          .doc(idTarefa)
+          .delete();
+    }
   }
 
   Future<List<Tarefa>> todasTarefasItem(
-      Paciente paciente, String tipo, String idItem,) async {
+    Paciente paciente,
+    EnumTarefa tipo,
+    String idItem,
+  ) async {
     List<Tarefa> tarefas = [];
     QuerySnapshot querySnapshot = await firestore
         .collection('pacientes')
         .doc(paciente.id)
         .collection('tarefas')
-        .where('tipo', isEqualTo: tipo)
+        .where('tipo', isEqualTo: tipo.name)
         .where('idTipo', isEqualTo: idItem)
         .orderBy('dateTime')
         .get();
@@ -82,9 +92,11 @@ class FirestoreTarefa {
         .collection('pacientes')
         .doc(paciente.id)
         .collection('tarefas')
-        .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().subtract(const Duration(days: 1))),)
+        .where(
+          'date',
+          isEqualTo: DateFormat('dd/MM/yyyy')
+              .format(DateTime.now().subtract(const Duration(days: 1))),
+        )
         .orderBy('dateTime')
         .get();
 
@@ -102,8 +114,10 @@ class FirestoreTarefa {
         .collection('pacientes')
         .doc(paciente.id)
         .collection('tarefas')
-        .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()),)
+        .where(
+          'date',
+          isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()),
+        )
         .orderBy('dateTime')
         .get();
 
@@ -121,9 +135,11 @@ class FirestoreTarefa {
         .collection('pacientes')
         .doc(paciente.id)
         .collection('tarefas')
-        .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().add(const Duration(days: 1))),)
+        .where(
+          'date',
+          isEqualTo: DateFormat('dd/MM/yyyy')
+              .format(DateTime.now().add(const Duration(days: 1))),
+        )
         .orderBy('dateTime')
         .get();
 
@@ -141,11 +157,13 @@ class FirestoreTarefa {
         .collection('pacientes')
         .doc(paciente.id)
         .collection('tarefas')
-        .where('date',
-            isGreaterThan: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().add(const Duration(days: 1))),
-            isLessThanOrEqualTo: DateFormat('dd/MM/yyyy')
-                .format(DateTime.now().add(const Duration(days: 7))),)
+        .where(
+          'date',
+          isGreaterThan: DateFormat('dd/MM/yyyy')
+              .format(DateTime.now().add(const Duration(days: 1))),
+          isLessThanOrEqualTo: DateFormat('dd/MM/yyyy')
+              .format(DateTime.now().add(const Duration(days: 7))),
+        )
         .orderBy('date')
         .get();
 

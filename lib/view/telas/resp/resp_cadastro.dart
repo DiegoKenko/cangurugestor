@@ -57,7 +57,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
               return;
             }
             if (context.read<AuthBloc>().state.login.editaResponsavel) {
-              responsavelProvider.update();
+              responsavelProvider.updateOnPop();
             }
             responsavelProvider.clear();
             Navigator.of(context).pop();
@@ -216,8 +216,6 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
   final TextEditingController _numeroRuaController = TextEditingController();
-  final TextEditingController _complementoRuaController =
-      TextEditingController();
   final TextEditingController _cidadeController = TextEditingController();
   final TextEditingController _estadoController = TextEditingController();
 
@@ -248,63 +246,30 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
           _telefoneController.text;
     });
 
-    _ruaController.addListener(() {
-      // Listener para atualizar a rua do responsável
-      context.read<ResponsavelProvider>().responsavel.rua = _ruaController.text;
-    });
-    _bairroController.addListener(() {
-      // Listener para atualizar o bairro do responsável
-      context.read<ResponsavelProvider>().responsavel.bairro =
-          _bairroController.text;
-    });
     _numeroRuaController.addListener(() {
       // Listener para atualizar o número da rua do responsável
       context.read<ResponsavelProvider>().responsavel.numeroRua =
           _numeroRuaController.text;
     });
-    _complementoRuaController.addListener(() {
-      // Listener para atualizar o complemento da rua do responsável
-      context.read<ResponsavelProvider>().responsavel.complementoRua =
-          _complementoRuaController.text;
-    });
-    _cidadeController.addListener(() {
-      // Listener para atualizar a cidade do responsável
-      context.read<ResponsavelProvider>().responsavel.cidade =
-          _cidadeController.text;
-    });
-    _estadoController.addListener(() {
-      // Listener para atualizar o estado do responsável
-      context.read<ResponsavelProvider>().responsavel.estado =
-          _estadoController.text;
-    });
-    _cepController.addListener(() {
+
+    _cepController.addListener(() async {
       // Listener para atualizar o CEP do responsável
       context.read<ResponsavelProvider>().responsavel.cep = _cepController.text;
       // Listener para atualizar os campos de endereço
       if (_cepController.text.length == 9) {
-        CepAPI.getCep(_cepController.text).then((value) {
-          if (value['cep'] != null) {
-            _ruaController.text = value['logradouro'];
-            _bairroController.text = value['bairro'];
-            _cidadeController.text = value['localidade'];
-            _estadoController.text = value['uf'];
-            context.read<ResponsavelProvider>().responsavel.rua =
-                value['logradouro'];
-            context.read<ResponsavelProvider>().responsavel.bairro =
-                value['bairro'];
-            context.read<ResponsavelProvider>().responsavel.cidade =
-                value['localidade'];
-            context.read<ResponsavelProvider>().responsavel.estado =
-                value['uf'];
-
-            return;
-          } else {
-            _ruaController.text = '';
-            _bairroController.text = '';
-            _cidadeController.text = '';
-            _estadoController.text = '';
-          }
-        });
+        Map<dynamic, dynamic> value = await CepAPI.getCep(_cepController.text);
+        if (value['cep'] != null) {
+          _ruaController.text = value['logradouro'];
+          _bairroController.text = value['bairro'];
+          _cidadeController.text = value['localidade'];
+          _estadoController.text = value['uf'];
+          return;
+        } else {
+          _ruaController.text = '';
+          _bairroController.text = '';
+          _cidadeController.text = '';
+          _estadoController.text = '';
+        }
       }
     });
     super.initState();
@@ -321,7 +286,6 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
     _ruaController.dispose();
     _bairroController.dispose();
     _numeroRuaController.dispose();
-    _complementoRuaController.dispose();
     _cidadeController.dispose();
     _estadoController.dispose();
     _cepController.dispose();
@@ -331,6 +295,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   Widget build(BuildContext context) {
     final ResponsavelProvider responsavelProvider =
         context.watch<ResponsavelProvider>();
+
     _cpfController.text = responsavelProvider.responsavel.cpf;
     _nomeController.text = responsavelProvider.responsavel.nome;
     _nascimentoController.text = responsavelProvider.responsavel.nascimento;
@@ -340,8 +305,6 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
     _ruaController.text = responsavelProvider.responsavel.rua;
     _bairroController.text = responsavelProvider.responsavel.bairro;
     _numeroRuaController.text = responsavelProvider.responsavel.numeroRua;
-    _complementoRuaController.text =
-        responsavelProvider.responsavel.complementoRua;
     _cidadeController.text = responsavelProvider.responsavel.cidade;
     _estadoController.text = responsavelProvider.responsavel.estado;
 
@@ -409,39 +372,50 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
               ],
               textInputType: TextInputType.text,
             ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _ruaController,
-              labelText: 'Endereço',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              enabled: true,
-              controller: _numeroRuaController,
-              labelText: 'Complemento',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _bairroController,
-              labelText: 'Bairro',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _cidadeController,
-              labelText: 'Cidade',
-              textInputType: TextInputType.text,
-            ),
-            FormCadastro(
-              obrigatorio: true,
-              enabled: true,
-              controller: _estadoController,
-              labelText: 'Estado',
-              textInputType: TextInputType.text,
+            FutureBuilder(
+              future: _cepController.text.isEmpty
+                  ? Future.delayed(
+                      const Duration(seconds: 1),
+                    )
+                  : CepAPI.getCep(_cepController.text),
+              builder: (context, snap) {
+                if (snap.hasData) {
+                  _ruaController.text = snap.data['logradouro'];
+                  _bairroController.text = snap.data['bairro'];
+                  _cidadeController.text = snap.data['localidade'];
+                  _estadoController.text = snap.data['uf'];
+                }
+                return Column(
+                  children: [
+                    FormCadastro(
+                      controller: _ruaController,
+                      labelText: 'Endereço',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      enabled: true,
+                      controller: _numeroRuaController,
+                      labelText: 'Número/complemento',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      controller: _bairroController,
+                      labelText: 'Bairro',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      controller: _cidadeController,
+                      labelText: 'Cidade',
+                      textInputType: TextInputType.text,
+                    ),
+                    FormCadastro(
+                      controller: _estadoController,
+                      labelText: 'Estado',
+                      textInputType: TextInputType.text,
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),

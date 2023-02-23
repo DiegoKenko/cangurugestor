@@ -6,7 +6,7 @@ import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
 import 'package:cangurugestor/viewModel/provider_cuidador.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/provider_tarefas.dart';
+import 'package:cangurugestor/viewModel/viewmodel_tarefa.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -181,7 +181,10 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                                   context.read<PacienteProvider>().paciente,
                                 );
                               }
-                              context.read<TarefasProvider>().updateTarefa(t);
+                              TarefaViewModel(
+                                t,
+                                context.read<PacienteProvider>().paciente,
+                              ).update();
                               Navigator.of(context).pop();
                             },
                             child: Text(

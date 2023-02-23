@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 class FirestoreMedicamento {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   excluirTodasTarefasMedicamento(String med, String idPaciente) {
     firestore
         .collection('pacientes')
@@ -11,9 +12,12 @@ class FirestoreMedicamento {
         .collection('tarefas')
         .where('medicamento', isEqualTo: med)
         .where('tipo', isEqualTo: 'medicamento')
-        .where('data',
-            isGreaterThanOrEqualTo:
-                DateFormat('yyyy-MM-dd').format(DateTime.now(),),)
+        .where(
+          'data',
+          isGreaterThanOrEqualTo: DateFormat('yyyy-MM-dd').format(
+            DateTime.now(),
+          ),
+        )
         .get()
         .then((value) {
       for (var doc in value.docs) {
@@ -23,7 +27,9 @@ class FirestoreMedicamento {
   }
 
   void atualizarMedicamentoPaciente(
-      Medicamento medicamento, String idPaciente,) {
+    Medicamento medicamento,
+    String idPaciente,
+  ) {
     firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -40,7 +46,9 @@ class FirestoreMedicamento {
   }
 
   Future<Medicamento> novoMedicamentoPaciente(
-      Medicamento medicamento, String idPaciente,) async {
+    Medicamento medicamento,
+    String idPaciente,
+  ) async {
     var med = await firestore
         .collection('pacientes')
         .doc(idPaciente)
@@ -62,20 +70,18 @@ class FirestoreMedicamento {
   }
 
   Future<Medicamento> medicamentoPaciente(
-      String idMedicamento, String idPaciente,) async {
-    Medicamento med = Medicamento();
-    await firestore
+    String idMedicamento,
+    String idPaciente,
+  ) async {
+    var doc = await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('medicamentos')
         .doc(idMedicamento)
-        .get()
-        .then((snapshot) {
-      if (snapshot.exists) {
-        med = Medicamento.fromMap(snapshot.data()!);
-        med.id = snapshot.id;
-      }
-    });
+        .get();
+
+    Medicamento med = Medicamento.fromMap(doc.data()!);
+    med.id = doc.id;
     return med;
   }
 
@@ -98,8 +104,6 @@ class FirestoreMedicamento {
     });
     return meds;
   }
-  
-  
 
   Future<List<String>> todosMedicamentos() async {
     List<String> medReturn = [];

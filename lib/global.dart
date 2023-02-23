@@ -12,7 +12,7 @@ enum EnumPermissoes { gestor, responsavel, cuidador, nenhum }
 
 enum EnumTarefa { medicamento, atividade, consulta, nenhuma }
 
-enum EnumFiltroDataTarefa { ontem, hoje, amanha, proxSemana }
+enum EnumFiltroDataTarefa { ontem, hoje, amanha, proxSemana, todos }
 
 enum EnumStatus { concluido, emAberto, nenhum }
 

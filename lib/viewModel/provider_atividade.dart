@@ -16,10 +16,10 @@ class AtividadeProvider extends ChangeNotifier {
   }
 
   Future<void> update() async {
+    if (atividade.descricao.isEmpty) {
+      return;
+    }
     if (atividade.id.isNotEmpty) {
-      if (atividade.descricao.isEmpty) {
-        return;
-      }
       FirestoreAtividade()
           .atualizarAtividadePaciente(atividade, atividade.paciente.id);
     } else {

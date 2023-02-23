@@ -62,6 +62,7 @@ class _FormCadastroState extends State<FormCadastro> {
         keyboardType: widget.textInputType,
         style: kTextStyleHeader,
         decoration: InputDecoration(
+          enabled: widget.enabled,
           hintText: widget.hintText,
           hintStyle: const TextStyle(color: corPad1),
           label: Text(widget.labelText.toUpperCase()),

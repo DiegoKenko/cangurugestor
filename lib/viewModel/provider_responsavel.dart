@@ -14,6 +14,14 @@ class ResponsavelProvider extends ChangeNotifier {
     responsavel.gestor = gest;
   }
 
+  void updateOnPop() {
+    if (responsavel.id.isEmpty) {
+      FirestoreResponsavel().create(responsavel);
+    } else {
+      FirestoreResponsavel().atualizaResponavel(responsavel);
+    }
+  }
+
   void update() {
     if (responsavel.id.isEmpty) {
       FirestoreResponsavel().create(responsavel);

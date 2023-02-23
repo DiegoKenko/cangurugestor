@@ -16,7 +16,6 @@ import 'package:cangurugestor/viewModel/provider_gestor.dart';
 import 'package:cangurugestor/viewModel/provider_medicamento.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
 import 'package:cangurugestor/viewModel/provider_responsavel.dart';
-import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
@@ -65,7 +64,6 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => MedicamentoProvider()),
         ChangeNotifierProvider(create: (context) => ConsultaProvider()),
         ChangeNotifierProvider(create: (context) => AtividadeProvider()),
-        ChangeNotifierProvider(create: (context) => TarefasProvider()),
         ChangeNotifierProvider(create: (context) => CuidadorProvider()),
       ],
       child: MultiBlocProvider(

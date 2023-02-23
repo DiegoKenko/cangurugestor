@@ -1,9 +1,11 @@
+import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/provider_tarefas.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +28,6 @@ class _PacienteDashboardState extends State<PacienteDashboard>
 
   @override
   Widget build(BuildContext context) {
-    context.read<TarefasProvider>().paciente =
-        context.read<PacienteProvider>().paciente;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -38,7 +38,6 @@ class _PacienteDashboardState extends State<PacienteDashboard>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.read<TarefasProvider>().clear();
             Navigator.of(context).pop();
           },
         ),
@@ -97,7 +96,6 @@ class TarefasPeriodo extends StatefulWidget {
 class _TarefasPeriodoState extends State<TarefasPeriodo> {
   @override
   Widget build(BuildContext context) {
-    final TarefasProvider provider = context.watch<TarefasProvider>();
     return FutureBuilder(
       builder: (builder, snap) {
         var tarefas = snap.data ?? [];
@@ -123,7 +121,37 @@ class _TarefasPeriodoState extends State<TarefasPeriodo> {
           },
         );
       },
-      future: provider.getTodasTarefasFiltro(widget.data),
+      future: getTodasTarefasFiltro(
+          widget.data, context.read<PacienteProvider>().paciente,),
     );
+  }
+
+  Future<List<Tarefa>> getTodasTarefasFiltro(
+    EnumFiltroDataTarefa filtro,
+    Paciente paciente,
+  ) async {
+    List<Tarefa> tarefas = [];
+    if (paciente.id.isNotEmpty) {
+      switch (filtro) {
+        case EnumFiltroDataTarefa.ontem:
+          tarefas = await FirestoreTarefa().todasTarefasOntem(paciente);
+          break;
+        case EnumFiltroDataTarefa.hoje:
+          tarefas = await FirestoreTarefa().todasTarefasHoje(paciente);
+          break;
+        case EnumFiltroDataTarefa.amanha:
+          tarefas = await FirestoreTarefa().todasTarefasAmanha(paciente);
+          break;
+        case EnumFiltroDataTarefa.proxSemana:
+          tarefas = await FirestoreTarefa().todasTarefasSemana(paciente);
+          break;
+        default:
+          tarefas = await FirestoreTarefa().todasTarefasOntem(paciente);
+      }
+    } else {
+      tarefas = [];
+    }
+
+    return tarefas;
   }
 }
