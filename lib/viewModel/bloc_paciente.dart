@@ -1,12 +1,6 @@
-import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
-import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
-import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
-import 'package:cangurugestor/firebaseUtils/fire_medicamento.dart';
 import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
-import 'package:cangurugestor/model/responsavel.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class PacienteEvent {

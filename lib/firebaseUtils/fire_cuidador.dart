@@ -1,6 +1,5 @@
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

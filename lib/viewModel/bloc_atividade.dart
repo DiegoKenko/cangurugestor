@@ -1,6 +1,5 @@
 import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
 import 'package:cangurugestor/model/atividade.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class AtividadeState {
@@ -48,9 +47,11 @@ class AtividadeBloc extends Bloc<AtividadeEvent, AtividadeState> {
           FirestoreAtividade()
               .atualizarAtividadePaciente(atividade, atividade.paciente.id);
         } else {
-          Atividade atividade = await FirestoreAtividade()
-              .novaAtividadePaciente(
-                  state.atividade, state.atividade.paciente.id);
+          Atividade atividade =
+              await FirestoreAtividade().novaAtividadePaciente(
+            state.atividade,
+            state.atividade.paciente.id,
+          );
           atividade = atividade;
         }
         atividade = atividade;

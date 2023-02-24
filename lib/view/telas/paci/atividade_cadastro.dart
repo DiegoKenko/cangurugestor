@@ -9,7 +9,6 @@ import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/viewModel/bloc_atividade.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
-import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:cangurugestor/viewModel/bloc_lista_tarefas_paciente.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

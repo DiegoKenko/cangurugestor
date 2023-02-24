@@ -1,8 +1,5 @@
 import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
-import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/paciente.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class CuidadorEvent {

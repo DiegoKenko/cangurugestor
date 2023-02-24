@@ -1,6 +1,5 @@
 import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
 import 'package:cangurugestor/model/consulta.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class ConsultaState {

@@ -46,11 +46,15 @@ class MedicamentoBloc extends Bloc<MedicamentoEvent, MedicamentoState> {
       (event, emit) async {
         if (medicamento.id.isNotEmpty) {
           FirestoreMedicamento().atualizarMedicamentoPaciente(
-              medicamento, medicamento.paciente.id);
+            medicamento,
+            medicamento.paciente.id,
+          );
         } else {
-          Medicamento medicamento = await FirestoreMedicamento()
-              .novoMedicamentoPaciente(
-                  state.medicamento, state.medicamento.paciente.id);
+          Medicamento medicamento =
+              await FirestoreMedicamento().novoMedicamentoPaciente(
+            state.medicamento,
+            state.medicamento.paciente.id,
+          );
           medicamento = medicamento;
         }
         medicamento = medicamento;

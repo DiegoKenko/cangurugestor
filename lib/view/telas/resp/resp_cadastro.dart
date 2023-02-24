@@ -8,14 +8,12 @@ import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/telas/paci/paci_cadastro.dart';
-import 'package:cangurugestor/viewModel/bloc_gestor.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:provider/provider.dart';
 
 class CadastroResponsavel extends StatefulWidget {
   const CadastroResponsavel({
@@ -134,65 +132,66 @@ class PacientesResponsavel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ResponsavelBloc, ResponsavelState>(
-        builder: (context, state) {
-      context.read<ResponsavelBloc>().add(ResponsavelLoadPacientesEvent());
-      return Column(
-        children: [
-          state.responsavel.pacientes.isEmpty
-              ? const Expanded(
-                  child: Center(
-                    child: Text('nenhum paciente cadastrado'),
-                  ),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.responsavel.pacientes.length,
-                    itemBuilder: (context, index) {
-                      Paciente paciente = state.responsavel.pacientes[index];
-                      return ItemContainer(
-                        leading: const CircleAvatar(
-                          backgroundImage: AssetImage('assets/avatar.png'),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            AnimatedPageTransition(
-                              page: BlocProvider<PacienteBloc>(
-                                create: (context) => PacienteBloc(paciente),
-                                child: const CadastroPaciente(),
-                              ),
-                            ),
-                          );
-                        },
-                        title: paciente.nome,
-                      );
-                    },
-                  ),
-                ),
-          SizedBox(
-            height: 50,
-            child: Center(
-              child: BotaoCadastro(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    AnimatedPageTransition(
-                      page: BlocProvider<PacienteBloc>(
-                        create: (context) => PacienteBloc(
-                          Paciente.initOnAdd(
-                            state.responsavel.id,
-                          ),
-                        ),
-                        child: const CadastroPaciente(),
-                      ),
+      builder: (context, state) {
+        context.read<ResponsavelBloc>().add(ResponsavelLoadPacientesEvent());
+        return Column(
+          children: [
+            state.responsavel.pacientes.isEmpty
+                ? const Expanded(
+                    child: Center(
+                      child: Text('nenhum paciente cadastrado'),
                     ),
-                  );
-                },
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: state.responsavel.pacientes.length,
+                      itemBuilder: (context, index) {
+                        Paciente paciente = state.responsavel.pacientes[index];
+                        return ItemContainer(
+                          leading: const CircleAvatar(
+                            backgroundImage: AssetImage('assets/avatar.png'),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              AnimatedPageTransition(
+                                page: BlocProvider<PacienteBloc>(
+                                  create: (context) => PacienteBloc(paciente),
+                                  child: const CadastroPaciente(),
+                                ),
+                              ),
+                            );
+                          },
+                          title: paciente.nome,
+                        );
+                      },
+                    ),
+                  ),
+            SizedBox(
+              height: 50,
+              child: Center(
+                child: BotaoCadastro(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      AnimatedPageTransition(
+                        page: BlocProvider<PacienteBloc>(
+                          create: (context) => PacienteBloc(
+                            Paciente.initOnAdd(
+                              state.responsavel.id,
+                            ),
+                          ),
+                          child: const CadastroPaciente(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 }
 

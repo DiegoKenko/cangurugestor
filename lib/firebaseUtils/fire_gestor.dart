@@ -1,8 +1,5 @@
-import 'dart:math';
 
-import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
-import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/pessoa.dart';

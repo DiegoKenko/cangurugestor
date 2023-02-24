@@ -1,6 +1,5 @@
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
@@ -10,7 +9,6 @@ import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class PacienteDashboard extends StatefulWidget {
   const PacienteDashboard({Key? key}) : super(key: key);

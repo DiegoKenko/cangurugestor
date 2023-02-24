@@ -9,7 +9,6 @@ import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class PainelCuidador extends StatefulWidget {
   const PainelCuidador({Key? key}) : super(key: key);
@@ -37,8 +36,10 @@ class _PainelCuidadorState extends State<PainelCuidador>
           DrawerListTile(
             title: Column(
               children: [
-                Text(cuidadorBloc.state.cuidador.nome,
-                    style: kTitleAppBarStyle),
+                Text(
+                  cuidadorBloc.state.cuidador.nome,
+                  style: kTitleAppBarStyle,
+                ),
                 Text('cuidador', style: kSubtitleAppBarStyle),
               ],
             ),

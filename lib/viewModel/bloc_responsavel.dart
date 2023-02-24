@@ -1,9 +1,5 @@
-import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/responsavel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class ResponsavelEvent {

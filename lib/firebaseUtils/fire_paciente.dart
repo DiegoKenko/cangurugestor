@@ -4,7 +4,6 @@ import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/model/paciente.dart';
-import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';

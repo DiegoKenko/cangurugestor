@@ -2,7 +2,6 @@ import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/medicamento.dart';
-import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
@@ -20,11 +19,9 @@ import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/viewModel/bloc_gestor.dart';
 import 'package:cangurugestor/viewModel/bloc_medicamento.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
-import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:provider/provider.dart';
 
 class CadastroPaciente extends StatefulWidget {
   const CadastroPaciente({
@@ -237,7 +234,8 @@ class BotaoAddCuidador extends StatelessWidget {
                                       ? ElevatedButton(
                                           onPressed: () {
                                             pacienteBloc.add(
-                                                PacienteRemoveCuidadorEvent(e));
+                                              PacienteRemoveCuidadorEvent(e),
+                                            );
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text(
@@ -247,7 +245,8 @@ class BotaoAddCuidador extends StatelessWidget {
                                       : ElevatedButton(
                                           onPressed: () {
                                             pacienteBloc.add(
-                                                PacienteAddCuidadorEvent(e));
+                                              PacienteAddCuidadorEvent(e),
+                                            );
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text('Adicionar'),
@@ -391,7 +390,8 @@ class AtividadesPaciente extends StatelessWidget {
                             AnimatedPageTransition(
                               page: BlocProvider<AtividadeBloc>(
                                 create: (context) => AtividadeBloc(
-                                    Atividade.initOnAdd(state.paciente)),
+                                  Atividade.initOnAdd(state.paciente),
+                                ),
                                 child: const CadastroAtividade(),
                               ),
                             ),
@@ -424,8 +424,9 @@ class ConsultasPaciente extends StatelessWidget {
               child: state.paciente.consultas.isEmpty
                   ? const Center(
                       child: Text(
-                      'Nenhuma consulta cadastrada',
-                    ))
+                        'Nenhuma consulta cadastrada',
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: state.paciente.consultas.length,
                       itemBuilder: (context, index) {
@@ -460,7 +461,8 @@ class ConsultasPaciente extends StatelessWidget {
                             AnimatedPageTransition(
                               page: BlocProvider<ConsultaBloc>(
                                 create: (context) => ConsultaBloc(
-                                    Consulta.initOnAdd(state.paciente)),
+                                  Consulta.initOnAdd(state.paciente),
+                                ),
                                 child: const CadastroConsulta(),
                               ),
                             ),

@@ -213,7 +213,8 @@ class ClientesGestor extends StatelessWidget {
                   page: BlocProvider(
                     create: (context) => ResponsavelBloc(
                       Responsavel.initOnAdd(
-                          context.read<GestorBloc>().state.gestor.id),
+                        context.read<GestorBloc>().state.gestor.id,
+                      ),
                     ),
                     child: const CadastroResponsavel(),
                   ),

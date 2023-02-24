@@ -1,5 +1,4 @@
 import 'package:cangurugestor/firebaseUtils/fire_activity.dart';
-import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/model/activity.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
@@ -16,8 +15,8 @@ class CubitRelatorioGestorAcessos extends Cubit<RelatorioGestorAcessos> {
     loadClientesGestor();
   }
 
-  List<Responsavel> _clientes = [];
-  List<Cuidador> _cuidadores = [];
+  final List<Responsavel> _clientes = [];
+  final List<Cuidador> _cuidadores = [];
   final List<Paciente> _pacientes = [];
   Gestor gestor = Gestor();
 

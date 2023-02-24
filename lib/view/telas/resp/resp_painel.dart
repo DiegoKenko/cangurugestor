@@ -6,12 +6,10 @@ import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/componentes/tooltip_help.dart';
 import 'package:cangurugestor/view/telas/paci/paci_dashboard.dart';
-import 'package:cangurugestor/viewModel/bloc_atividade.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class PainelResponsavel extends StatefulWidget {
   const PainelResponsavel({Key? key}) : super(key: key);

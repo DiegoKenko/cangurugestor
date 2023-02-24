@@ -7,8 +7,6 @@ import 'package:cangurugestor/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/view/telas/resp/resp_painel.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
-import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
-import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

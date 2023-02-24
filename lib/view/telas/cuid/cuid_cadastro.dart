@@ -1,16 +1,13 @@
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
-import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
-import 'package:cangurugestor/viewModel/bloc_gestor.dart';
 import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:provider/provider.dart';
 
 class CadastroCuidador extends StatefulWidget {
   const CadastroCuidador({
