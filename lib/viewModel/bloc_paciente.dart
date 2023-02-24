@@ -129,18 +129,21 @@ class PacienteBloc extends Bloc<PacienteEvent, PacienteState> {
 
     on<PacienteRemoveCuidadorEvent>(
       (event, emit) async {
-        state.paciente.cuidadores
-            .removeWhere((cuidador) => cuidador.id == event.cuidador.id);
-        await FirestorePaciente().update(state.paciente);
-        emit(PacienteReadyState(state.paciente));
+        if (state.paciente.idCuidadores.contains(event.cuidador.id)) {
+          state.paciente.idCuidadores.remove(event.cuidador.id);
+          await FirestorePaciente().update(state.paciente);
+          emit(PacienteReadyState(state.paciente));
+        }
       },
     );
 
     on<PacienteAddCuidadorEvent>(
       (event, emit) async {
-        state.paciente.cuidadores.add(event.cuidador);
-        await FirestorePaciente().update(state.paciente);
-        emit(PacienteReadyState(state.paciente));
+        if (!state.paciente.idCuidadores.contains(event.cuidador.id)) {
+          state.paciente.idCuidadores.add(event.cuidador.id);
+          await FirestorePaciente().update(state.paciente);
+          emit(PacienteReadyState(state.paciente));
+        }
       },
     );
   }

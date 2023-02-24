@@ -1,3 +1,4 @@
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/drawer.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
@@ -5,9 +6,11 @@ import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/componentes/tooltip_help.dart';
 import 'package:cangurugestor/view/telas/paci/paci_dashboard.dart';
+import 'package:cangurugestor/viewModel/bloc_atividade.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class PainelResponsavel extends StatefulWidget {
@@ -104,12 +107,17 @@ class PacientesCuidador extends StatelessWidget {
         return ListView.builder(
           itemCount: responsavelBloc.state.responsavel.pacientes.length,
           itemBuilder: ((context, index) {
+            Paciente paciente =
+                responsavelBloc.state.responsavel.pacientes[index];
             return ItemContainer(
-              title: responsavelBloc.state.responsavel.pacientes[index].nome,
+              title: paciente.nome,
               onTap: () {
                 Navigator.of(context).push(
                   AnimatedPageTransition(
-                    page: const PacienteDashboard(),
+                    page: BlocProvider<PacienteBloc>(
+                      create: (context) => PacienteBloc(paciente),
+                      child: const PacienteDashboard(),
+                    ),
                   ),
                 );
               },

@@ -177,8 +177,11 @@ class BotaoAddCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PacienteBloc pacienteBloc = context.read<PacienteBloc>();
+    final GestorBloc gestorBloc = context.read<GestorBloc>();
     return BotaoCadastro(
       onPressed: () {
+        gestorBloc.add(GestorLoadCuidadoresDisponiveisEvent());
         showModalBottomSheet(
           isScrollControlled: true,
           isDismissible: false,
@@ -218,32 +221,24 @@ class BotaoAddCuidador extends StatelessWidget {
                       ),
                     ),
                     BlocProvider.value(
-                      value: context.read<PacienteBloc>(),
+                      value: pacienteBloc,
                       child: BlocProvider.value(
-                        value: context.read<GestorBloc>(),
+                        value: gestorBloc,
                         child: Column(
-                          children: context
-                              .read<GestorBloc>()
-                              .state
-                              .gestor
-                              .cuidadoresDisponiveis
+                          children: gestorBloc
+                              .state.gestor.cuidadoresDisponiveis
                               .map(
                                 (Cuidador e) => ItemContainer(
                                   onTap: () {},
                                   title: e.nome,
-                                  trailing: context
-                                          .read<PacienteBloc>()
-                                          .state
-                                          .paciente
-                                          .idCuidadores
+                                  trailing: pacienteBloc
+                                          .state.paciente.idCuidadores
                                           .contains(e.id)
                                       ? ElevatedButton(
                                           onPressed: () {
-                                            context.read<PacienteBloc>().add(
-                                                  PacienteRemoveCuidadorEvent(
-                                                    e,
-                                                  ),
-                                                );
+                                            pacienteBloc.add(
+                                                PacienteRemoveCuidadorEvent(e));
+                                            Navigator.of(context).pop();
                                           },
                                           child: const Text(
                                             'Remover',
@@ -251,15 +246,11 @@ class BotaoAddCuidador extends StatelessWidget {
                                         )
                                       : ElevatedButton(
                                           onPressed: () {
-                                            context.read<PacienteBloc>().add(
-                                                  PacienteAddCuidadorEvent(
-                                                    e,
-                                                  ),
-                                                );
+                                            pacienteBloc.add(
+                                                PacienteAddCuidadorEvent(e));
+                                            Navigator.of(context).pop();
                                           },
-                                          child: const Text(
-                                            'Adicionar',
-                                          ),
+                                          child: const Text('Adicionar'),
                                         ),
                                 ),
                               )

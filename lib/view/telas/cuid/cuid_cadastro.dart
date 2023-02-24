@@ -61,6 +61,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
+                  context.read<CuidadorBloc>().add(CuidadorDeleteEvent());
                   Navigator.of(context).pop();
                 },
               ),

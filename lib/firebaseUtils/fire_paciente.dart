@@ -135,11 +135,14 @@ class FirestorePaciente {
     if (paciente.id.isEmpty || paciente.idCuidadores.isEmpty) {
       return cuidadores;
     } else {
-      for (var element in paciente.idCuidadores) {
-        DocumentSnapshot<Map<String, dynamic>> doc =
+      var doc = await firestore.collection('pacientes').doc(paciente.id).get();
+      Paciente p = Paciente.fromMap(doc.data()!);
+      for (var element in p.idCuidadores) {
+        var docCuidador =
             await firestore.collection('cuidadores').doc(element).get();
-        cuidadores.add(Cuidador.fromMap(doc.data()!));
-        cuidadores.last.id = doc.id;
+        Cuidador cuidador = Cuidador.fromMap(docCuidador.data()!);
+        cuidador.id = docCuidador.id;
+        cuidadores.add(cuidador);
       }
       return cuidadores;
     }

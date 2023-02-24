@@ -1,3 +1,4 @@
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/drawer.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
@@ -72,19 +73,22 @@ class PacientesCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CuidadorBloc cuidadorBloc = context.watch<CuidadorBloc>();
     return BlocBuilder<CuidadorBloc, CuidadorState>(
-      bloc: cuidadorBloc,
       builder: (context, state) {
+        context.read<CuidadorBloc>().add(CuidadorLoadPacientesEvent());
         return ListView.builder(
           itemCount: state.cuidador.pacientes.length,
           itemBuilder: ((context, index) {
+            Paciente paciente = state.cuidador.pacientes[index];
             return ItemContainer(
-              title: state.cuidador.pacientes[index].nome,
+              title: paciente.nome,
               onTap: () {
                 Navigator.of(context).push(
                   AnimatedPageTransition(
-                    page: const PacienteDashboard(),
+                    page: BlocProvider<PacienteBloc>(
+                      create: (context) => PacienteBloc(paciente),
+                      child: const PacienteDashboard(),
+                    ),
                   ),
                 );
               },

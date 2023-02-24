@@ -1,12 +1,15 @@
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
+import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
 import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class PacienteDashboard extends StatefulWidget {
@@ -96,9 +99,20 @@ class TarefasPeriodo extends StatefulWidget {
 class _TarefasPeriodoState extends State<TarefasPeriodo> {
   @override
   Widget build(BuildContext context) {
+    final CuidadorBloc cuidadorBloc = context.read<CuidadorBloc>();
+    final PacienteBloc pacienteBloc = context.read<PacienteBloc>();
     return FutureBuilder(
+      future: getTodasTarefasFiltro(
+        widget.data,
+        context.read<PacienteBloc>().state.paciente,
+      ),
       builder: (builder, snap) {
         var tarefas = snap.data ?? [];
+        if (tarefas.isEmpty) {
+          return const Center(
+            child: Text('Não há tarefas para o período'),
+          );
+        }
         return ListView.builder(
           itemCount: tarefas.length,
           itemBuilder: (context, index) {
@@ -111,20 +125,22 @@ class _TarefasPeriodoState extends State<TarefasPeriodo> {
                   elevation: 10,
                   context: context,
                   builder: (context) {
-                    return TarefaBottomSheet(
-                      tarefa: tarefas[index],
+                    return BlocProvider.value(
+                      value: pacienteBloc,
+                      child: BlocProvider.value(
+                        value: cuidadorBloc,
+                        child: TarefaBottomSheet(
+                          tarefa: tarefas[index],
+                        ),
+                      ),
                     );
                   },
-                );
+                ).then((value) => setState(() {}));
               },
             );
           },
         );
       },
-      future: getTodasTarefasFiltro(
-        widget.data,
-        context.read<PacienteBloc>().state.paciente,
-      ),
     );
   }
 

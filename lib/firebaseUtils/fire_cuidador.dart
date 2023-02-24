@@ -14,7 +14,7 @@ class FirestoreCuidador {
     return cuidador;
   }
 
-  Future<Cuidador> getCuidador(String id) async {
+  Future<Cuidador> get(String id) async {
     var doc = await firestore.collection('cuidadores').doc(id).get();
     if (doc.data() != null) {
       Cuidador cuidador = Cuidador.fromMap(doc.data()!);
@@ -43,19 +43,15 @@ class FirestoreCuidador {
     if (cuidador.id.isEmpty) {
       return pacientes;
     }
-    DocumentSnapshot<Map<String, dynamic>> doc =
-        await firestore.collection('cuidadores').doc(cuidador.id).get();
-    for (String element in doc.data()!['idPacientes']) {
-      if (element.isNotEmpty) {
-        DocumentSnapshot<Map<String, dynamic>> pacienteDoc =
-            await firestore.collection('pacientes').doc(element).get();
-        if (pacienteDoc.data() != null) {
-          Paciente paciente = Paciente.fromMap(pacienteDoc.data()!);
-          paciente.id = pacienteDoc.id;
-          pacientes.add(paciente);
-        }
-      }
-    }
-    return pacientes;
+    var snap = await firestore
+        .collection('pacientes')
+        .where('idCuidadores', arrayContains: cuidador.id)
+        .get();
+
+    return snap.docs.map((e) {
+      Paciente paciente = Paciente.fromMap(e.data());
+      paciente.id = e.id;
+      return paciente;
+    }).toList();
   }
 }

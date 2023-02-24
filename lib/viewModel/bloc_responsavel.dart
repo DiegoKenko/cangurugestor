@@ -23,6 +23,10 @@ class ResponsavelLoadPacientesEvent extends ResponsavelEvent {
   ResponsavelLoadPacientesEvent();
 }
 
+class ResponsavelDeleteEvent extends ResponsavelEvent {
+  ResponsavelDeleteEvent();
+}
+
 abstract class ResponsavelState {
   Responsavel responsavel;
   ResponsavelState(this.responsavel);
@@ -62,6 +66,13 @@ class ResponsavelBloc extends Bloc<ResponsavelEvent, ResponsavelState> {
     on<ResponsavelLoginEvent>(
       (event, emit) async {
         emit(ResponsavelReadyState(event.responsavel));
+      },
+    );
+
+    on<ResponsavelDeleteEvent>(
+      (event, emit) async {
+        await FirestoreResponsavel().delete(state.responsavel);
+        emit(ResponsavelInitialState(Responsavel()));
       },
     );
   }

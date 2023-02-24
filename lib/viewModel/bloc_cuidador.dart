@@ -18,14 +18,17 @@ class CuidadorAddEvent extends CuidadorEvent {
   CuidadorAddEvent(this.idGestor);
 }
 
-class CuidadorLoadEvent extends CuidadorEvent {
-  final Cuidador cuidador;
-  CuidadorLoadEvent(this.cuidador);
+class CuidadorLoadPacientesEvent extends CuidadorEvent {
+  CuidadorLoadPacientesEvent();
 }
 
 class CuidadorLoginEvent extends CuidadorEvent {
   final Cuidador cuidador;
   CuidadorLoginEvent(this.cuidador);
+}
+
+class CuidadorDeleteEvent extends CuidadorEvent {
+  CuidadorDeleteEvent();
 }
 
 abstract class CuidadorState {
@@ -43,8 +46,10 @@ class CuidadorReadyState extends CuidadorState {
 
 class CuidadorBloc extends Bloc<CuidadorEvent, CuidadorState> {
   CuidadorBloc(Cuidador cuidador) : super(CuidadorInitialState(cuidador)) {
-    on<CuidadorLoadEvent>(
-      (event, emit) {
+    on<CuidadorLoadPacientesEvent>(
+      (event, emit) async {
+        state.cuidador.pacientes =
+            await FirestoreCuidador().todosPacientesCuidador(state.cuidador);
         emit(CuidadorReadyState(state.cuidador));
       },
     );
@@ -70,6 +75,13 @@ class CuidadorBloc extends Bloc<CuidadorEvent, CuidadorState> {
           await FirestoreCuidador().update(state.cuidador);
         }
         emit(CuidadorReadyState(state.cuidador));
+      },
+    );
+
+    on<CuidadorDeleteEvent>(
+      (event, emit) async {
+        await FirestoreCuidador().delete(state.cuidador);
+        emit(CuidadorInitialState(Cuidador()));
       },
     );
   }

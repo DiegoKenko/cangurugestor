@@ -43,7 +43,7 @@ class Paciente extends Pessoa {
     sobrenome = map['sobrenome'];
     id = map['id'] ?? '';
     dataCadastro = map['dataCadastro'];
-    idCuidadores = List<String>.from(map['idCuidadores'] ?? []);
+    idCuidadores = List<String>.from(map['idCuidadores']);
     idResponsavel = map['idResponsavel'];
   }
 
