@@ -1,8 +1,11 @@
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/pessoa.dart';
 
 class Cuidador extends Pessoa {
-  List idPacientes = [];
+  List<Paciente> pacientes = [];
   DateTime? dataCadastro;
+  String idGestor = '';
+  List idPacientes = [];
 
   Cuidador({
     String cpf = '',
@@ -17,7 +20,6 @@ class Cuidador extends Pessoa {
     String estado = '',
     String cep = '',
     String telefone = '',
-    this.idPacientes = const [],
   }) : super(
           cpf: cpf,
           nome: nome,
@@ -32,6 +34,8 @@ class Cuidador extends Pessoa {
           numeroRua: numeroRua,
           rua: rua,
         );
+
+  Cuidador.initOnAdd(this.idGestor);
 
   Cuidador.fromPessoa(Pessoa pessoa) {
     id = pessoa.id;
@@ -52,7 +56,6 @@ class Cuidador extends Pessoa {
 
   Cuidador.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     id = map['id'] ?? '';
-    idPacientes = map['idPacientes'];
     dataCadastro = DateTime.parse(map['dataCadastro']);
     ativo = map['ativo'];
     cpf = map['cpf'];
@@ -68,6 +71,8 @@ class Cuidador extends Pessoa {
     cidade = map['cidade'];
     cep = map['cep'];
     estado = map['estado'];
+    idPacientes = map['idPacientes'];
+    idGestor = map['idGestor'];
   }
 
   @override
@@ -80,7 +85,6 @@ class Cuidador extends Pessoa {
       'email': email,
       'telefone': telefone,
       'ativo': ativo,
-      'idPacientes': idPacientes,
       'dataCadastro': DateTime.now().toString(),
       'rua': rua,
       'numeroRua': numeroRua,
@@ -89,6 +93,8 @@ class Cuidador extends Pessoa {
       'cidade': cidade,
       'cep': cep,
       'estado': estado,
+      'idPacientes': idPacientes,
+      'idGestor': idGestor,
     };
   }
 }

@@ -5,7 +5,7 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -122,7 +122,9 @@ class _TarefasPeriodoState extends State<TarefasPeriodo> {
         );
       },
       future: getTodasTarefasFiltro(
-          widget.data, context.read<PacienteProvider>().paciente,),
+        widget.data,
+        context.read<PacienteBloc>().state.paciente,
+      ),
     );
   }
 

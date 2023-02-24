@@ -7,9 +7,8 @@ import 'package:cangurugestor/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/view/telas/resp/resp_painel.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
+import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -41,18 +40,6 @@ class Login {
       return const PainelResponsavel();
     } else if (classe == EnumClasse.cuidador) {
       return const PainelCuidador();
-    } else {
-      return const TelaLogin();
-    }
-  }
-
-  get provider {
-    if (classe == EnumClasse.gestor) {
-      return GestorProvider();
-    } else if (classe == EnumClasse.responsavel) {
-      return ResponsavelProvider();
-    } else if (classe == EnumClasse.cuidador) {
-      return CuidadorProvider();
     } else {
       return const TelaLogin();
     }

@@ -1,4 +1,5 @@
 import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
@@ -7,10 +8,10 @@ import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
-import 'package:cangurugestor/viewModel/provider_consulta.dart';
+import 'package:cangurugestor/viewModel/bloc_consulta.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/bloc_lista_tarefas.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_lista_tarefas_paciente.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -33,7 +34,7 @@ class _CadastroConsultaState extends State<CadastroConsulta>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (context.read<AuthBloc>().state.login.editaConsulta) {
-        context.read<ConsultaProvider>().update();
+        context.read<ConsultaBloc>().add(ConsultaUpdateEvent());
       }
     });
     super.initState();
@@ -47,70 +48,68 @@ class _CadastroConsultaState extends State<CadastroConsulta>
 
   @override
   Widget build(BuildContext context) {
-    final ConsultaProvider consultaProvider = context.watch<ConsultaProvider>();
-    final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    consultaProvider.consulta.paciente = pacienteProvider.paciente;
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.read<AuthBloc>().state.login.editaConsulta) {
-              consultaProvider.update();
-            }
-            consultaProvider.clear();
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              consultaProvider.delete();
-              consultaProvider.clear();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-        centerTitle: true,
-        title: Column(
-          children: [
-            Text(
-              consultaProvider.consulta.descricao.toUpperCase(),
-              style: kTitleAppBarStyle,
+    return BlocBuilder<ConsultaBloc, ConsultaState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                if (context.read<AuthBloc>().state.login.editaConsulta) {
+                  context.read<ConsultaBloc>().add(ConsultaUpdateEvent());
+                }
+                Navigator.of(context).pop();
+              },
             ),
-            Text(
-              'consulta',
-              style: kSubtitleAppBarStyle,
-            ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30, bottom: 30),
-          child: TabCanguru(
-            controller: _tabController,
-            tabs: const [
-              Tab(
-                text: 'Dados',
-              ),
-              Tab(
-                text: 'Tarefas',
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  context.read<ConsultaBloc>().add(ConsultaDeleteEvent());
+                  Navigator.of(context).pop();
+                },
               ),
             ],
-            views: const [
-              Tab(
-                child: DadosConsulta(),
-              ),
-              Tab(
-                child: TarefasConsulta(),
-              ),
-            ],
+            centerTitle: true,
+            title: Column(
+              children: [
+                Text(
+                  state.consulta.descricao.toUpperCase(),
+                  style: kTitleAppBarStyle,
+                ),
+                Text(
+                  'consulta',
+                  style: kSubtitleAppBarStyle,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 30),
+              child: TabCanguru(
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    text: 'Dados',
+                  ),
+                  Tab(
+                    text: 'Tarefas',
+                  ),
+                ],
+                views: const [
+                  Tab(
+                    child: DadosConsulta(),
+                  ),
+                  Tab(
+                    child: TarefasConsulta(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -125,21 +124,23 @@ class TarefasConsulta extends StatefulWidget {
 }
 
 class _TarefasConsultaState extends State<TarefasConsulta> {
-  final ListaTarefasBloc tarefasBloc = ListaTarefasBloc();
+  final ListaTarefasPacienteBloc tarefasBloc = ListaTarefasPacienteBloc();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ListaTarefasBloc>(
+    return BlocProvider<ListaTarefasPacienteBloc>(
       create: (context) => tarefasBloc,
       child: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child: BlocBuilder<ListaTarefasBloc, ListaTarefaState>(
+          child:
+              BlocBuilder<ListaTarefasPacienteBloc, ListaTarefaPacienteState>(
             bloc: tarefasBloc
               ..add(
                 ListaTarefasLoadEvent(
-                  paciente: context.read<PacienteProvider>().paciente,
+                  paciente:
+                      context.read<ConsultaBloc>().state.consulta.paciente,
                   tipo: EnumTarefa.consulta,
-                  idTipo: context.read<ConsultaProvider>().consulta.id,
+                  idTipo: context.read<ConsultaBloc>().state.consulta.id,
                 ),
               ),
             builder: (context, tarefasState) {
@@ -217,50 +218,54 @@ class _DadosConsultaState extends State<DadosConsulta> {
   void initState() {
     _descricaoController.addListener(() {
       // Listener para atualizar a descrição da consulta
-      context.read<ConsultaProvider>().consulta.descricao =
+      context.read<ConsultaBloc>().state.consulta.descricao =
           _descricaoController.text;
     });
 
     _medicoController.addListener(() {
       // Listener para atualizar o médico da consulta
-      context.read<ConsultaProvider>().consulta.medico = _medicoController.text;
+      context.read<ConsultaBloc>().state.consulta.medico =
+          _medicoController.text;
     });
 
     _observacaoController.addListener(() {
       // Listener para atualizar a observação da consulta
-      context.read<ConsultaProvider>().consulta.observacao =
+      context.read<ConsultaBloc>().state.consulta.observacao =
           _observacaoController.text;
     });
 
     _ruaController.addListener(() {
       // Listener para atualizar a rua do responsável
-      context.read<ConsultaProvider>().consulta.rua = _ruaController.text;
+      context.read<ConsultaBloc>().state.consulta.rua = _ruaController.text;
     });
     _bairroController.addListener(() {
       // Listener para atualizar o bairro do responsável
-      context.read<ConsultaProvider>().consulta.bairro = _bairroController.text;
+      context.read<ConsultaBloc>().state.consulta.bairro =
+          _bairroController.text;
     });
     _numeroRuaController.addListener(() {
       // Listener para atualizar o número da rua do responsável
-      context.read<ConsultaProvider>().consulta.numeroRua =
+      context.read<ConsultaBloc>().state.consulta.numeroRua =
           _numeroRuaController.text;
     });
     _complementoRuaController.addListener(() {
       // Listener para atualizar o complemento da rua do responsável
-      context.read<ConsultaProvider>().consulta.complementoRua =
+      context.read<ConsultaBloc>().state.consulta.complementoRua =
           _complementoRuaController.text;
     });
     _cidadeController.addListener(() {
       // Listener para atualizar a cidade do responsável
-      context.read<ConsultaProvider>().consulta.cidade = _cidadeController.text;
+      context.read<ConsultaBloc>().state.consulta.cidade =
+          _cidadeController.text;
     });
     _estadoController.addListener(() {
       // Listener para atualizar o estado do responsável
-      context.read<ConsultaProvider>().consulta.estado = _estadoController.text;
+      context.read<ConsultaBloc>().state.consulta.estado =
+          _estadoController.text;
     });
     _cepController.addListener(() {
       // Listener para atualizar o CEP do responsável
-      context.read<ConsultaProvider>().consulta.cep = _cepController.text;
+      context.read<ConsultaBloc>().state.consulta.cep = _cepController.text;
       // Listener para atualizar os campos de endereço
       if (_cepController.text.length == 9) {
         CepAPI.getCep(_cepController.text).then((value) {
@@ -269,11 +274,13 @@ class _DadosConsultaState extends State<DadosConsulta> {
             _bairroController.text = value['bairro'];
             _cidadeController.text = value['localidade'];
             _estadoController.text = value['uf'];
-            context.read<ConsultaProvider>().consulta.rua = value['logradouro'];
-            context.read<ConsultaProvider>().consulta.bairro = value['bairro'];
-            context.read<ConsultaProvider>().consulta.cidade =
+            context.read<ConsultaBloc>().state.consulta.rua =
+                value['logradouro'];
+            context.read<ConsultaBloc>().state.consulta.bairro =
+                value['bairro'];
+            context.read<ConsultaBloc>().state.consulta.cidade =
                 value['localidade'];
-            context.read<ConsultaProvider>().consulta.estado = value['uf'];
+            context.read<ConsultaBloc>().state.consulta.estado = value['uf'];
 
             return;
           } else {
@@ -305,91 +312,93 @@ class _DadosConsultaState extends State<DadosConsulta> {
 
   @override
   Widget build(BuildContext context) {
-    final ConsultaProvider consultaProvider = context.watch<ConsultaProvider>();
-    _descricaoController.text = consultaProvider.consulta.descricao;
-    _medicoController.text = consultaProvider.consulta.medico;
-    _observacaoController.text = consultaProvider.consulta.observacao;
-    _ruaController.text = consultaProvider.consulta.rua;
-    _bairroController.text = consultaProvider.consulta.bairro;
-    _numeroRuaController.text = consultaProvider.consulta.numeroRua;
-    _complementoRuaController.text = consultaProvider.consulta.complementoRua;
-    _cidadeController.text = consultaProvider.consulta.cidade;
-    _estadoController.text = consultaProvider.consulta.estado;
-    _cepController.text = consultaProvider.consulta.cep;
-
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          FormCadastro(
-            obrigatorio: true,
-            textInputType: TextInputType.name,
-            enabled: true,
-            controller: _descricaoController,
-            labelText: 'Descrição',
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            textInputType: TextInputType.name,
-            enabled: true,
-            controller: _medicoController,
-            labelText: 'Médico',
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            textInputType: TextInputType.name,
-            enabled: true,
-            controller: _observacaoController,
-            labelText: 'Observação',
-          ),
-          FormCadastro(
-            enabled: true,
-            controller: _cepController,
-            labelText: 'CEP',
-            hintText: '000000-000',
-            inputFormatters: [
-              MaskTextInputFormatter(
-                mask: '#####-###',
-                filter: {'#': RegExp(r'[0-9]')},
-              )
+    return BlocBuilder<ConsultaBloc, ConsultaState>(
+      builder: (context, state) {
+        _descricaoController.text = state.consulta.descricao;
+        _medicoController.text = state.consulta.medico;
+        _observacaoController.text = state.consulta.observacao;
+        _ruaController.text = state.consulta.rua;
+        _bairroController.text = state.consulta.bairro;
+        _numeroRuaController.text = state.consulta.numeroRua;
+        _complementoRuaController.text = state.consulta.complementoRua;
+        _cidadeController.text = state.consulta.cidade;
+        _estadoController.text = state.consulta.estado;
+        _cepController.text = state.consulta.cep;
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              FormCadastro(
+                obrigatorio: true,
+                textInputType: TextInputType.name,
+                enabled: true,
+                controller: _descricaoController,
+                labelText: 'Descrição',
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                textInputType: TextInputType.name,
+                enabled: true,
+                controller: _medicoController,
+                labelText: 'Médico',
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                textInputType: TextInputType.name,
+                enabled: true,
+                controller: _observacaoController,
+                labelText: 'Observação',
+              ),
+              FormCadastro(
+                enabled: true,
+                controller: _cepController,
+                labelText: 'CEP',
+                hintText: '000000-000',
+                inputFormatters: [
+                  MaskTextInputFormatter(
+                    mask: '#####-###',
+                    filter: {'#': RegExp(r'[0-9]')},
+                  )
+                ],
+                textInputType: TextInputType.text,
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                enabled: true,
+                controller: _ruaController,
+                labelText: 'Endereço',
+                textInputType: TextInputType.text,
+              ),
+              FormCadastro(
+                enabled: true,
+                controller: _numeroRuaController,
+                labelText: 'Complemento',
+                textInputType: TextInputType.text,
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                enabled: true,
+                controller: _bairroController,
+                labelText: 'Bairro',
+                textInputType: TextInputType.text,
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                enabled: true,
+                controller: _cidadeController,
+                labelText: 'Cidade',
+                textInputType: TextInputType.text,
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                enabled: true,
+                controller: _estadoController,
+                labelText: 'Estado',
+                textInputType: TextInputType.text,
+              ),
             ],
-            textInputType: TextInputType.text,
           ),
-          FormCadastro(
-            obrigatorio: true,
-            enabled: true,
-            controller: _ruaController,
-            labelText: 'Endereço',
-            textInputType: TextInputType.text,
-          ),
-          FormCadastro(
-            enabled: true,
-            controller: _numeroRuaController,
-            labelText: 'Complemento',
-            textInputType: TextInputType.text,
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            enabled: true,
-            controller: _bairroController,
-            labelText: 'Bairro',
-            textInputType: TextInputType.text,
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            enabled: true,
-            controller: _cidadeController,
-            labelText: 'Cidade',
-            textInputType: TextInputType.text,
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            enabled: true,
-            controller: _estadoController,
-            labelText: 'Estado',
-            textInputType: TextInputType.text,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

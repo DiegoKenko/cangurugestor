@@ -1,4 +1,8 @@
+import 'dart:math';
+
+import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
+import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/pessoa.dart';
@@ -20,79 +24,39 @@ class FirestoreGestor {
   }
 
   Future<List<Responsavel>> todosClientesGestor(Gestor gestor) async {
-    List<Responsavel> resps = [];
-    if (gestor.id.isEmpty) {
-      return resps;
-    }
-    await firestore.collection('gestores').doc(gestor.id).get().then((doc) {
-      if (doc.data() != null) {
-        gestor = Gestor.fromMap(doc.data()!);
-        gestor.id = doc.id;
+    List<Responsavel> responsaveis = [];
+    await firestore
+        .collection('responsaveis')
+        .where('idGestor', isEqualTo: gestor.id)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        Responsavel responsavel = Responsavel.fromMap(element.data());
+        responsavel.id = element.id;
+        responsaveis.add(responsavel);
       }
     });
-
-    for (var element in gestor.idClientes) {
-      var doc = await firestore.collection('responsaveis').doc(element).get();
-      if (doc.data() != null) {
-        Responsavel responsavel = Responsavel.fromMap(doc.data()!);
-        responsavel.id = doc.id;
-        resps.add(responsavel);
-      }
-    }
-    return resps;
+    return responsaveis;
   }
 
   Future<List<Cuidador>> todosCuidadoresGestor(Gestor gestor) async {
-    List<Cuidador> cuidadores = [];
-    if (gestor.id.isEmpty) {
-      return cuidadores;
-    }
-    await firestore.collection('gestores').doc(gestor.id).get().then((doc) {
-      if (doc.data() != null) {
-        gestor = Gestor.fromMap(doc.data()!);
-        gestor.id = doc.id;
-      }
-    });
+    QuerySnapshot<Map<String, dynamic>> snap = await firestore
+        .collection('cuidadores')
+        .where('idGestor', isEqualTo: gestor.id)
+        .get();
 
-    for (var element in gestor.idCuidadores) {
-      if (element.isNotEmpty) {
-        var doc = await firestore.collection('cuidadores').doc(element).get();
-        if (doc.data() != null) {
-          Cuidador cuidador = Cuidador.fromMap(doc.data()!);
-          cuidador.id = doc.id;
-          cuidadores.add(cuidador);
-        }
-      }
+    if (snap.docs.isEmpty) {
+      return [];
     }
-    return cuidadores;
+
+    return snap.docs.map((e) {
+      Cuidador cuidador = Cuidador.fromMap(e.data());
+      cuidador.id = e.id;
+      return cuidador;
+    }).toList();
   }
 
-  Future<List<Cuidador>> todosCuidadoresPaciente(
-    Gestor gestor,
-    String idPaciente,
-  ) async {
-    List<Cuidador> cuidadores = [];
-    if (gestor.id.isEmpty) {
-      return cuidadores;
-    }
-    for (var i = 0; i < gestor.idCuidadores.length; i++) {
-      if (gestor.idCuidadores[i].isEmpty) {
-        continue;
-      }
-      DocumentSnapshot<Map<String, dynamic>> doc = await firestore
-          .collection('cuidadores')
-          .doc(gestor.idCuidadores[i])
-          .get();
-      Cuidador cuidador = Cuidador.fromMap(doc.data()!);
-      if (cuidador.idPacientes.contains(idPaciente)) {
-        cuidador.id = doc.id;
-        cuidadores.add(cuidador);
-      }
-    }
-    return cuidadores;
-  }
-
-  Future<Gestor> read(String id) async {
+  Future<Gestor> get(String id) async {
     var doc = await firestore.collection('gestores').doc(id).get();
     if (doc.data() != null) {
       Gestor gestor = Gestor.fromMap(doc.data()!);

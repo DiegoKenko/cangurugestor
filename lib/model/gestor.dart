@@ -1,8 +1,11 @@
+import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/pessoa.dart';
+import 'package:cangurugestor/model/responsavel.dart';
 
 class Gestor extends Pessoa {
-  List<String> idClientes = [];
-  List<String> idCuidadores = [];
+  List<Cuidador> cuidadores = [];
+  List<Cuidador> cuidadoresDisponiveis = [];
+  List<Responsavel> clientes = [];
   Gestor();
 
   Gestor.fromPessoa(Pessoa pessoa) {
@@ -26,8 +29,16 @@ class Gestor extends Pessoa {
     nome = map['nome'];
     sobrenome = map['sobrenome'];
     sexo = map['sexo'];
-    idClientes = List<String>.from(map['idClientes']);
-    idCuidadores = List<String>.from(map['idCuidadores']);
+    email = map['email'];
+    /*   telefone = map['telefone'];
+    nascimento = map['nascimento'];
+    rua = map['rua'];
+    numeroRua = map['numeroRua'];
+    complementoRua = map['complementoRua'];
+    bairro = map['bairro'];
+    cidade = map['cidade'];
+    cep = map['cep'];
+    estado = map['estado']; */
   }
 
   @override
@@ -37,8 +48,16 @@ class Gestor extends Pessoa {
       'nome': nome,
       'sobrenome': sobrenome,
       'sexo': sexo,
-      'idClientes': idClientes,
-      'idCuidadores': idCuidadores,
+      'email': email,
+      /* 'telefone': telefone,
+      'nascimento': nascimento,
+      'rua': rua,
+      'numeroRua': numeroRua,
+      'complementoRua': complementoRua,
+      'bairro': bairro,
+      'cidade': cidade,
+      'cep': cep,
+      'estado': estado, */
     };
   }
 }

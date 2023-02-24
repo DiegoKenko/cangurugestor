@@ -1,8 +1,8 @@
 import 'package:cangurugestor/model/activity.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
-import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_relatorio.dart';
+import 'package:cangurugestor/viewModel/bloc_gestor.dart';
+import 'package:cangurugestor/viewModel/cubit_relatorio_gestor_acessos.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,53 +16,47 @@ class RelatorioTela extends StatefulWidget {
 class _RelatorioTelaState extends State<RelatorioTela> {
   @override
   Widget build(BuildContext context) {
-    final GestorProvider gestorProvider = context.watch<GestorProvider>();
+    final cubitRelatorio = CubitRelatorioGestorAcessos(
+      gestor: context.read<GestorBloc>().state.gestor,
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Relatório'),
       ),
-      body: ChangeNotifierProvider(
-        create: (context) =>
-            RelatorioProviderGestor(gestor: gestorProvider.gestor),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            children: [
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    'Cuidadores',
-                    style: kTituloStyleVerde,
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          children: [
+            Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  'Cuidadores',
+                  style: kTituloStyleVerde,
                 ),
               ),
-              Expanded(
-                child: Consumer<RelatorioProviderGestor>(
-                  builder: (context, provider, _) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: provider.cuidadores.length,
-                      itemBuilder: (context, index) {
-                        return ChangeNotifierProvider(
-                          create: (context) => RelatorioProviderCuidador(
-                            cuidador: provider.cuidadores[index],
-                          ),
-                          child: ExpansionCuidador(
-                            cuidador: provider.cuidadores[index],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: cubitRelatorio.cuidadores.length,
+                itemBuilder: (context, index) {
+                  return ChangeNotifierProvider(
+                    create: (context) => RelatorioProviderCuidador(
+                      cuidador: cubitRelatorio.cuidadores[index],
+                    ),
+                    child: ExpansionCuidador(
+                      cuidador: cubitRelatorio.cuidadores[index],
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
         ),
       ),
     );

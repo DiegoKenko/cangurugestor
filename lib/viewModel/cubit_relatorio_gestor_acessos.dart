@@ -4,14 +4,18 @@ import 'package:cangurugestor/model/activity.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/model/relatorio.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RelatorioProviderGestor extends ChangeNotifier {
-  RelatorioProviderGestor({required this.gestor}) {
+class CubitRelatorioGestorAcessos extends Cubit<RelatorioGestorAcessos> {
+  CubitRelatorioGestorAcessos({required this.gestor})
+      : super(RelatorioGestorAcessos(gestor)) {
     loadCuidadoresGestor();
     loadClientesGestor();
   }
+
   List<Responsavel> _clientes = [];
   List<Cuidador> _cuidadores = [];
   final List<Paciente> _pacientes = [];
@@ -22,11 +26,11 @@ class RelatorioProviderGestor extends ChangeNotifier {
   List<Paciente> get pacientes => _pacientes;
 
   Future<void> loadCuidadoresGestor() async {
-    _cuidadores = await FirestoreGestor().todosCuidadoresGestor(gestor);
+    // _cuidadores = await FirestoreGestor().todosCuidadoresGestor(gestor);
   }
 
   Future<void> loadClientesGestor() async {
-    _clientes = await FirestoreGestor().todosClientesGestor(gestor);
+    // _clientes = await FirestoreGestor().todosClientesGestor(gestor);
   }
 }
 

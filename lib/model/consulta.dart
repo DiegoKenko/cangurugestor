@@ -33,6 +33,8 @@ class Consulta {
     this.medico = '',
   });
 
+  Consulta.initOnAdd(this.paciente);
+
   Consulta.fromMap(Map<String, dynamic> json) {
     ativo = json['ativo'];
     observacao = json['observacao'];

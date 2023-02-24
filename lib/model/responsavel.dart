@@ -7,8 +7,8 @@ class Responsavel extends Pessoa {
   List<Cuidador> cuidadores = [];
   List<Paciente> pacientes = [];
   List<String> idCuidadores = [];
-  List<String> idPacientes = [];
   String idContrato = '';
+  String idGestor = '';
   Gestor gestor = Gestor();
 
   Responsavel({
@@ -39,6 +39,8 @@ class Responsavel extends Pessoa {
           nascimento: nascimento,
           telefone: telefone,
         );
+
+  Responsavel.initOnAdd(this.idGestor);
 
   Responsavel.fromPessoa(Pessoa pessoa) {
     id = pessoa.id;
@@ -71,7 +73,7 @@ class Responsavel extends Pessoa {
     numeroRua = map['numeroRua'] ?? '';
     sobrenome = map['sobrenome'];
     telefone = map['telefone'];
-    idPacientes = map['idPacientes'].cast<String>();
+    idGestor = map['idGestor'];
   }
 
   @override
@@ -91,11 +93,7 @@ class Responsavel extends Pessoa {
       'nome': nome,
       'sobrenome': sobrenome,
       'telefone': telefone,
-      'idPacientes': idPacientes,
+      'idGestor': idGestor,
     };
-  }
-
-  setId(String idRes) {
-    id = idRes;
   }
 }

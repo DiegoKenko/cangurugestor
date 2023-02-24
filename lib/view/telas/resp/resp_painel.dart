@@ -3,9 +3,10 @@ import 'package:cangurugestor/view/componentes/drawer.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
+import 'package:cangurugestor/view/componentes/tooltip_help.dart';
 import 'package:cangurugestor/view/telas/paci/paci_dashboard.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,8 +29,7 @@ class _PainelResponsavelState extends State<PainelResponsavel>
 
   @override
   Widget build(BuildContext context) {
-    final ResponsavelProvider responsavelProvider =
-        context.watch<ResponsavelProvider>();
+    final ResponsavelBloc responsavelBloc = context.watch<ResponsavelBloc>();
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
@@ -37,7 +37,7 @@ class _PainelResponsavelState extends State<PainelResponsavel>
             title: Column(
               children: [
                 Text(
-                  responsavelProvider.responsavel.nome,
+                  responsavelBloc.state.responsavel.nome,
                   style: kTitleAppBarStyle,
                 ),
                 Text('responsavel', style: kSubtitleAppBarStyle),
@@ -59,12 +59,19 @@ class _PainelResponsavelState extends State<PainelResponsavel>
               text: 'Contratos',
             ),
           ],
-          views: [
-            const Tab(
+          views: const [
+            Tab(
               child: PacientesCuidador(),
             ),
             Tab(
-              child: Container(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: TooltipHelp(
+                  title: 'Nenhum contrato encontrado.',
+                  tip:
+                      '\n A agência de cuidados contratada ainda não apresentou contratos.',
+                ),
+              ),
             ),
           ],
         ),
@@ -80,20 +87,26 @@ class PacientesCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ResponsavelProvider responsavelProvider =
-        context.watch<ResponsavelProvider>();
+    final ResponsavelBloc responsavelBloc = context.watch<ResponsavelBloc>();
     return Builder(
       builder: (context) {
-        responsavelProvider.loadPacientes();
+        responsavelBloc.add(ResponsavelLoadPacientesEvent());
+        if (responsavelBloc.state.responsavel.pacientes.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: TooltipHelp(
+              title: 'Nenhum paciente encontrado.',
+              tip:
+                  "\n Seu perfil 'responsável' precisa estar vinculado a pelo menos paciente.\n\n Solicite à agência de cuidados contratada que faça o vínculo através do seu e-mail.",
+            ),
+          );
+        }
         return ListView.builder(
-          itemCount: responsavelProvider.pacientes.length,
+          itemCount: responsavelBloc.state.responsavel.pacientes.length,
           itemBuilder: ((context, index) {
             return ItemContainer(
-              title: responsavelProvider.pacientes[index].nome,
+              title: responsavelBloc.state.responsavel.pacientes[index].nome,
               onTap: () {
-                context.read<PacienteProvider>().clear();
-                context.read<PacienteProvider>().paciente =
-                    responsavelProvider.pacientes[index];
                 Navigator.of(context).push(
                   AnimatedPageTransition(
                     page: const PacienteDashboard(),

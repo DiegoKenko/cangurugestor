@@ -10,14 +10,14 @@ import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-abstract class ListaTarefaState {
+abstract class ListaTarefaPacienteState {
   Paciente paciente = Paciente();
   EnumTarefa tipo = EnumTarefa.nenhuma;
   List<Tarefa> tarefas = [];
   String idTipo = '';
   bool loaded = false;
 
-  ListaTarefaState({
+  ListaTarefaPacienteState({
     required this.paciente,
     required this.tipo,
     required this.idTipo,
@@ -26,7 +26,7 @@ abstract class ListaTarefaState {
   });
 }
 
-class ListaTarefasInitialState extends ListaTarefaState {
+class ListaTarefasInitialState extends ListaTarefaPacienteState {
   ListaTarefasInitialState()
       : super(
           loaded: false,
@@ -37,7 +37,7 @@ class ListaTarefasInitialState extends ListaTarefaState {
         );
 }
 
-class ListaTarefasReadyState extends ListaTarefaState {
+class ListaTarefasReadyState extends ListaTarefaPacienteState {
   ListaTarefasReadyState(
     Paciente paciente,
     EnumTarefa tipo,
@@ -79,8 +79,9 @@ class ListaTarefasRemoveEvent extends ListaTarefaEvent {
   ListaTarefasRemoveEvent(this.tarefa);
 }
 
-class ListaTarefasBloc extends Bloc<ListaTarefaEvent, ListaTarefaState> {
-  ListaTarefasBloc() : super(ListaTarefasInitialState()) {
+class ListaTarefasPacienteBloc
+    extends Bloc<ListaTarefaEvent, ListaTarefaPacienteState> {
+  ListaTarefasPacienteBloc() : super(ListaTarefasInitialState()) {
     on<ListaTarefasLoadEvent>((event, emit) async {
       switch (event.filtro) {
         case EnumFiltroDataTarefa.ontem:

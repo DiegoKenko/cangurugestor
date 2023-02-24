@@ -7,10 +7,10 @@ import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
-import 'package:cangurugestor/viewModel/provider_atividade.dart';
+import 'package:cangurugestor/viewModel/bloc_atividade.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/bloc_lista_tarefas.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_lista_tarefas_paciente.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +32,7 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (context.read<AuthBloc>().state.login.editaAtividade) {
-        context.read<AtividadeProvider>().update();
+        context.read<AtividadeBloc>().add(AtividadeUpdateEvent());
       }
     });
     super.initState();
@@ -46,71 +46,69 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
 
   @override
   Widget build(BuildContext context) {
-    final AtividadeProvider atividadeProvider =
-        context.watch<AtividadeProvider>();
-    final PacienteProvider pacienteProvider = context.watch<PacienteProvider>();
-    atividadeProvider.atividade.paciente = pacienteProvider.paciente;
+    return BlocBuilder<AtividadeBloc, AtividadeState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                if (context.read<AuthBloc>().state.login.editaAtividade) {
+                  context.read<AtividadeBloc>().add(AtividadeUpdateEvent());
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  context.read<AtividadeBloc>().add(AtividadeDeleteEvent());
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.read<AuthBloc>().state.login.editaAtividade) {
-              atividadeProvider.update();
-            }
-            atividadeProvider.clear();
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              atividadeProvider.delete();
-              atividadeProvider.clear();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-        centerTitle: true,
-        title: Column(
-          children: [
-            Text(
-              atividadeProvider.atividade.descricao.toUpperCase(),
-              style: kTitleAppBarStyle,
-            ),
-            Text(
-              'atividade',
-              style: kSubtitleAppBarStyle,
-            ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30, bottom: 30),
-          child: TabCanguru(
-            controller: _tabController,
-            tabs: const [
-              Tab(
-                text: 'Dados',
-              ),
-              Tab(
-                text: 'Tarefas',
+                  Navigator.of(context).pop();
+                },
               ),
             ],
-            views: const [
-              Tab(
-                child: DadosAtividade(),
-              ),
-              Tab(
-                child: TarefasAtividade(),
-              ),
-            ],
+            centerTitle: true,
+            title: Column(
+              children: [
+                Text(
+                  state.atividade.descricao.toUpperCase(),
+                  style: kTitleAppBarStyle,
+                ),
+                Text(
+                  'atividade',
+                  style: kSubtitleAppBarStyle,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 30),
+              child: TabCanguru(
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    text: 'Dados',
+                  ),
+                  Tab(
+                    text: 'Tarefas',
+                  ),
+                ],
+                views: const [
+                  Tab(
+                    child: DadosAtividade(),
+                  ),
+                  Tab(
+                    child: TarefasAtividade(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -125,68 +123,66 @@ class TarefasAtividade extends StatefulWidget {
 }
 
 class _TarefasAtividadeState extends State<TarefasAtividade> {
-  final ListaTarefasBloc tarefasBloc = ListaTarefasBloc();
+  final ListaTarefasPacienteBloc tarefasBloc = ListaTarefasPacienteBloc();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ListaTarefasBloc>(
-      create: (context) => tarefasBloc,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child: BlocBuilder<ListaTarefasBloc, ListaTarefaState>(
-            bloc: tarefasBloc
-              ..add(
-                ListaTarefasLoadEvent(
-                  paciente: context.read<PacienteProvider>().paciente,
-                  tipo: EnumTarefa.atividade,
-                  idTipo: context.read<AtividadeProvider>().atividade.id,
-                ),
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: BlocBuilder<ListaTarefasPacienteBloc, ListaTarefaPacienteState>(
+          bloc: tarefasBloc
+            ..add(
+              ListaTarefasLoadEvent(
+                paciente:
+                    context.read<AtividadeBloc>().state.atividade.paciente,
+                tipo: EnumTarefa.atividade,
+                idTipo: context.read<AtividadeBloc>().state.atividade.id,
               ),
-            builder: (context, tarefasState) {
-              var widgetTarefaSalvas = tarefasState.tarefas
-                  .map(
-                    (Tarefa tarefa) => ItemContainerTarefa(
-                      tarefa: tarefa,
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => PopUpTarefa(
-                            tarefa: tarefa,
+            ),
+          builder: (context, tarefasState) {
+            var widgetTarefaSalvas = tarefasState.tarefas
+                .map(
+                  (Tarefa tarefa) => ItemContainerTarefa(
+                    tarefa: tarefa,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => PopUpTarefa(
+                          tarefa: tarefa,
+                        ),
+                      ).then((value) {
+                        setState(() {});
+                      });
+                    },
+                  ),
+                )
+                .toList();
+            if (context.read<AuthBloc>().state.login.editaAtividade) {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BotaoCadastro(
+                      onPressed: () {
+                        tarefasBloc.add(
+                          ListaTarefasAddEvent(
+                            EnumTarefa.atividade,
                           ),
-                        ).then((value) {
-                          setState(() {});
-                        });
+                        );
                       },
                     ),
-                  )
-                  .toList();
-              if (context.read<AuthBloc>().state.login.editaAtividade) {
-                return Column(
-                  children: [
-                    ...widgetTarefaSalvas,
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: BotaoCadastro(
-                        onPressed: () {
-                          tarefasBloc.add(
-                            ListaTarefasAddEvent(
-                              EnumTarefa.atividade,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    ...widgetTarefaSalvas,
-                  ],
-                );
-              }
-            },
-          ),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  ...widgetTarefaSalvas,
+                ],
+              );
+            }
+          },
         ),
       ),
     );
@@ -216,26 +212,27 @@ class _DadosAtividadeState extends State<DadosAtividade> {
   void initState() {
     _descricaoController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.descricao =
+      context.read<AtividadeBloc>().state.atividade.descricao =
           _descricaoController.text;
     });
     _localController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.local = _localController.text;
+      context.read<AtividadeBloc>().state.atividade.local =
+          _localController.text;
     });
     _observacaoController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.observacao =
+      context.read<AtividadeBloc>().state.atividade.observacao =
           _observacaoController.text;
     });
     _duracaoController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.duracaoQuantidade =
+      context.read<AtividadeBloc>().state.atividade.duracaoQuantidade =
           double.parse(_duracaoController.text);
     });
     _duracaoUMController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.duracaoMedida =
+      context.read<AtividadeBloc>().state.atividade.duracaoMedida =
           EnumIntervalo.values.firstWhere(
         (EnumIntervalo element) => element.name == _duracaoUMController.text,
         orElse: () => EnumIntervalo.minutos,
@@ -243,7 +240,7 @@ class _DadosAtividadeState extends State<DadosAtividade> {
     });
     _frequenciaQtdeController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.frequenciaQuantidade =
+      context.read<AtividadeBloc>().state.atividade.frequenciaQuantidade =
           double.parse(
         _frequenciaQtdeController.text.isEmpty
             ? '0'
@@ -252,7 +249,7 @@ class _DadosAtividadeState extends State<DadosAtividade> {
     });
     _frequenciaUMController.addListener(() {
       // Listener para atualizar a descrição da atividade
-      context.read<AtividadeProvider>().atividade.frequenciaMedida =
+      context.read<AtividadeBloc>().state.atividade.frequenciaMedida =
           EnumIntervalo.values.firstWhere(
         (EnumIntervalo element) => element.name == _frequenciaUMController.text,
         orElse: () => EnumIntervalo.minutos,
@@ -277,90 +274,90 @@ class _DadosAtividadeState extends State<DadosAtividade> {
 
   @override
   Widget build(BuildContext context) {
-    final AtividadeProvider atividadeProvider =
-        context.watch<AtividadeProvider>();
-    _descricaoController.text = atividadeProvider.atividade.descricao;
-    _localController.text = atividadeProvider.atividade.local;
-    _observacaoController.text = atividadeProvider.atividade.observacao;
-    _duracaoController.text =
-        atividadeProvider.atividade.duracaoQuantidade.toString();
-    _duracaoUMController.text = atividadeProvider.atividade.duracaoMedida.name;
-    _frequenciaQtdeController.text =
-        atividadeProvider.atividade.frequenciaQuantidade.toString();
-    _frequenciaUMController.text =
-        atividadeProvider.atividade.frequenciaMedida.name;
-
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          FormCadastro(
-            obrigatorio: true,
-            textInputType: TextInputType.name,
-            enabled: true,
-            controller: _descricaoController,
-            labelText: 'Nome',
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            textInputType: TextInputType.name,
-            enabled: true,
-            controller: _localController,
-            labelText: 'Local',
-          ),
-          FormCadastro(
-            obrigatorio: true,
-            textInputType: TextInputType.name,
-            enabled: true,
-            controller: _observacaoController,
-            labelText: 'Observação',
-          ),
-          Row(
+      child: BlocBuilder<AtividadeBloc, AtividadeState>(
+        builder: (context, state) {
+          _descricaoController.text = state.atividade.descricao;
+          _localController.text = state.atividade.local;
+          _observacaoController.text = state.atividade.observacao;
+          _duracaoController.text =
+              state.atividade.duracaoQuantidade.toString();
+          _duracaoUMController.text = state.atividade.duracaoMedida.name;
+          _frequenciaQtdeController.text =
+              state.atividade.frequenciaQuantidade.toString();
+          _frequenciaUMController.text = state.atividade.frequenciaMedida.name;
+          return Column(
             children: [
-              Expanded(
-                child: FormCadastro(
-                  obrigatorio: true,
-                  textInputType: TextInputType.number,
-                  enabled: true,
-                  controller: _duracaoController,
-                  labelText: 'Duracao:',
-                ),
+              FormCadastro(
+                obrigatorio: true,
+                textInputType: TextInputType.name,
+                enabled: true,
+                controller: _descricaoController,
+                labelText: 'Nome',
               ),
-              Expanded(
-                child: FormDropDown(
-                  lista: EnumIntervalo.values
-                      .map((e) => e.name)
-                      .toList(growable: false),
-                  controller: _duracaoUMController,
-                  value: atividadeProvider.atividade.duracaoMedida.name,
-                  hintText: 'Intervalo',
-                ),
+              FormCadastro(
+                obrigatorio: true,
+                textInputType: TextInputType.name,
+                enabled: true,
+                controller: _localController,
+                labelText: 'Local',
+              ),
+              FormCadastro(
+                obrigatorio: true,
+                textInputType: TextInputType.name,
+                enabled: true,
+                controller: _observacaoController,
+                labelText: 'Observação',
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormCadastro(
+                      obrigatorio: true,
+                      textInputType: TextInputType.number,
+                      enabled: true,
+                      controller: _duracaoController,
+                      labelText: 'Duracao:',
+                    ),
+                  ),
+                  Expanded(
+                    child: FormDropDown(
+                      lista: EnumIntervalo.values
+                          .map((e) => e.name)
+                          .toList(growable: false),
+                      controller: _duracaoUMController,
+                      value: state.atividade.duracaoMedida.name,
+                      hintText: 'Intervalo',
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormCadastro(
+                      obrigatorio: true,
+                      textInputType: TextInputType.number,
+                      enabled: true,
+                      controller: _frequenciaQtdeController,
+                      labelText: 'a cada:',
+                    ),
+                  ),
+                  Expanded(
+                    child: FormDropDown(
+                      lista: EnumIntervalo.values
+                          .map((e) => e.name)
+                          .toList(growable: false),
+                      controller: _frequenciaUMController,
+                      value: state.atividade.frequenciaMedida.name,
+                      hintText: 'Intervalo',
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: FormCadastro(
-                  obrigatorio: true,
-                  textInputType: TextInputType.number,
-                  enabled: true,
-                  controller: _frequenciaQtdeController,
-                  labelText: 'a cada:',
-                ),
-              ),
-              Expanded(
-                child: FormDropDown(
-                  lista: EnumIntervalo.values
-                      .map((e) => e.name)
-                      .toList(growable: false),
-                  controller: _frequenciaUMController,
-                  value: atividadeProvider.atividade.frequenciaMedida.name,
-                  hintText: 'Intervalo',
-                ),
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }

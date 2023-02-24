@@ -1,5 +1,6 @@
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -13,7 +14,7 @@ class FirestoreCuidador {
     return cuidador;
   }
 
-  Future<Cuidador> read(String id) async {
+  Future<Cuidador> getCuidador(String id) async {
     var doc = await firestore.collection('cuidadores').doc(id).get();
     if (doc.data() != null) {
       Cuidador cuidador = Cuidador.fromMap(doc.data()!);
@@ -25,12 +26,12 @@ class FirestoreCuidador {
     }
   }
 
-  Future<Cuidador> update(Cuidador cuidador) async {
+  Future<void> update(Cuidador cuidador) async {
     await firestore
         .collection('cuidadores')
         .doc(cuidador.id)
         .update(cuidador.toMap());
-    return cuidador;
+    await FirestoreLogin().atualizaLoginCuidador(cuidador);
   }
 
   Future<void> delete(Cuidador cuidador) async {

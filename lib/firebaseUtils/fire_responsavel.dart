@@ -13,93 +13,48 @@ class FirestoreResponsavel {
     var doc =
         await firestore.collection('responsaveis').add(responsavel.toMap());
     responsavel.id = doc.id;
-
-    if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
-      await firestore.collection('gestores').doc(responsavel.gestor.id).update({
-        'idClientes': FieldValue.arrayUnion([responsavel.id])
-      });
-    }
     FirestoreLogin().atualizaLoginResponsavel(responsavel);
     return responsavel;
   }
 
-  Future<void> atualizaResponavel(Responsavel responsavel) async {
+  Future<Responsavel> get(String id) async {
+    Responsavel responsavel = Responsavel();
+    if (id.isEmpty) {
+      return responsavel;
+    }
+    await firestore.collection('responsaveis').doc(id).get().then((doc) {
+      if (doc.data() != null) {
+        responsavel = Responsavel.fromMap(doc.data()!);
+        responsavel.id = doc.id;
+      }
+    });
+    return responsavel;
+  }
+
+  Future<void> update(Responsavel responsavel) async {
     await firestore
         .collection('responsaveis')
         .doc(responsavel.id)
         .update(responsavel.toMap());
 
-    if (responsavel.gestor.id.isNotEmpty) {
-      if (!responsavel.gestor.idClientes.contains(responsavel.id)) {
-        await firestore
-            .collection('gestores')
-            .doc(responsavel.gestor.id)
-            .update({
-          'idClientes': FieldValue.arrayUnion([responsavel.id])
-        });
-      }
-    }
     FirestoreLogin().atualizaLoginResponsavel(responsavel);
   }
 
   Future<List<Paciente>> todosPacientesResponsavel(
     Responsavel responsavel,
   ) async {
-    List<Paciente> pacientesRet = [];
-    if (responsavel.id.isEmpty) {
-      return pacientesRet;
-    }
-    await firestore.collection('responsaveis').doc(responsavel.id).get().then(
-      (doc) {
-        if (doc.data() != null) {
-          responsavel = Responsavel.fromMap(doc.data()!);
-          responsavel.id = doc.id;
-        }
-      },
-    );
-    if (responsavel.idPacientes.isEmpty) {
-      return pacientesRet;
-    } else {
-      DocumentSnapshot<Map<String, dynamic>> doc =
-          await firestore.collection('responsaveis').doc(responsavel.id).get();
-      responsavel = Responsavel.fromMap(doc.data()!);
-      for (var element in responsavel.idPacientes) {
-        if (element.isEmpty) {
-          continue;
-        }
-        DocumentSnapshot<Map<String, dynamic>> docPaciente =
-            await firestore.collection('pacientes').doc(element).get();
-        if (docPaciente.data() == null) {
-          continue;
-        }
-        Paciente paciente = Paciente.fromMap(docPaciente.data()!);
-        paciente.id = docPaciente.id;
-
-        pacientesRet.add(paciente);
-      }
-      return pacientesRet;
-    }
+    var snap = await firestore
+        .collection('pacientes')
+        .where('idResponsavel', isEqualTo: responsavel.id)
+        .get();
+    return snap.docs.map((e) {
+      Paciente paciente = Paciente.fromMap(e.data());
+      paciente.id = e.id;
+      return paciente;
+    }).toList();
   }
 
-  Stream<List<Cuidador>> todosCuidadoresResponsavel(String idResponsavel) {
-    return firestore
-        .collection('cuidadores')
-        .where('responsavel', isEqualTo: idResponsavel)
-        .snapshots()
-        .map(
-          (event) => event.docs.map((e) {
-            var cuidador = Cuidador.fromMap(e.data());
-            cuidador.id = e.id;
-            return cuidador;
-          }).toList(),
-        );
-  }
-
-  void excluirResponsavel(Gestor gestor, Responsavel responsavel) {
-    //firestore.collection('responsaveis').doc(responsavel.id).delete();
-    firestore.collection('gestores').doc(gestor.id).update({
-      'idClientes': FieldValue.arrayRemove([responsavel.id])
-    });
-    firestoreLogin.deleteLogin(responsavel.id);
+  Future<void> delete(Responsavel responsavel) async {
+    await firestore.collection('responsaveis').doc(responsavel.id).delete();
   }
 }

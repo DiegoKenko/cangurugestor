@@ -2,14 +2,13 @@ import 'package:cangurugestor/bloc/bloc_auth_event.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/telas/tela_relatorio.dart';
-import 'package:cangurugestor/viewModel/provider_atividade.dart';
-import 'package:cangurugestor/viewModel/provider_consulta.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_gestor.dart';
+import 'package:cangurugestor/viewModel/bloc_atividade.dart';
+import 'package:cangurugestor/viewModel/bloc_consulta.dart';
+import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
-import 'package:cangurugestor/viewModel/provider_medicamento.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:cangurugestor/viewModel/bloc_medicamento.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +31,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
       backgroundColor: corPad1,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             children: [
               Expanded(
@@ -103,13 +102,6 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {
-                    context.read<GestorProvider>().clear();
-                    context.read<PacienteProvider>().clear();
-                    context.read<ResponsavelProvider>().clear();
-                    context.read<CuidadorProvider>().clear();
-                    context.read<MedicamentoProvider>().clear();
-                    context.read<AtividadeProvider>().clear();
-                    context.read<ConsultaProvider>().clear();
                     context.read<AuthBloc>().add(LogoutEvent());
                   },
                 ),
@@ -138,10 +130,6 @@ class DrawerListTile extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           border: Border(
-            top: BorderSide(
-              color: Colors.white,
-              width: 1,
-            ),
             bottom: BorderSide(
               color: Colors.white,
               width: 1,

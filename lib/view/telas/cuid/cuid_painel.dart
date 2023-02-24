@@ -4,9 +4,10 @@ import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/view/componentes/tab.dart';
 import 'package:cangurugestor/view/telas/paci/paci_dashboard.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class PainelCuidador extends StatefulWidget {
@@ -28,14 +29,15 @@ class _PainelCuidadorState extends State<PainelCuidador>
 
   @override
   Widget build(BuildContext context) {
-    final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
+    final CuidadorBloc cuidadorBloc = context.watch<CuidadorBloc>();
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
           DrawerListTile(
             title: Column(
               children: [
-                Text(cuidadorProvider.cuidador.nome, style: kTitleAppBarStyle),
+                Text(cuidadorBloc.state.cuidador.nome,
+                    style: kTitleAppBarStyle),
                 Text('cuidador', style: kSubtitleAppBarStyle),
               ],
             ),
@@ -70,19 +72,16 @@ class PacientesCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CuidadorProvider cuidadorProvider = context.watch<CuidadorProvider>();
-    return Builder(
-      builder: (context) {
-        cuidadorProvider.todosPacientes();
+    final CuidadorBloc cuidadorBloc = context.watch<CuidadorBloc>();
+    return BlocBuilder<CuidadorBloc, CuidadorState>(
+      bloc: cuidadorBloc,
+      builder: (context, state) {
         return ListView.builder(
-          itemCount: cuidadorProvider.pacientes.length,
+          itemCount: state.cuidador.pacientes.length,
           itemBuilder: ((context, index) {
             return ItemContainer(
-              title: cuidadorProvider.pacientes[index].nome,
+              title: state.cuidador.pacientes[index].nome,
               onTap: () {
-                context.read<PacienteProvider>().clear();
-                context.read<PacienteProvider>().paciente =
-                    cuidadorProvider.pacientes[index];
                 Navigator.of(context).push(
                   AnimatedPageTransition(
                     page: const PacienteDashboard(),

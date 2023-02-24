@@ -1,8 +1,8 @@
 import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/consulta.dart';
+import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/model/pessoa.dart';
-import 'package:cangurugestor/model/prescricao.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 
 class Paciente extends Pessoa {
@@ -12,7 +12,8 @@ class Paciente extends Pessoa {
   List<Medicamento> medicamentos = [];
   List<Atividade> atividades = [];
   List<String> idCuidadores = [];
-  Prescricao? prescricao = Prescricao();
+  List<Cuidador> cuidadores = [];
+  String idResponsavel = '';
 
   Paciente({
     String cpf = '',
@@ -22,7 +23,6 @@ class Paciente extends Pessoa {
     String id = '',
     bool ativo = false,
     this.dataCadastro = '',
-    this.prescricao,
     this.consultas = const [],
     this.atividades = const [],
     this.medicamentos = const [],
@@ -35,6 +35,8 @@ class Paciente extends Pessoa {
           nascimento: nascimento,
         );
 
+  Paciente.initOnAdd(this.idResponsavel);
+
   Paciente.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     ativo = map['ativo'] ?? true;
     nome = map['nome'];
@@ -42,6 +44,7 @@ class Paciente extends Pessoa {
     id = map['id'] ?? '';
     dataCadastro = map['dataCadastro'];
     idCuidadores = List<String>.from(map['idCuidadores'] ?? []);
+    idResponsavel = map['idResponsavel'];
   }
 
   @override
@@ -53,7 +56,8 @@ class Paciente extends Pessoa {
       'nascimento': nascimento,
       'ativo': ativo,
       'dataCadastro': DateTime.now().toIso8601String(),
-      'idCuidadores': idCuidadores
+      'idCuidadores': idCuidadores,
+      'idResponsavel': idResponsavel
     };
   }
 }

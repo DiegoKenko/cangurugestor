@@ -12,7 +12,13 @@ import 'package:intl/intl.dart';
 class FirestorePaciente {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<Paciente> buscarPaciente(String idPaciente) async {
+  Future<Paciente> create(Paciente paciente) async {
+    var doc = await firestore.collection('pacientes').add(paciente.toMap());
+    paciente.id = doc.id;
+    return paciente;
+  }
+
+  Future<Paciente> get(String idPaciente) async {
     Paciente paciente = Paciente();
     if (idPaciente.isNotEmpty) {
       await firestore
@@ -28,24 +34,7 @@ class FirestorePaciente {
     throw paciente;
   }
 
-  Future<Paciente> incluirPaciente(
-      Responsavel responsavel, Paciente paciente,) async {
-    if (paciente.nome.isEmpty) {
-      return paciente;
-    }
-    var doc = await firestore.collection('pacientes').add(paciente.toMap());
-    paciente.id = doc.id;
-
-    if (!responsavel.idPacientes.contains(paciente.id)) {
-      await firestore.collection('responsaveis').doc(responsavel.id).update({
-        'idPacientes': FieldValue.arrayUnion([paciente.id])
-      });
-    }
-
-    return paciente;
-  }
-
-  Future<void> atualizarPaciente(Paciente paciente) async {
+  Future<void> update(Paciente paciente) async {
     if (paciente.id.isEmpty) {
       return;
     }
@@ -56,15 +45,15 @@ class FirestorePaciente {
   }
 
   Future<void> excluirPaciente(
-      Responsavel responsavel, Paciente paciente,) async {
-    firestore.collection('responsaveis').doc(responsavel.id).update({
-      'idPacientes': FieldValue.arrayRemove([paciente.id])
-    });
-    //firestore.collection('pacientes').doc(paciente.id).delete();
+    Paciente paciente,
+  ) async {
+    firestore.collection('pacientes').doc(paciente.id).delete();
   }
 
   Future<List<Tarefa>> todasTarefasPaciente(
-      String idPaciente, EnumTarefa enumTarefa,) async {
+    String idPaciente,
+    EnumTarefa enumTarefa,
+  ) async {
     List<Tarefa> tarefas = [];
     // Busca proximas tarefas abertas
     await firestore
@@ -72,8 +61,10 @@ class FirestorePaciente {
         .doc(idPaciente)
         .collection('tarefas')
         .where('tipo', isEqualTo: enumTarefa.name)
-        .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()),)
+        .where(
+          'date',
+          isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()),
+        )
         .where('concluida', isEqualTo: false)
         .orderBy('dateTime')
         .get()
@@ -85,61 +76,58 @@ class FirestorePaciente {
         }
       }
     });
-    /*  // Busca tarefas realizadas no dia
-    await firestore
-        .collection('pacientes')
-        .doc(idPaciente)
-        .collection('tarefas')
-        .where('tipo', isEqualTo: enumTarefa.name)
-        .where('date',
-            isEqualTo: DateFormat('dd/MM/yyyy').format(DateTime.now()))
-        .where('concluida', isEqualTo: true)
-        .get()
-        .then((value) {
-      if (value.docs.isNotEmpty) {
-        for (var element in value.docs) {
-          tarefas.add(Tarefa.fromMap(element.data()));
-          tarefas.last.id = element.id;
-        }
-      }
-    }); */
     return tarefas;
   }
 
-  Stream<List<Medicamento>> todosMedicamentosPaciente(String idPaciente) {
-    return firestore
+  Future<List<Medicamento>> todosMedicamentosPaciente(Paciente paciente) async {
+    var doc = await firestore
         .collection('pacientes')
-        .doc(idPaciente)
+        .doc(paciente.id)
         .collection('medicamentos')
-        .snapshots()
-        .map((event) => event.docs.map((e) {
-              var medicamento = Medicamento.fromMap(e.data());
-              medicamento.id = e.id;
-              return medicamento;
-            }).toList(),);
+        .get();
+    if (doc.docs.isNotEmpty) {
+      return doc.docs.map((e) {
+        Medicamento medicamento = Medicamento.fromMap(e.data());
+        medicamento.id = e.id;
+        return medicamento;
+      }).toList();
+    } else {
+      return [];
+    }
   }
 
-  Stream<List<Atividade>> todasAtividadesPaciente(String idPaciente) {
-    return firestore
+  Future<List<Atividade>> todasAtividadesPaciente(Paciente paciente) async {
+    var doc = await firestore
         .collection('pacientes')
-        .doc(idPaciente)
+        .doc(paciente.id)
         .collection('atividades')
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => Atividade.fromMap(e.data())).toList(),);
+        .get();
+    if (doc.docs.isNotEmpty) {
+      return doc.docs.map((e) {
+        Atividade atividade = Atividade.fromMap(e.data());
+        atividade.id = e.id;
+        return atividade;
+      }).toList();
+    } else {
+      return [];
+    }
   }
 
-  Stream<List<Consulta>> todasConsultasPaciente(String idPaciente) {
-    return firestore
+  Future<List<Consulta>> todasConsultasPaciente(Paciente paciente) async {
+    var doc = await firestore
         .collection('pacientes')
-        .doc(idPaciente)
+        .doc(paciente.id)
         .collection('consultas')
-        .snapshots()
-        .map((event) => event.docs.map((e) {
-              var consulta = Consulta.fromMap(e.data());
-              consulta.id = e.id;
-              return consulta;
-            }).toList(),);
+        .get();
+    if (doc.docs.isNotEmpty) {
+      return doc.docs.map((e) {
+        Consulta consulta = Consulta.fromMap(e.data());
+        consulta.id = e.id;
+        return consulta;
+      }).toList();
+    } else {
+      return [];
+    }
   }
 
   Future<List<Cuidador>> todosCuidadoresPaciente(Paciente paciente) async {

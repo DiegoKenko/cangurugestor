@@ -33,6 +33,8 @@ class Atividade {
     this.frequenciaMedida = EnumIntervalo.minutos,
   });
 
+  Atividade.initOnAdd(this.paciente);
+
   Atividade.fromMap(Map<String, dynamic> map) {
     descricao = map['descricao'];
     tipo = map['tipo'];

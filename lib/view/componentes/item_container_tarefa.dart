@@ -3,9 +3,9 @@ import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/viewModel/activity_viewmodel.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
+import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:cangurugestor/viewModel/viewmodel_tarefa.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -177,13 +177,13 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                                 t.concluida = true;
                                 ActivityViewModel.tarefaCuidador(
                                   t,
-                                  context.read<CuidadorProvider>().cuidador,
-                                  context.read<PacienteProvider>().paciente,
+                                  context.read<CuidadorBloc>().state.cuidador,
+                                  context.read<PacienteBloc>().state.paciente,
                                 );
                               }
                               TarefaViewModel(
                                 t,
-                                context.read<PacienteProvider>().paciente,
+                                context.read<PacienteBloc>().state.paciente,
                               ).update();
                               Navigator.of(context).pop();
                             },

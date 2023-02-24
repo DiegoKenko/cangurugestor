@@ -9,13 +9,13 @@ import 'package:cangurugestor/view/componentes/circular_progress.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/view/componentes/tooltip_login.dart';
-import 'package:cangurugestor/viewModel/provider_atividade.dart';
-import 'package:cangurugestor/viewModel/provider_consulta.dart';
-import 'package:cangurugestor/viewModel/provider_cuidador.dart';
-import 'package:cangurugestor/viewModel/provider_gestor.dart';
-import 'package:cangurugestor/viewModel/provider_medicamento.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
-import 'package:cangurugestor/viewModel/provider_responsavel.dart';
+import 'package:cangurugestor/viewModel/bloc_gestor.dart';
+import 'package:cangurugestor/viewModel/bloc_atividade.dart';
+import 'package:cangurugestor/viewModel/bloc_consulta.dart';
+import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
+import 'package:cangurugestor/viewModel/bloc_medicamento.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/telas/tela_login.dart';
@@ -56,114 +56,109 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => GestorProvider()),
-        ChangeNotifierProvider(create: (context) => ResponsavelProvider()),
-        ChangeNotifierProvider(create: (context) => PacienteProvider()),
-        ChangeNotifierProvider(create: (context) => MedicamentoProvider()),
-        ChangeNotifierProvider(create: (context) => ConsultaProvider()),
-        ChangeNotifierProvider(create: (context) => AtividadeProvider()),
-        ChangeNotifierProvider(create: (context) => CuidadorProvider()),
+        BlocProvider(create: (context) => AuthBloc()..add(InitEvent())),
+        BlocProvider(create: (context) => GestorBloc()),
+        BlocProvider(create: (context) => CuidadorBloc(Cuidador())),
+        BlocProvider(create: (context) => ResponsavelBloc(Responsavel())),
+        BlocProvider(create: (context) => GestorBloc()),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => AuthBloc()..add(InitEvent())),
-        ],
-        child: MaterialApp(
-          localizationsDelegates: GlobalMaterialLocalizations.delegates,
-          supportedLocales: const [Locale('pt', 'BR')],
-          theme: ThemeData(
-            appBarTheme: const AppBarTheme(
-              centerTitle: true,
-              color: corPad1,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(25),
-                ),
-              ),
-              iconTheme: IconThemeData(color: corBranco),
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(width: 1, color: corPad1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(width: 2.5, color: corPad1),
-                borderRadius: BorderRadius.circular(20),
+      child: MaterialApp(
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        supportedLocales: const [Locale('pt', 'BR')],
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            centerTitle: true,
+            color: corPad1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(25),
               ),
             ),
-            tabBarTheme: const TabBarTheme(
-              labelColor: corPreto,
-              indicator: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: corPad1,
-                    width: 4,
-                  ),
-                ),
-              ),
-              unselectedLabelColor: corPreto,
+            iconTheme: IconThemeData(color: corBranco),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 1, color: corPad1),
+              borderRadius: BorderRadius.circular(20),
             ),
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
-            ),
-            primaryColor: corPad1,
-            hoverColor: corPad3,
-            fontFamily: GoogleFonts.raleway().fontFamily,
-            colorScheme: const ColorScheme(
-              error: Colors.red,
-              background: corBranco,
-              brightness: Brightness.light,
-              primary: corPad1,
-              onPrimary: corBranco,
-              onSecondary: corBranco,
-              onSurface: corBranco,
-              onBackground: corBranco,
-              onError: corBranco,
-              secondary: corPad2,
-              surface: corBranco,
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 2.5, color: corPad1),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
-          home: BlocConsumer<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is ErrorAuthState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-              if (state is FirstLoginAuthState) {
-                firstLoginDialog(context);
-              }
-            },
-            builder: (context, state) {
-              /// precisa melhorar isso aqui
-              if (state is LoggedInAuthState) {
-                if (state.login.classe == EnumClasse.gestor) {
-                  context.read<GestorProvider>().gestor =
-                      state.login.pessoa as Gestor;
-                } else if (state.login.classe == EnumClasse.responsavel) {
-                  context.read<ResponsavelProvider>().responsavel =
-                      state.login.pessoa as Responsavel;
-                } else if (state.login.classe == EnumClasse.cuidador) {
-                  context.read<CuidadorProvider>().cuidador =
-                      state.login.pessoa as Cuidador;
-                }
-                return state.login.route;
-              } else if (state is LoadingAuthState) {
-                return const Scaffold(
-                  body: Center(
-                    child: CircularProgressCanguru(),
-                  ),
-                );
-              }
-              return const TelaLogin();
-            },
+          tabBarTheme: const TabBarTheme(
+            labelColor: corPreto,
+            indicator: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: corPad1,
+                  width: 4,
+                ),
+              ),
+            ),
+            unselectedLabelColor: corPreto,
           ),
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          primaryColor: corPad1,
+          hoverColor: corPad3,
+          fontFamily: GoogleFonts.raleway().fontFamily,
+          colorScheme: const ColorScheme(
+            error: Colors.red,
+            background: corBranco,
+            brightness: Brightness.light,
+            primary: corPad1,
+            onPrimary: corBranco,
+            onSecondary: corBranco,
+            onSurface: corBranco,
+            onBackground: corBranco,
+            onError: corBranco,
+            secondary: corPad2,
+            surface: corBranco,
+          ),
+        ),
+        home: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is ErrorAuthState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            if (state is FirstLoginAuthState) {
+              firstLoginDialog(context);
+            }
+          },
+          builder: (context, state) {
+            /// precisa melhorar isso aqui
+            if (state is LoggedInAuthState) {
+              if (state.login.classe == EnumClasse.gestor) {
+                context
+                    .read<GestorBloc>()
+                    .add(GestorLoginEvent(state.login.pessoa as Gestor));
+              } else if (state.login.classe == EnumClasse.responsavel) {
+                context.read<ResponsavelBloc>().add(
+                    ResponsavelLoginEvent(state.login.pessoa as Responsavel));
+              } else if (state.login.classe == EnumClasse.cuidador) {
+                context
+                    .read<CuidadorBloc>()
+                    .add(CuidadorLoginEvent(state.login.pessoa as Cuidador));
+              }
+              return state.login.route;
+            } else if (state is LoadingAuthState) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressCanguru(),
+                ),
+              );
+            }
+            return const TelaLogin();
+          },
         ),
       ),
     );

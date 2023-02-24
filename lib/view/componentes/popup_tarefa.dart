@@ -3,7 +3,7 @@ import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_hora.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
-import 'package:cangurugestor/viewModel/provider_paciente.dart';
+import 'package:cangurugestor/viewModel/bloc_paciente.dart';
 import 'package:cangurugestor/viewModel/viewmodel_tarefa.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -43,7 +43,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
           onPressed: () {
             TarefaViewModel(
               widget.tarefa,
-              context.read<PacienteProvider>().paciente,
+              context.read<PacienteBloc>().state.paciente,
             ).delete();
             Navigator.pop(context);
           },
@@ -66,7 +66,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
             widget.tarefa.observacao = _obsController.text;
             TarefaViewModel(
               widget.tarefa,
-              context.read<PacienteProvider>().paciente,
+              context.read<PacienteBloc>().state.paciente,
             ).update();
             Navigator.pop(context);
           },

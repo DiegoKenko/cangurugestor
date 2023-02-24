@@ -1,3 +1,4 @@
+import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/global.dart';
 
@@ -17,6 +18,7 @@ class Medicamento {
   EnumIntervalo intervalo = EnumIntervalo.minutos;
   List<Tarefa> tarefas = [];
   DateTime? dataInicio;
+  Paciente paciente = Paciente();
 
   Medicamento({
     this.nome = '',
@@ -31,6 +33,8 @@ class Medicamento {
     this.ativo = false,
     this.intervalo = EnumIntervalo.minutos,
   });
+
+  Medicamento.initOnAdd(this.paciente);
 
   Medicamento.fromMap(Map<String, dynamic> map) {
     nome = map['nome'];
