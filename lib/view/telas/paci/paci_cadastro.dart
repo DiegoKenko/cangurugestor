@@ -178,7 +178,6 @@ class BotaoAddCuidador extends StatelessWidget {
     final GestorBloc gestorBloc = context.read<GestorBloc>();
     return BotaoCadastro(
       onPressed: () {
-        gestorBloc.add(GestorLoadCuidadoresDisponiveisEvent());
         showModalBottomSheet(
           isScrollControlled: true,
           isDismissible: false,
@@ -222,8 +221,7 @@ class BotaoAddCuidador extends StatelessWidget {
                       child: BlocProvider.value(
                         value: gestorBloc,
                         child: Column(
-                          children: gestorBloc
-                              .state.gestor.cuidadoresDisponiveis
+                          children: gestorBloc.state.gestor.cuidadores
                               .map(
                                 (Cuidador e) => ItemContainer(
                                   onTap: () {},

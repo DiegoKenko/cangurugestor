@@ -76,7 +76,10 @@ class FirestoreConsulta {
     return consultas;
   }
 
-  void excluirConsultaPaciente(String idConsulta, String idPaciente) {
+  Future<void> excluirConsultaPaciente(
+    String idConsulta,
+    String idPaciente,
+  ) async {
     firestore
         .collection('pacientes')
         .doc(idPaciente)

@@ -5,8 +5,11 @@ import 'package:intl/intl.dart';
 class FirestoreMedicamento {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  excluirTodasTarefasMedicamento(String med, String idPaciente) {
-    firestore
+  Future<void> excluirTodasTarefasMedicamento(
+    String med,
+    String idPaciente,
+  ) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('tarefas')
@@ -26,11 +29,11 @@ class FirestoreMedicamento {
     });
   }
 
-  void atualizarMedicamentoPaciente(
+  Future<void> atualizarMedicamentoPaciente(
     Medicamento medicamento,
     String idPaciente,
-  ) {
-    firestore
+  ) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('medicamentos')
@@ -60,8 +63,11 @@ class FirestoreMedicamento {
     return medicamento;
   }
 
-  void excluirMedicamentoPaciente(String idMedicamento, String idPaciente) {
-    firestore
+  Future<void> excluirMedicamentoPaciente(
+    String idMedicamento,
+    String idPaciente,
+  ) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('medicamentos')

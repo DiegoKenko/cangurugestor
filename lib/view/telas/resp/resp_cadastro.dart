@@ -132,8 +132,9 @@ class PacientesResponsavel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ResponsavelBloc, ResponsavelState>(
+      bloc: context.read<ResponsavelBloc>()
+        ..add(ResponsavelLoadPacientesEvent()),
       builder: (context, state) {
-        context.read<ResponsavelBloc>().add(ResponsavelLoadPacientesEvent());
         return Column(
           children: [
             state.responsavel.pacientes.isEmpty

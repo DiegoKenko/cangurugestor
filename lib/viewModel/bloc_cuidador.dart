@@ -30,7 +30,8 @@ class CuidadorDeleteEvent extends CuidadorEvent {
 
 abstract class CuidadorState {
   Cuidador cuidador;
-  CuidadorState(this.cuidador);
+  bool loading;
+  CuidadorState(this.cuidador, {this.loading = false});
 }
 
 class CuidadorInitialState extends CuidadorState {
@@ -41,10 +42,15 @@ class CuidadorReadyState extends CuidadorState {
   CuidadorReadyState(Cuidador cuidador) : super(cuidador);
 }
 
+class CuidadorLoadingState extends CuidadorState {
+  CuidadorLoadingState(Cuidador cuidador) : super(cuidador, loading: true);
+}
+
 class CuidadorBloc extends Bloc<CuidadorEvent, CuidadorState> {
   CuidadorBloc(Cuidador cuidador) : super(CuidadorInitialState(cuidador)) {
     on<CuidadorLoadPacientesEvent>(
       (event, emit) async {
+        emit(CuidadorLoadingState(state.cuidador));
         state.cuidador.pacientes =
             await FirestoreCuidador().todosPacientesCuidador(state.cuidador);
         emit(CuidadorReadyState(state.cuidador));
@@ -59,6 +65,7 @@ class CuidadorBloc extends Bloc<CuidadorEvent, CuidadorState> {
 
     on<CuidadorAddEvent>(
       (event, emit) async {
+        emit(CuidadorLoadingState(state.cuidador));
         state.cuidador.idGestor = event.idGestor;
         emit(CuidadorReadyState(state.cuidador));
       },
@@ -66,6 +73,7 @@ class CuidadorBloc extends Bloc<CuidadorEvent, CuidadorState> {
 
     on<CuidadorUpdateEvent>(
       (event, emit) async {
+        emit(CuidadorLoadingState(state.cuidador));
         if (state.cuidador.id.isEmpty) {
           state.cuidador = await FirestoreCuidador().create(state.cuidador);
         } else {
@@ -77,6 +85,7 @@ class CuidadorBloc extends Bloc<CuidadorEvent, CuidadorState> {
 
     on<CuidadorDeleteEvent>(
       (event, emit) async {
+        emit(CuidadorLoadingState(state.cuidador));
         await FirestoreCuidador().delete(state.cuidador);
         emit(CuidadorInitialState(Cuidador()));
       },

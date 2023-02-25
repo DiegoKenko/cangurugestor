@@ -35,8 +35,11 @@ class ConsultaBloc extends Bloc<ConsultaEvent, ConsultaState> {
     );
 
     on<ConsultaDeleteEvent>(
-      (event, emit) {
-        consulta = consulta;
+      (event, emit) async {
+        await FirestoreConsulta().excluirConsultaPaciente(
+          consulta.id,
+          consulta.paciente.id,
+        );
         emit(ConsultaInitialState(consulta));
       },
     );

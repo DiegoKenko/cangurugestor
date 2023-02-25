@@ -36,8 +36,11 @@ class MedicamentoBloc extends Bloc<MedicamentoEvent, MedicamentoState> {
     );
 
     on<MedicamentoDeleteEvent>(
-      (event, emit) {
-        medicamento = medicamento;
+      (event, emit) async {
+        await FirestoreMedicamento().excluirMedicamentoPaciente(
+          medicamento.id,
+          medicamento.paciente.id,
+        );
         emit(MedicamentoInitialState(medicamento));
       },
     );

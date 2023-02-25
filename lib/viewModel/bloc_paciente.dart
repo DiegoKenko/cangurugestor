@@ -48,7 +48,8 @@ class PacienteAddCuidadorEvent extends PacienteEvent {
 
 abstract class PacienteState {
   Paciente paciente;
-  PacienteState(this.paciente);
+  bool loading;
+  PacienteState(this.paciente, {this.loading = false});
 }
 
 class PacienteInitialState extends PacienteState {
@@ -59,50 +60,64 @@ class PacienteReadyState extends PacienteState {
   PacienteReadyState(Paciente paciente) : super(paciente);
 }
 
+class PacienteLoadedState extends PacienteState {
+  PacienteLoadedState(Paciente paciente) : super(paciente);
+}
+
+class PacienteLoadingState extends PacienteState {
+  PacienteLoadingState(Paciente paciente) : super(paciente, loading: true);
+}
+
 class PacienteBloc extends Bloc<PacienteEvent, PacienteState> {
   PacienteBloc(Paciente paciente) : super(PacienteInitialState(paciente)) {
     on<PacienteLoadEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         Paciente paciente = await FirestorePaciente().get(event.idPaciente);
-        emit(PacienteReadyState(paciente));
+        emit(PacienteLoadedState(paciente));
       },
     );
 
     on<PacienteLoadCuidadoresEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         List<Cuidador> cuidadores =
             await FirestorePaciente().todosCuidadoresPaciente(state.paciente);
         state.paciente.cuidadores = cuidadores;
-        emit(PacienteReadyState(state.paciente));
+        emit(PacienteLoadedState(state.paciente));
       },
     );
 
     on<PacienteLoadMedicamentosEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         state.paciente.medicamentos =
             await FirestorePaciente().todosMedicamentosPaciente(state.paciente);
-        emit(PacienteReadyState(state.paciente));
+        emit(PacienteLoadedState(state.paciente));
       },
     );
 
     on<PacienteLoadAtividadesEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         state.paciente.atividades =
             await FirestorePaciente().todasAtividadesPaciente(state.paciente);
-        emit(PacienteReadyState(state.paciente));
+        emit(PacienteLoadedState(state.paciente));
       },
     );
 
     on<PacienteLoadConsultasEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         state.paciente.consultas =
             await FirestorePaciente().todasConsultasPaciente(state.paciente);
-        emit(PacienteReadyState(state.paciente));
+        emit(PacienteLoadedState(state.paciente));
       },
     );
 
     on<PacienteUpdateEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         if (state.paciente.nome.isNotEmpty) {
           if (state.paciente.id.isEmpty) {
             state.paciente = await FirestorePaciente().create(state.paciente);
@@ -123,6 +138,7 @@ class PacienteBloc extends Bloc<PacienteEvent, PacienteState> {
 
     on<PacienteRemoveCuidadorEvent>(
       (event, emit) async {
+        emit(PacienteLoadingState(state.paciente));
         if (state.paciente.idCuidadores.contains(event.cuidador.id)) {
           state.paciente.idCuidadores.remove(event.cuidador.id);
           await FirestorePaciente().update(state.paciente);

@@ -19,8 +19,11 @@ class FirestoreAtividade {
     return atividade;
   }
 
-  void atualizarAtividadePaciente(Atividade atividade, String idPaciente) {
-    firestore
+  Future<void> atualizarAtividadePaciente(
+    Atividade atividade,
+    String idPaciente,
+  ) async {
+    await firestore
         .collection('pacientes')
         .doc(idPaciente)
         .collection('atividades')

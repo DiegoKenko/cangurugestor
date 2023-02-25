@@ -35,8 +35,11 @@ class AtividadeBloc extends Bloc<AtividadeEvent, AtividadeState> {
     );
 
     on<AtividadeDeleteEvent>(
-      (event, emit) {
-        atividade = atividade;
+      (event, emit) async {
+        await FirestoreAtividade().excluirAtividadePaciente(
+          atividade.id,
+          atividade.paciente.id,
+        );
         emit(AtividadeInitialState(atividade));
       },
     );

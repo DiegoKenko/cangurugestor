@@ -25,7 +25,8 @@ class ResponsavelDeleteEvent extends ResponsavelEvent {
 
 abstract class ResponsavelState {
   Responsavel responsavel;
-  ResponsavelState(this.responsavel);
+  bool loading;
+  ResponsavelState(this.responsavel, {this.loading = false});
 }
 
 class ResponsavelInitialState extends ResponsavelState {
@@ -34,6 +35,11 @@ class ResponsavelInitialState extends ResponsavelState {
 
 class ResponsavelReadyState extends ResponsavelState {
   ResponsavelReadyState(Responsavel responsavel) : super(responsavel);
+}
+
+class ResponsavelLoadingState extends ResponsavelState {
+  ResponsavelLoadingState(Responsavel responsavel)
+      : super(responsavel, loading: true);
 }
 
 class ResponsavelBloc extends Bloc<ResponsavelEvent, ResponsavelState> {
