@@ -1,4 +1,5 @@
-import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/enum/enum_status.dart';
+import 'package:cangurugestor/enum/enum_tarefa.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';

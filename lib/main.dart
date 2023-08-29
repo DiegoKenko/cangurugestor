@@ -1,7 +1,7 @@
 import 'package:cangurugestor/bloc/bloc_auth_event.dart';
 import 'package:cangurugestor/bloc/bloc_auth_state.dart';
+import 'package:cangurugestor/enum/enum_classe.dart';
 import 'package:cangurugestor/firebase_options.dart';
-import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:cangurugestor/model/responsavel.dart';
@@ -24,9 +24,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 void main() async {
   ErrorWidget.builder = (details) => Text(
         details.exceptionAsString(),
-        style: const TextStyle(
-          fontSize: 20,
-        ),
+        style: const TextStyle(fontSize: 20),
       );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -138,7 +136,8 @@ class _MyAppState extends State<MyApp> {
                     .add(GestorLoginEvent(state.login.pessoa as Gestor));
               } else if (state.login.classe == EnumClasse.responsavel) {
                 context.read<ResponsavelBloc>().add(
-                    ResponsavelLoginEvent(state.login.pessoa as Responsavel),);
+                      ResponsavelLoginEvent(state.login.pessoa as Responsavel),
+                    );
               } else if (state.login.classe == EnumClasse.cuidador) {
                 context
                     .read<CuidadorBloc>()
@@ -181,8 +180,8 @@ class _MyAppState extends State<MyApp> {
             child: const Text('Confirmar'),
           ),
         ],
-        title: Column(
-          children: const [
+        title: const Column(
+          children: [
             Text('Bem vindo', style: TextStyle(fontSize: 15)),
             Text(
               'Selecione o seu perfil',

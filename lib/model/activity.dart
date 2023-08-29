@@ -1,4 +1,5 @@
-import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/enum/enum_atividade.dart';
+import 'package:cangurugestor/enum/enum_classe.dart';
 
 class Activity {
   String userId = '';
