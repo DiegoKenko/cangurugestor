@@ -1,5 +1,5 @@
 import 'package:cangurugestor/enum/enum_classe.dart';
-import 'package:cangurugestor/firebaseUtils/firebase_auth_constants.dart';
+import 'package:cangurugestor/datasource/firebase_auth_constants.dart';
 import 'package:flutter/material.dart' show immutable;
 
 @immutable

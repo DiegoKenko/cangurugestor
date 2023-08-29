@@ -2,6 +2,7 @@ import 'package:cangurugestor/enum/enum_intervalo.dart';
 import 'package:cangurugestor/enum/enum_tarefa.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
+import 'package:cangurugestor/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/form_dropdown.dart';
@@ -67,8 +68,18 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  context.read<MedicamentoBloc>().add(MedicamentoDeleteEvent());
-                  Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogConfirmacaoExclusao(
+                        onConfirm: () {
+                          context
+                              .read<MedicamentoBloc>()
+                              .add(MedicamentoDeleteEvent());
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],

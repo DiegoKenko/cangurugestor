@@ -95,6 +95,7 @@ class _MyAppState extends State<MyApp> {
           ),
           textTheme: GoogleFonts.poppinsTextTheme(
             Theme.of(context).textTheme,
+            
           ),
           primaryColor: corPad1,
           hoverColor: corPad3,

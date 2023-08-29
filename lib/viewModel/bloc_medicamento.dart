@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_medicamento.dart';
+import 'package:cangurugestor/datasource/medicamento/fire_medicamento.dart';
 import 'package:cangurugestor/model/medicamento.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

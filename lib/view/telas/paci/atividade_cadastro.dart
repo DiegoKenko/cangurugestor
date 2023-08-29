@@ -2,6 +2,7 @@ import 'package:cangurugestor/enum/enum_intervalo.dart';
 import 'package:cangurugestor/enum/enum_tarefa.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
+import 'package:cangurugestor/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_dropdown.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
@@ -63,7 +64,18 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  context.read<AtividadeBloc>().add(AtividadeDeleteEvent());
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogConfirmacaoExclusao(
+                        onConfirm: () {
+                          context
+                              .read<AtividadeBloc>()
+                              .add(AtividadeDeleteEvent());
+                        },
+                      );
+                    },
+                  );
 
                   Navigator.of(context).pop();
                 },

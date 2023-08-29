@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
+import 'package:cangurugestor/datasource/cuidador/fire_cuidador.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

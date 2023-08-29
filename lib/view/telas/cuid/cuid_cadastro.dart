@@ -1,3 +1,4 @@
+import 'package:cangurugestor/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
@@ -58,8 +59,18 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  context.read<CuidadorBloc>().add(CuidadorDeleteEvent());
-                  Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogConfirmacaoExclusao(
+                        onConfirm: () {
+                          context
+                              .read<CuidadorBloc>()
+                              .add(CuidadorDeleteEvent());
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],

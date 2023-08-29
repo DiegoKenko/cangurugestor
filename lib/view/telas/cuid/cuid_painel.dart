@@ -78,6 +78,7 @@ class PacientesCuidador extends StatelessWidget {
       builder: (context, state) {
         context.read<CuidadorBloc>().add(CuidadorLoadPacientesEvent());
         return ListView.builder(
+          physics: const BouncingScrollPhysics(),
           itemCount: state.cuidador.pacientes.length,
           itemBuilder: ((context, index) {
             Paciente paciente = state.cuidador.pacientes[index];

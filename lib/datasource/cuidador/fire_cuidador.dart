@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_login.dart';
+import 'package:cangurugestor/datasource/login/fire_login.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,12 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreCuidador {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<Cuidador> create(Cuidador cuidador) async {
-    var doc = await firestore.collection('cuidadores').add(cuidador.toMap());
-    cuidador.id = doc.id;
-    FirestoreLogin().atualizaLoginCuidador(cuidador);
-    return cuidador;
-  }
 
   Future<Cuidador> get(String id) async {
     var doc = await firestore.collection('cuidadores').doc(id).get();

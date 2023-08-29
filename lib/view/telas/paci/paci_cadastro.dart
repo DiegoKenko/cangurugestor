@@ -5,6 +5,7 @@ import 'package:cangurugestor/model/medicamento.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
+import 'package:cangurugestor/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
@@ -75,8 +76,18 @@ class _CadastroPacienteState extends State<CadastroPaciente>
                   ? IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        context.read<PacienteBloc>().add(PacienteDeleteEvent());
-                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return DialogConfirmacaoExclusao(
+                              onConfirm: () {
+                                context
+                                    .read<PacienteBloc>()
+                                    .add(PacienteDeleteEvent());
+                              },
+                            );
+                          },
+                        );
                       },
                     )
                   : const SizedBox(),
@@ -293,32 +304,17 @@ class _FichaPacienteState extends State<FichaPaciente>
       tabs: const [
         Tab(
           child: Column(
-            children: [
-              kIconMedicamento,
-              Text(
-                'Medicamentos',
-              )
-            ],
+            children: [kIconMedicamento, Text('Medicação')],
           ),
         ),
         Tab(
           child: Column(
-            children: [
-              kIconConsulta,
-              Text(
-                'Consultas',
-              )
-            ],
+            children: [kIconConsulta, Text('Consultas')],
           ),
         ),
         Tab(
           child: Column(
-            children: [
-              kIconAtividade,
-              Text(
-                'Atividades',
-              )
-            ],
+            children: [kIconAtividade, Text('Atividades')],
           ),
         ),
       ],
@@ -355,6 +351,7 @@ class AtividadesPaciente extends StatelessWidget {
                       child: Text('Nenhuma atividade cadastrada'),
                     )
                   : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       itemCount: state.paciente.atividades.length,
                       itemBuilder: (context, index) {
                         Atividade atividade = state.paciente.atividades[index];
@@ -426,6 +423,7 @@ class ConsultasPaciente extends StatelessWidget {
                       ),
                     )
                   : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       itemCount: state.paciente.consultas.length,
                       itemBuilder: (context, index) {
                         Consulta consulta = state.paciente.consultas[index];
@@ -495,6 +493,7 @@ class MedicamentosPaciente extends StatelessWidget {
                       child: Text('Nenhum medicamento cadastrado'),
                     )
                   : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       itemCount: state.paciente.medicamentos.length,
                       itemBuilder: (context, index) {
                         Medicamento medicamento =

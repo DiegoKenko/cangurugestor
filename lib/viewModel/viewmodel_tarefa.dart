@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
+import 'package:cangurugestor/datasource/tarefa/fire_tarefa.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 

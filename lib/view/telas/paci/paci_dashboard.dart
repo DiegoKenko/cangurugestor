@@ -1,5 +1,5 @@
 import 'package:cangurugestor/enum/enum_tarefa.dart';
-import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
+import 'package:cangurugestor/datasource/tarefa/fire_tarefa.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';

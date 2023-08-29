@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
+import 'package:cangurugestor/datasource/responsavel/fire_responsavel.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

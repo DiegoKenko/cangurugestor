@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_paciente.dart';
+import 'package:cangurugestor/datasource/paciente/paciente_tarefa_get_all_datasource.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

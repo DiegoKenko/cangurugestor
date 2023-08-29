@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
+import 'package:cangurugestor/datasource/gestor/gestor_get_datasource.dart';
 import 'package:cangurugestor/model/gestor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

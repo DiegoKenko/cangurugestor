@@ -1,6 +1,7 @@
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
+import 'package:cangurugestor/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
@@ -63,8 +64,18 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  context.read<ResponsavelBloc>().add(ResponsavelDeleteEvent());
-                  Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogConfirmacaoExclusao(
+                        onConfirm: () {
+                          context
+                              .read<ResponsavelBloc>()
+                              .add(ResponsavelDeleteEvent());
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],

@@ -4,11 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 final kHintTextStyle = TextStyle(
   color: const Color(0xFF527DAA),
   fontFamily: GoogleFonts.raleway().fontFamily,
+  decoration: TextDecoration.none,
 );
 
 final kInputStyle = TextStyle(
   color: corPad1,
   letterSpacing: 1.3,
+  decoration: TextDecoration.none,
   fontSize: 20,
   fontWeight: FontWeight.bold,
   fontFamily: GoogleFonts.raleway().fontFamily,
@@ -18,6 +20,7 @@ final kTextStyleHeader = TextStyle(
   color: corPreto,
   letterSpacing: 1.3,
   fontSize: 15,
+  decoration: TextDecoration.none,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
 
@@ -25,12 +28,14 @@ final kTituloStyle = TextStyle(
   color: corPreto,
   letterSpacing: 1.7,
   fontSize: 18,
+  decoration: TextDecoration.none,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
 final kTituloStyleVerde = TextStyle(
   color: corPad1,
   letterSpacing: 3,
   fontSize: 18,
+  decoration: TextDecoration.none,
   fontWeight: FontWeight.bold,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
@@ -39,6 +44,7 @@ final kSubTituloStyle = TextStyle(
   color: corPreto,
   letterSpacing: 1.7,
   fontSize: 18,
+  decoration: TextDecoration.none,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
 
@@ -46,6 +52,7 @@ final kLabelStyle = TextStyle(
   color: corPad1,
   fontSize: 16,
   letterSpacing: 2.5,
+  decoration: TextDecoration.none,
   fontWeight: FontWeight.normal,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
@@ -54,6 +61,7 @@ final kLabelLogin = TextStyle(
   color: corPad1,
   fontSize: 17,
   letterSpacing: 2.3,
+  decoration: TextDecoration.none,
   fontWeight: FontWeight.bold,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
@@ -62,6 +70,7 @@ final kNameStyle = TextStyle(
   color: corBranco,
   fontSize: 15,
   wordSpacing: 2,
+  decoration: TextDecoration.none,
   letterSpacing: 3,
   fontWeight: FontWeight.bold,
   fontFamily: GoogleFonts.raleway().fontFamily,
@@ -70,6 +79,7 @@ final kTitleAppBarStyle = TextStyle(
   color: corBranco,
   fontSize: 18,
   wordSpacing: 2,
+  decoration: TextDecoration.none,
   letterSpacing: 2,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
@@ -77,6 +87,7 @@ final kSubtitleAppBarStyle = TextStyle(
   color: corPreto,
   fontSize: 14,
   wordSpacing: 2,
+  decoration: TextDecoration.none,
   letterSpacing: 2,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
@@ -84,6 +95,15 @@ final kSubtitleAppBarStyle = TextStyle(
 final kSubtitleReportStyle = TextStyle(
   color: corPreto,
   fontSize: 16,
+  decoration: TextDecoration.none,
+  wordSpacing: 2,
+  letterSpacing: 2,
+  fontFamily: GoogleFonts.raleway().fontFamily,
+);
+final kTitleDescription = TextStyle(
+  color: corPreto,
+  fontSize: 16,
+  decoration: TextDecoration.none,
   wordSpacing: 2,
   letterSpacing: 2,
   fontFamily: GoogleFonts.raleway().fontFamily,

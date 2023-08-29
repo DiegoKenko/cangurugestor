@@ -2,6 +2,7 @@ import 'package:cangurugestor/enum/enum_tarefa.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/utils/cep_api.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
+import 'package:cangurugestor/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/view/componentes/popup_tarefa.dart';
@@ -63,8 +64,18 @@ class _CadastroConsultaState extends State<CadastroConsulta>
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  context.read<ConsultaBloc>().add(ConsultaDeleteEvent());
-                  Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogConfirmacaoExclusao(
+                        onConfirm: () {
+                          context
+                              .read<ConsultaBloc>()
+                              .add(ConsultaDeleteEvent());
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],

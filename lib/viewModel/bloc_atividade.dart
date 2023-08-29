@@ -1,4 +1,4 @@
-import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
+import 'package:cangurugestor/datasource/atividade/fire_atividade.dart';
 import 'package:cangurugestor/model/atividade.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

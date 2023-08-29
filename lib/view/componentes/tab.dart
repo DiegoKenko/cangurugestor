@@ -19,7 +19,7 @@ class TabCanguru extends StatelessWidget {
       verticalDirection: direction,
       children: [
         SizedBox(
-          height: 50,
+          height: 60,
           child: TabBar(
             controller: controller,
             tabs: tabs,
@@ -27,7 +27,7 @@ class TabCanguru extends StatelessWidget {
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: TabBarView(
               controller: controller,
               children: views,

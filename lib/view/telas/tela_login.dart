@@ -1,6 +1,6 @@
 import 'package:cangurugestor/bloc/bloc_auth.dart';
 import 'package:cangurugestor/bloc/bloc_auth_event.dart';
-import 'package:cangurugestor/firebaseUtils/firebase_auth_constants.dart';
+import 'package:cangurugestor/datasource/firebase_auth_constants.dart';
 import 'package:cangurugestor/view/componentes/circular_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';

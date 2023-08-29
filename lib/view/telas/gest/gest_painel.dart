@@ -102,6 +102,7 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
                 return const Text('nenhum cuidador cadastrado');
               } else {
                 return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                   itemCount: gestorState.gestor.cuidadores.length,
                   itemBuilder: (context, index) {
                     Cuidador cuidador = gestorState.gestor.cuidadores[index];
@@ -175,6 +176,7 @@ class ClientesGestor extends StatelessWidget {
                 return const Text('nenhum cliente cadastrado');
               } else {
                 return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: gestorState.gestor.clientes.length,
                   itemBuilder: (context, index) {
