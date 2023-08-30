@@ -1,11 +1,11 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/login_user.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/gestor.dart';
+import 'package:cangurugestor/domain/entity/login_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginGestorUpdateDatasource {
-  Future<void> atualizaLoginGestor(Gestor gestor) async {
-    final LoginUser user = LoginUser.fromGestor(gestor);
+  Future<void> call(GestorEntity gestor) async {
+    final LoginUserEntity user = LoginUserEntity.fromGestor(gestor);
     if (user.doc.isNotEmpty && user.email.isNotEmpty) {
       await getIt<FirebaseFirestore>()
           .collection('login')

@@ -1,10 +1,10 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/consulta.dart';
-import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/consulta.dart';
+import 'package:cangurugestor/domain/entity/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PacienteConsultaGetAllDatasource{
-   Future<List<Consulta>> todasConsultasPaciente(Paciente paciente) async {
+class PacienteConsultaGetAllDatasource {
+  Future<List<ConsultaEntity>> call(PacienteEntity paciente) async {
     var doc = await getIt<FirebaseFirestore>()
         .collection('pacientes')
         .doc(paciente.id)
@@ -12,7 +12,7 @@ class PacienteConsultaGetAllDatasource{
         .get();
     if (doc.docs.isNotEmpty) {
       return doc.docs.map((e) {
-        Consulta consulta = Consulta.fromMap(e.data());
+        ConsultaEntity consulta = ConsultaEntity.fromMap(e.data());
         consulta.id = e.id;
         return consulta;
       }).toList();

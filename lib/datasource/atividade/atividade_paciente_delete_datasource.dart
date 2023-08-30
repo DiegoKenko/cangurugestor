@@ -1,4 +1,4 @@
-import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/const/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AtividadePacienteDeleteDatasource {

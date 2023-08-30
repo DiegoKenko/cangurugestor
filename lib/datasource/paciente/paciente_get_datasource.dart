@@ -1,10 +1,10 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PacienteGetDatasource {
-  Future<Paciente> get(String idPaciente) async {
-    Paciente paciente = Paciente();
+  Future<PacienteEntity> call(String idPaciente) async {
+    PacienteEntity paciente = PacienteEntity();
     if (idPaciente.isNotEmpty) {
       await getIt<FirebaseFirestore>()
           .collection('pacientes')
@@ -12,7 +12,7 @@ class PacienteGetDatasource {
           .get()
           .then((value) {
         if (value.exists) {
-          return Paciente.fromMap(value.data()!);
+          return PacienteEntity.fromMap(value.data()!);
         }
       });
     }

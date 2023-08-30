@@ -1,10 +1,11 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/medicamento.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/medicamento.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MedicamentoPacienteGetAllDatasource{
-    Future<List<Medicamento>> todosMedicamentosPaciente(String idPaciente) async {
-    List<Medicamento> meds = [];
+class MedicamentoPacienteGetAllDatasource {
+  Future<List<MedicamentoEntity>> todosMedicamentosPaciente(
+      String idPaciente) async {
+    List<MedicamentoEntity> meds = [];
     if (idPaciente.isEmpty) {
       return meds;
     }
@@ -15,7 +16,7 @@ class MedicamentoPacienteGetAllDatasource{
         .get()
         .then((value) {
       for (var doc in value.docs) {
-        Medicamento med = Medicamento.fromMap(doc.data());
+        MedicamentoEntity med = MedicamentoEntity.fromMap(doc.data());
         med.id = doc.id;
         meds.add(med);
       }

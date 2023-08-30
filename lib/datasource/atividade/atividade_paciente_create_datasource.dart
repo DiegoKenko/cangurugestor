@@ -1,10 +1,10 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/atividade.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/atividade.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AtividadePacienteCreateDatasource {
-  Future<Atividade> novaAtividadePaciente(
-    Atividade atividade,
+  Future<AtividadeEntity> call(
+    AtividadeEntity atividade,
     String idPaciente,
   ) async {
     var ativ = await getIt<FirebaseFirestore>()

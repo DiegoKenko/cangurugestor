@@ -1,9 +1,9 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ReponsavelCreateDatasource {
-  Future<Responsavel> create(Responsavel responsavel) async {
+class ResponsavelCreateDatasource {
+  Future<ResponsavelEntity> call(ResponsavelEntity responsavel) async {
     var doc = await getIt<FirebaseFirestore>()
         .collection('responsaveis')
         .add(responsavel.toMap());

@@ -1,14 +1,13 @@
-import 'package:cangurugestor/enum/enum_classe.dart';
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/activity.dart';
-import 'package:cangurugestor/model/cuidador.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/activity_tarefa.dart';
+import 'package:cangurugestor/domain/entity/cuidador.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActivityHistoricoAtendimentoDatasource {
-  Future<List<TarefaActivity>> call(
-    Cuidador cuidador,
+  Future<List<TarefaActivityEntity>> call(
+    CuidadorEntity cuidador,
   ) async {
-    final List<TarefaActivity> list = <TarefaActivity>[];
+    final List<TarefaActivityEntity> list = <TarefaActivityEntity>[];
     QuerySnapshot<Map<String, dynamic>> doc = await getIt<FirebaseFirestore>()
         .collection('cuidadores')
         .doc(cuidador.id)
@@ -18,7 +17,7 @@ class ActivityHistoricoAtendimentoDatasource {
         .orderBy('time')
         .get();
     for (var element in doc.docs) {
-      list.add(TarefaActivity.fromJson(element.data()));
+      list.add(TarefaActivityEntity.fromJson(element.data()));
     }
     return list;
   }

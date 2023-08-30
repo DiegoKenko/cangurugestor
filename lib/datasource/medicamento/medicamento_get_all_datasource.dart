@@ -1,5 +1,5 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/medicamento.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/medicamento.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 

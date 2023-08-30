@@ -1,10 +1,10 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/atividade.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/atividade.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AtividadePacienteGetAllDatasource {
-  Future<List<Atividade>> call(String idPaciente) async {
-    List<Atividade> atvReturn = [];
+  Future<List<AtividadeEntity>> call(String idPaciente) async {
+    List<AtividadeEntity> atvReturn = [];
     if (idPaciente.isNotEmpty) {
       QuerySnapshot<Map<String, dynamic>> snap =
           await getIt<FirebaseFirestore>()
@@ -13,7 +13,7 @@ class AtividadePacienteGetAllDatasource {
               .collection('atividades')
               .get();
       for (var element in snap.docs) {
-        var atv = Atividade.fromMap(element.data());
+        var atv = AtividadeEntity.fromMap(element.data());
         atv.id = element.id;
         atvReturn.add(atv);
       }

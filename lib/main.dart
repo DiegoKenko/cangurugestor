@@ -1,22 +1,11 @@
-import 'package:cangurugestor/bloc/bloc_auth_event.dart';
-import 'package:cangurugestor/bloc/bloc_auth_state.dart';
-import 'package:cangurugestor/enum/enum_classe.dart';
+import 'package:cangurugestor/const/enum/enum_classe.dart';
 import 'package:cangurugestor/firebase_options.dart';
-import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/responsavel.dart';
-import 'package:cangurugestor/view/componentes/circular_progress.dart';
-import 'package:cangurugestor/view/componentes/styles.dart';
-import 'package:cangurugestor/bloc/bloc_auth.dart';
-import 'package:cangurugestor/view/componentes/tooltip_login.dart';
-import 'package:cangurugestor/viewModel/bloc_gestor.dart';
-import 'package:cangurugestor/viewModel/bloc_cuidador.dart';
-import 'package:cangurugestor/viewModel/bloc_responsavel.dart';
+import 'package:cangurugestor/presentation/view/componentes/styles.dart';
+import 'package:cangurugestor/presentation/view/componentes/tooltip_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cangurugestor/view/telas/tela_login.dart';
+import 'package:cangurugestor/presentation/view/telas/tela_login.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -49,113 +38,63 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AuthBloc()..add(InitEvent())),
-        BlocProvider(create: (context) => GestorBloc()),
-        BlocProvider(create: (context) => CuidadorBloc(Cuidador())),
-        BlocProvider(create: (context) => ResponsavelBloc(Responsavel())),
-        BlocProvider(create: (context) => GestorBloc()),
-      ],
-      child: MaterialApp(
-        localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        supportedLocales: const [Locale('pt', 'BR')],
-        theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-            centerTitle: true,
-            color: corPad1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(25),
-              ),
-            ),
-            iconTheme: IconThemeData(color: corBranco),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 1, color: corPad1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 2.5, color: corPad1),
-              borderRadius: BorderRadius.circular(20),
+    return MaterialApp(
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale('pt', 'BR')],
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          color: corPad1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(25),
             ),
           ),
-          tabBarTheme: const TabBarTheme(
-            labelColor: corPreto,
-            indicator: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: corPad1,
-                  width: 4,
-                ),
-              ),
-            ),
-            unselectedLabelColor: corPreto,
+          iconTheme: IconThemeData(color: corBranco),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 1, color: corPad1),
+            borderRadius: BorderRadius.circular(20),
           ),
-          textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context).textTheme,
-            
-          ),
-          primaryColor: corPad1,
-          hoverColor: corPad3,
-          fontFamily: GoogleFonts.raleway().fontFamily,
-          colorScheme: const ColorScheme(
-            error: Colors.red,
-            background: corBranco,
-            brightness: Brightness.light,
-            primary: corPad1,
-            onPrimary: corBranco,
-            onSecondary: corBranco,
-            onSurface: corBranco,
-            onBackground: corBranco,
-            onError: corBranco,
-            secondary: corPad2,
-            surface: corBranco,
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 2.5, color: corPad1),
+            borderRadius: BorderRadius.circular(20),
           ),
         ),
-        home: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is ErrorAuthState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-            if (state is FirstLoginAuthState) {
-              firstLoginDialog(context);
-            }
-          },
-          builder: (context, state) {
-            /// precisa melhorar isso aqui
-            if (state is LoggedInAuthState) {
-              if (state.login.classe == EnumClasse.gestor) {
-                context
-                    .read<GestorBloc>()
-                    .add(GestorLoginEvent(state.login.pessoa as Gestor));
-              } else if (state.login.classe == EnumClasse.responsavel) {
-                context.read<ResponsavelBloc>().add(
-                      ResponsavelLoginEvent(state.login.pessoa as Responsavel),
-                    );
-              } else if (state.login.classe == EnumClasse.cuidador) {
-                context
-                    .read<CuidadorBloc>()
-                    .add(CuidadorLoginEvent(state.login.pessoa as Cuidador));
-              }
-              return state.login.route;
-            } else if (state is LoadingAuthState) {
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressCanguru(),
-                ),
-              );
-            }
-            return const TelaLogin();
-          },
+        tabBarTheme: const TabBarTheme(
+          labelColor: corPreto,
+          indicator: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: corPad1,
+                width: 4,
+              ),
+            ),
+          ),
+          unselectedLabelColor: corPreto,
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        primaryColor: corPad1,
+        hoverColor: corPad3,
+        fontFamily: GoogleFonts.raleway().fontFamily,
+        colorScheme: const ColorScheme(
+          error: Colors.red,
+          background: corBranco,
+          brightness: Brightness.light,
+          primary: corPad1,
+          onPrimary: corBranco,
+          onSecondary: corBranco,
+          onSurface: corBranco,
+          onBackground: corBranco,
+          onError: corBranco,
+          secondary: corPad2,
+          surface: corBranco,
         ),
       ),
+      home: const TelaLogin(),
     );
   }
 
@@ -173,9 +112,6 @@ class _MyAppState extends State<MyApp> {
           ),
           TextButton(
             onPressed: () {
-              if (enumClasse != null) {
-                context.read<AuthBloc>().add(CreateLoginEvent(enumClasse!));
-              }
               Navigator.of(context).pop();
             },
             child: const Text('Confirmar'),

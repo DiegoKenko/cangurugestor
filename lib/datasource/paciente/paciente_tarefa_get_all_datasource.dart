@@ -1,15 +1,15 @@
-import 'package:cangurugestor/enum/enum_tarefa.dart';
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/tarefa.dart';
+import 'package:cangurugestor/const/enum/enum_tarefa.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class PacienteTarefaGetAllDatasource {
-  Future<List<Tarefa>> todasTarefasPaciente(
+  Future<List<TarefaEntity>> todasTarefasPaciente(
     String idPaciente,
     EnumTarefa enumTarefa,
   ) async {
-    List<Tarefa> tarefas = [];
+    List<TarefaEntity> tarefas = [];
     // Busca proximas tarefas abertas
     await getIt<FirebaseFirestore>()
         .collection('pacientes')
@@ -26,7 +26,7 @@ class PacienteTarefaGetAllDatasource {
         .then((value) {
       if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
-          tarefas.add(Tarefa.fromMap(element.data()));
+          tarefas.add(TarefaEntity.fromMap(element.data()));
           tarefas.last.id = element.id;
         }
       }

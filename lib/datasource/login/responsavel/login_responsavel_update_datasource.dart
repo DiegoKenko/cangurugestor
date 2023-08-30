@@ -1,11 +1,11 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/login_user.dart';
-import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/login_user.dart';
+import 'package:cangurugestor/domain/entity/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginResponsavelUpdateDatasource {
-  Future<void> atualizaLoginResponsavel(Responsavel responsavel) async {
-    final LoginUser user = LoginUser.fromResponsavel(responsavel);
+  Future<void> call(ResponsavelEntity responsavel) async {
+    final LoginUserEntity user = LoginUserEntity.fromResponsavel(responsavel);
     if (user.doc.isNotEmpty && user.email.isNotEmpty) {
       await getIt<FirebaseFirestore>()
           .collection('login')

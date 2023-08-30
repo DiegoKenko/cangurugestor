@@ -1,9 +1,9 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PacienteUpdateDatasource {
-  Future<void> update(Paciente paciente) async {
+  Future<void> call(PacienteEntity paciente) async {
     if (paciente.id.isEmpty) {
       return;
     }

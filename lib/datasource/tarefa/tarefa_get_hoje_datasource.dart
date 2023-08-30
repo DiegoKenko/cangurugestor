@@ -1,12 +1,12 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/paciente.dart';
-import 'package:cangurugestor/model/tarefa.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/domain/entity/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class TarefaGetHojeDatasource {
-  Future<List<Tarefa>> todasTarefasHoje(Paciente paciente) async {
-    List<Tarefa> tarefas = [];
+  Future<List<TarefaEntity>> call(PacienteEntity paciente) async {
+    List<TarefaEntity> tarefas = [];
     var ref = await getIt<FirebaseFirestore>()
         .collection('pacientes')
         .doc(paciente.id)
@@ -19,7 +19,7 @@ class TarefaGetHojeDatasource {
         .get();
 
     for (var t in ref.docs) {
-      Tarefa tarefa = Tarefa.fromMap(t.data());
+      TarefaEntity tarefa = TarefaEntity.fromMap(t.data());
       tarefa.id = t.id;
       tarefas.add(tarefa);
     }

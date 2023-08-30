@@ -1,10 +1,10 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ResponsavelGetDatasource {
-  Future<Responsavel> get(String id) async {
-    Responsavel responsavel = Responsavel();
+  Future<ResponsavelEntity> get(String id) async {
+    ResponsavelEntity responsavel = ResponsavelEntity();
     if (id.isEmpty) {
       return responsavel;
     }
@@ -14,7 +14,7 @@ class ResponsavelGetDatasource {
         .get()
         .then((doc) {
       if (doc.data() != null) {
-        responsavel = Responsavel.fromMap(doc.data()!);
+        responsavel = ResponsavelEntity.fromMap(doc.data()!);
         responsavel.id = doc.id;
       }
     });

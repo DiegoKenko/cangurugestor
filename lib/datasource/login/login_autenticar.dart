@@ -1,13 +1,13 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/gestor.dart';
-import 'package:cangurugestor/model/pessoa.dart';
-import 'package:cangurugestor/model/responsavel.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/gestor.dart';
+import 'package:cangurugestor/domain/entity/pessoa.dart';
+import 'package:cangurugestor/domain/entity/responsavel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class LoginAuntenticar {
-  Future<Pessoa> autenticarUsuarioEmail(String email) async {
-    Pessoa user;
+class LoginAuntenticarDatasource {
+  Future<PessoaEntity> call(String email) async {
+    PessoaEntity user;
     QuerySnapshot<Map<String, dynamic>> x = await getIt<FirebaseFirestore>()
         .collection('login')
         .where('email', isEqualTo: email)
@@ -19,7 +19,7 @@ class LoginAuntenticar {
                 .collection('gestores')
                 .doc(x.docs.first.data()['doc'])
                 .get();
-        user = Gestor.fromMap(g.data()!);
+        user = GestorEntity.fromMap(g.data()!);
         user.id = g.id;
         return user;
       } else if (x.docs.first.data()['funcao'] == 'cuidador') {
@@ -28,7 +28,7 @@ class LoginAuntenticar {
                 .collection('cuidadores')
                 .doc(x.docs.first.data()['doc'])
                 .get();
-        user = Cuidador.fromMap(c.data()!);
+        user = CuidadorEntity.fromMap(c.data()!);
         user.id = c.id;
         return user;
       } else if (x.docs.first.data()['funcao'] == 'responsavel') {
@@ -37,14 +37,14 @@ class LoginAuntenticar {
                 .collection('responsaveis')
                 .doc(x.docs.first.data()['doc'])
                 .get();
-        user = Responsavel.fromMap(r.data()!);
+        user = ResponsavelEntity.fromMap(r.data()!);
         user.id = r.id;
         return user;
       } else {
-        return Pessoa();
+        return PessoaEntity();
       }
     } else {
-      return Pessoa();
+      return PessoaEntity();
     }
   }
 }

@@ -1,11 +1,11 @@
-import 'package:cangurugestor/global.dart';
-import 'package:cangurugestor/model/cuidador.dart';
-import 'package:cangurugestor/model/paciente.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/paciente.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PacienteCuidadorGetAllDatasource {
-  Future<List<Cuidador>> todosCuidadoresPaciente(Paciente paciente) async {
-    List<Cuidador> cuidadores = [];
+  Future<List<CuidadorEntity>> call(PacienteEntity paciente) async {
+    List<CuidadorEntity> cuidadores = [];
     if (paciente.id.isEmpty || paciente.idCuidadores.isEmpty) {
       return cuidadores;
     } else {
@@ -13,13 +13,13 @@ class PacienteCuidadorGetAllDatasource {
           .collection('pacientes')
           .doc(paciente.id)
           .get();
-      Paciente p = Paciente.fromMap(doc.data()!);
+      PacienteEntity p = PacienteEntity.fromMap(doc.data()!);
       for (var element in p.idCuidadores) {
         var docCuidador = await getIt<FirebaseFirestore>()
             .collection('cuidadores')
             .doc(element)
             .get();
-        Cuidador cuidador = Cuidador.fromMap(docCuidador.data()!);
+        CuidadorEntity cuidador = CuidadorEntity.fromMap(docCuidador.data()!);
         cuidador.id = docCuidador.id;
         cuidadores.add(cuidador);
       }
