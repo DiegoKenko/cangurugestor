@@ -5,21 +5,16 @@ import 'package:cangurugestor/presentation/state/gestor_state.dart';
 import 'package:flutter/material.dart';
 
 class GestorController extends ValueNotifier<GestorState> {
-  final GestorCuidadoresGetAllDatasource gestorCuidadoresGetAllDatasource =
+  final GestorCuidadoresGetAllDatasource _gestorCuidadoresGetAllDatasource =
       GestorCuidadoresGetAllDatasource();
-  final GestorClientesGetAllDatasource gestorClientesGetAllDatasource =
+  final GestorClientesGetAllDatasource _gestorClientesGetAllDatasource =
       GestorClientesGetAllDatasource();
   GestorController() : super(GestorInitialState());
 
-  loadClientes(GestorEntity gestor) async {
+  load(GestorEntity gestor) async {
     value = GestorLoadingState();
-    gestor.clientes = await gestorClientesGetAllDatasource(gestor);
-    value = GestorSuccessState(gestor);
-  }
-
-  loadCuidadores(GestorEntity gestor) async {
-    value = GestorLoadingState();
-    gestor.cuidadores = await gestorCuidadoresGetAllDatasource(gestor);
+    gestor.clientes = await _gestorClientesGetAllDatasource(gestor);
+    gestor.cuidadores = await _gestorCuidadoresGetAllDatasource(gestor);
     value = GestorSuccessState(gestor);
   }
 }

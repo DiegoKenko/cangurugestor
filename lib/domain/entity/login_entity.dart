@@ -3,12 +3,7 @@ import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/gestor_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
-import 'package:cangurugestor/presentation/view/telas/cuid/cuid_painel.dart';
-import 'package:cangurugestor/presentation/view/telas/gest/gest_painel.dart';
-import 'package:cangurugestor/presentation/view/telas/resp/resp_painel.dart';
-import 'package:cangurugestor/presentation/view/telas/login/tela_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class LoginEntity {
   LoginEntity();
@@ -28,18 +23,6 @@ class LoginEntity {
       return EnumClasse.responsavel;
     } else {
       return EnumClasse.naoDefinido;
-    }
-  }
-
-  Widget get route {
-    if (classe == EnumClasse.gestor) {
-      return const PainelGestor();
-    } else if (classe == EnumClasse.responsavel) {
-      return const PainelResponsavel();
-    } else if (classe == EnumClasse.cuidador) {
-      return const PainelCuidador();
-    } else {
-      return const TelaLogin();
     }
   }
 

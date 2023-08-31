@@ -19,7 +19,7 @@ final kInputStyle = TextStyle(
 final kTextStyleHeader = TextStyle(
   color: corPreto,
   letterSpacing: 1.3,
-  fontSize: 15,
+  fontSize: 13,
   decoration: TextDecoration.none,
   fontFamily: GoogleFonts.raleway().fontFamily,
 );
@@ -50,7 +50,7 @@ final kSubTituloStyle = TextStyle(
 
 final kLabelStyle = TextStyle(
   color: corPad1,
-  fontSize: 16,
+  fontSize: 15,
   letterSpacing: 2.5,
   decoration: TextDecoration.none,
   fontWeight: FontWeight.normal,

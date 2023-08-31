@@ -2,7 +2,12 @@ import 'package:cangurugestor/const/enum/enum_auth.dart';
 import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/state/auth_state.dart';
+import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/circular_progress.dart';
+import 'package:cangurugestor/presentation/view/telas/login/widget/login_button.dart';
+import 'package:cangurugestor/presentation/view/telas/login/widget/login_button_apple.dart';
+import 'package:cangurugestor/presentation/view/telas/login/widget/login_button_google.dart';
+import 'package:cangurugestor/presentation/view/telas/tela_initital_router.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 
@@ -62,108 +67,38 @@ class _LoginButtonsState extends State<LoginButtons> {
       builder: (context, state, _) {
         if (state is LoadingAuthState) {
           return const CircularProgressCanguru();
+        } else if (state is SuccessAuthState) {
+          return Center(
+            child: ButtonLogin(
+              image: const Icon(Icons.login),
+              text: 'Entrar',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  AnimatedPageTransition(
+                    page: const TelaInitialRouter(),
+                  ),
+                );
+              },
+              methodAuthID: EnumMethodAuthID.nenhum,
+            ),
+          );
         } else {
-          return const Column(
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 20.0),
-              ButtonLoginGoogle(),
-              ButtonLoginApple(),
+              const SizedBox(height: 20.0),
+              ButtonLoginGoogle(
+                onPressed: () => authController.login(EnumMethodAuthID.google),
+              ),
+              ButtonLoginApple(
+                onPressed: () {},
+              ),
             ],
           );
         }
       },
-    );
-  }
-}
-
-class ButtonLoginApple extends StatelessWidget {
-  const ButtonLoginApple({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const ButtonLogin(
-      image: Image(
-        image: AssetImage('assets/apple_icon.png'),
-        height: 26.0,
-      ),
-      text: 'Entrar com Apple ID',
-      methodAuthID: EnumMethodAuthID.apple,
-    );
-  }
-}
-
-class ButtonLoginGoogle extends StatelessWidget {
-  const ButtonLoginGoogle({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const ButtonLogin(
-      image: Image(
-        image: AssetImage('assets/google_icon.png'),
-        height: 26.0,
-      ),
-      text: 'Entrar com Google',
-      methodAuthID: EnumMethodAuthID.google,
-    );
-  }
-}
-
-class ButtonLogin extends StatefulWidget {
-  const ButtonLogin({
-    Key? key,
-    required this.image,
-    required this.text,
-    required this.methodAuthID,
-  }) : super(key: key);
-  final EnumMethodAuthID methodAuthID;
-  final Widget image;
-  final String text;
-
-  @override
-  State<ButtonLogin> createState() => _ButtonLoginState();
-}
-
-class _ButtonLoginState extends State<ButtonLogin> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: OutlinedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(corPad1.withOpacity(0.1)),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              side: const BorderSide(
-                color: corPad1,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
-        onPressed: () {},
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              widget.image,
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  widget.text,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

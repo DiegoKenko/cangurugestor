@@ -1,4 +1,7 @@
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
+import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
+import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
+import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 
@@ -14,5 +17,14 @@ void setup() {
   );
   getIt.registerLazySingleton<AuthController>(
     () => AuthController(),
+  );
+  getIt.registerLazySingleton<GestorController>(
+    () => GestorController(),
+  );
+  getIt.registerLazySingleton<ResponsavelController>(
+    () => ResponsavelController(),
+  );
+  getIt.registerLazySingleton<CuidadorController>(
+    () => CuidadorController(),
   );
 }

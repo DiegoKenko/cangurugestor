@@ -15,9 +15,7 @@ class LoadingAuthState extends AuthState {
   LoadingAuthState() : super();
 }
 
-class NotLoggedInAuthState extends AuthState {
-  NotLoggedInAuthState() : super();
-}
+
 
 class ErrorAuthState extends AuthState {
   ErrorAuthState() : super();

@@ -1,12 +1,14 @@
 import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/default_error_entity.dart';
 import 'package:cangurugestor/domain/entity/gestor_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:result_dart/result_dart.dart';
 
 class LoginAuntenticarDatasource {
-  Future<PessoaEntity> call(String email) async {
+  Future<Result<PessoaEntity, DefaultErrorEntity>> call(String email) async {
     PessoaEntity user;
     QuerySnapshot<Map<String, dynamic>> x = await getIt<FirebaseFirestore>()
         .collection('login')
@@ -21,7 +23,7 @@ class LoginAuntenticarDatasource {
                 .get();
         user = GestorEntity.fromMap(g.data()!);
         user.id = g.id;
-        return user;
+        return user.toSuccess();
       } else if (x.docs.first.data()['funcao'] == 'cuidador') {
         DocumentSnapshot<Map<String, dynamic>> c =
             await getIt<FirebaseFirestore>()
@@ -30,7 +32,7 @@ class LoginAuntenticarDatasource {
                 .get();
         user = CuidadorEntity.fromMap(c.data()!);
         user.id = c.id;
-        return user;
+        return user.toSuccess();
       } else if (x.docs.first.data()['funcao'] == 'responsavel') {
         DocumentSnapshot<Map<String, dynamic>> r =
             await getIt<FirebaseFirestore>()
@@ -39,12 +41,12 @@ class LoginAuntenticarDatasource {
                 .get();
         user = ResponsavelEntity.fromMap(r.data()!);
         user.id = r.id;
-        return user;
+        return user.toSuccess();
       } else {
-        return PessoaEntity();
+        return Failure(DefaultErrorEntity('nenhum usuário encontrado'));
       }
     } else {
-      return PessoaEntity();
+      return Failure(DefaultErrorEntity('nenhum usuário encontrado'));
     }
   }
 }
