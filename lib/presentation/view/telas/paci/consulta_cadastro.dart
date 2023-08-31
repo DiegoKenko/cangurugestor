@@ -1,9 +1,6 @@
-import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/state/consulta_state.dart';
 import 'package:cangurugestor/presentation/state/paciente_tarefas_state.dart';
-import 'package:cangurugestor/presentation/utils/cep_api.dart';
 import 'package:cangurugestor/presentation/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
@@ -12,7 +9,6 @@ import 'package:cangurugestor/presentation/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/controller/consulta_controller.dart';
-import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -29,7 +25,7 @@ class CadastroConsulta extends StatefulWidget {
 class _CadastroConsultaState extends State<CadastroConsulta>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final ConsultaController consultaController = getIt<ConsultaController>();
+  final ConsultaController consultaController = ConsultaController();
 
   @override
   void initState() {
@@ -135,7 +131,7 @@ class _TarefasConsultaState extends State<TarefasConsulta> {
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: ValueListenableBuilder(
-          valueListenable: getIt<PacienteTarefasController>(),
+          valueListenable: PacienteTarefasController(),
           builder: (context, tarefasState, _) {
             var widgetTarefaSalvas = [];
             if (tarefasState is ListaTarefasSuccessState) {
@@ -234,7 +230,7 @@ class _DadosConsultaState extends State<DadosConsulta> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<ConsultaController>(),
+      valueListenable: ConsultaController(),
       builder: (context, state, _) {
         if (state is ConsultaSuccessState) {
           _descricaoController.text = state.consulta.descricao;
@@ -281,7 +277,7 @@ class _DadosConsultaState extends State<DadosConsulta> {
                   MaskTextInputFormatter(
                     mask: '#####-###',
                     filter: {'#': RegExp(r'[0-9]')},
-                  )
+                  ),
                 ],
                 textInputType: TextInputType.text,
               ),

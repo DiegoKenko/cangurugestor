@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_create_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_delete_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_update_datasource.dart';
@@ -8,11 +7,11 @@ import 'package:flutter/material.dart';
 
 class AtividadeController extends ValueNotifier<AtividadeState> {
   final AtividadePacienteDeleteDatasource atividadePacienteDeleteDatasource =
-      getIt<AtividadePacienteDeleteDatasource>();
+      AtividadePacienteDeleteDatasource();
   final AtividadePacienteUpdateDatasource atividadePacienteUpdateDatasource =
-      getIt<AtividadePacienteUpdateDatasource>();
+      AtividadePacienteUpdateDatasource();
   final AtividadePacienteCreateDatasource atividadePacienteCreateDatasource =
-      getIt<AtividadePacienteCreateDatasource>();
+      AtividadePacienteCreateDatasource();
   AtividadeController() : super(AtividadeInitialState());
 
   load(AtividadeEntity atividade) {

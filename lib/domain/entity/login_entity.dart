@@ -6,7 +6,7 @@ import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/presentation/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/presentation/view/telas/resp/resp_painel.dart';
-import 'package:cangurugestor/presentation/view/telas/tela_login.dart';
+import 'package:cangurugestor/presentation/view/telas/login/tela_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

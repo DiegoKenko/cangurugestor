@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
@@ -23,7 +22,7 @@ class PainelGestor extends StatefulWidget {
 class _PainelGestorState extends State<PainelGestor>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  final GestorController gestorController = getIt<GestorController>();
+  final GestorController gestorController = GestorController();
 
   @override
   void initState() {
@@ -94,41 +93,42 @@ class CuidadoresGestor extends StatefulWidget {
 }
 
 class _CuidadoresGestorState extends State<CuidadoresGestor> {
-  final GestorController gestorController = getIt<GestorController>();
+  final GestorController gestorController = GestorController();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
           child: ValueListenableBuilder(
-              valueListenable: gestorController,
-              builder: ((context, gestorState, _) {
-                if (gestorState is GestorSuccessState) {
-                  return ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: gestorState.gestor.cuidadores.length,
-                    itemBuilder: (context, index) {
-                      CuidadorEntity cuidador =
-                          gestorState.gestor.cuidadores[index];
-                      return ItemContainer(
-                        leading: const CircleAvatar(
-                          backgroundImage: AssetImage('assets/avatar.png'),
-                        ),
-                        title: cuidador.nome,
-                        subtitle: cuidador.sobrenome,
-                        onTap: () {
-                          Navigator.of(context).push(
-                            AnimatedPageTransition(
-                              page: const CadastroCuidador(),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
-                return const Text('nenhum cuidador cadastrado');
-              })),
+            valueListenable: gestorController,
+            builder: ((context, gestorState, _) {
+              if (gestorState is GestorSuccessState) {
+                return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: gestorState.gestor.cuidadores.length,
+                  itemBuilder: (context, index) {
+                    CuidadorEntity cuidador =
+                        gestorState.gestor.cuidadores[index];
+                    return ItemContainer(
+                      leading: const CircleAvatar(
+                        backgroundImage: AssetImage('assets/avatar.png'),
+                      ),
+                      title: cuidador.nome,
+                      subtitle: cuidador.sobrenome,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          AnimatedPageTransition(
+                            page: const CadastroCuidador(),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              }
+              return const Text('nenhum cuidador cadastrado');
+            }),
+          ),
         ),
         SizedBox(
           height: 50,
@@ -160,7 +160,7 @@ class ClientesGestor extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: ValueListenableBuilder(
-            valueListenable: getIt<GestorController>(),
+            valueListenable: GestorController(),
             builder: (context, gestorState, _) {
               if (gestorState is GestorSuccessState) {
                 return ListView.builder(

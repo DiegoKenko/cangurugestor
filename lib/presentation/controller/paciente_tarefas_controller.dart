@@ -1,6 +1,5 @@
 import 'package:cangurugestor/const/enum/enum_intervalo.dart';
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_get_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_get_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_paciente_get_datasource.dart';
@@ -23,25 +22,24 @@ class PacienteTarefasController
     extends ValueNotifier<ListaTarefaPacienteState> {
   PacienteTarefasController() : super(ListaTarefasInitialState());
   final TarefaGetOntemDatasource getOntemDatasource =
-      getIt<TarefaGetOntemDatasource>();
+      TarefaGetOntemDatasource();
   final TarefaGetAmanhaDatasource getAmanhaDatasource =
-      getIt<TarefaGetAmanhaDatasource>();
-  final TarefaGetHojeDatasource getHojeDatasource =
-      getIt<TarefaGetHojeDatasource>();
+      TarefaGetAmanhaDatasource();
+  final TarefaGetHojeDatasource getHojeDatasource = TarefaGetHojeDatasource();
   final TarefaGetSemanaDatasource getSemanaDatasource =
-      getIt<TarefaGetSemanaDatasource>();
+      TarefaGetSemanaDatasource();
   final TarefaPacienteGetAllDatasource getAllDatasource =
-      getIt<TarefaPacienteGetAllDatasource>();
+      TarefaPacienteGetAllDatasource();
   final TarefaDeleteDatasource tarefaDeleteDatasource =
-      getIt<TarefaDeleteDatasource>();
+      TarefaDeleteDatasource();
   final TarefaCreateDatasource tarefaCreateDatasource =
-      getIt<TarefaCreateDatasource>();
+      TarefaCreateDatasource();
   final MedicamentoPacienteGetDatasource medicamentoPacienteGetDatasource =
-      getIt<MedicamentoPacienteGetDatasource>();
+      MedicamentoPacienteGetDatasource();
   final ConsultaPacienteGetDatasource consultaPacienteGetDatasource =
-      getIt<ConsultaPacienteGetDatasource>();
+      ConsultaPacienteGetDatasource();
   final AtividadePacienteGetDatasource atividadePacienteGetDatasource =
-      getIt<AtividadePacienteGetDatasource>();
+      AtividadePacienteGetDatasource();
 
   List<TarefaEntity> tarefas = [];
 

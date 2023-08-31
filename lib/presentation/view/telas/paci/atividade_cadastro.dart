@@ -1,6 +1,4 @@
 import 'package:cangurugestor/const/enum/enum_intervalo.dart';
-import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/atividade_entity.dart';
 import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/state/atividade_state.dart';
@@ -14,7 +12,6 @@ import 'package:cangurugestor/presentation/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/controller/atividade_controller.dart';
-import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -73,7 +70,7 @@ class _CadastroAtividadeState extends State<CadastroAtividade>
         ],
         centerTitle: true,
         title: ValueListenableBuilder(
-          valueListenable: getIt<AtividadeController>(),
+          valueListenable: AtividadeController(),
           builder: (context, state, _) {
             if (state is AtividadeSuccessState) {
               return Column(
@@ -137,7 +134,7 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: ValueListenableBuilder(
-          valueListenable: getIt<PacienteTarefasController>(),
+          valueListenable: PacienteTarefasController(),
           builder: (context, tarefasState, _) {
             var widgetTarefaSalvas = [];
             if (tarefasState is ListaTarefasSuccessState) {
@@ -233,7 +230,7 @@ class _DadosAtividadeState extends State<DadosAtividade> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ValueListenableBuilder(
-        valueListenable: getIt<AtividadeController>(),
+        valueListenable: AtividadeController(),
         builder: (context, state, _) {
           AtividadeEntity atividade = AtividadeEntity();
           if (state is AtividadeSuccessState) {

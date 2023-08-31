@@ -1,3 +1,4 @@
+import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 
@@ -10,5 +11,8 @@ final getIt = GetIt.instance;
 void setup() {
   getIt.registerLazySingleton<FirebaseFirestore>(
     () => FirebaseFirestore.instance,
+  );
+  getIt.registerLazySingleton<AuthController>(
+    () => AuthController(),
   );
 }

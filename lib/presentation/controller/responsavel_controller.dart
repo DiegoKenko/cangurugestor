@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/responsavel/responsavel_create_datasource.dart';
 import 'package:cangurugestor/datasource/responsavel/responsavel_delete_datasource.dart';
 import 'package:cangurugestor/datasource/responsavel/responsavel_paciente_get_all_datasource.dart';
@@ -10,13 +9,13 @@ import 'package:flutter/foundation.dart';
 class ResponsavelController extends ValueNotifier<ResponsavelState> {
   final ResponsavelPacienteGetAllDatasource
       responsavelPacienteGetAllDatasource =
-      getIt<ResponsavelPacienteGetAllDatasource>();
+      ResponsavelPacienteGetAllDatasource();
   final ResponsavelCreateDatasource responsavelCreateDatasource =
-      getIt<ResponsavelCreateDatasource>();
+      ResponsavelCreateDatasource();
   final ResponsavelUpdateDatasource responsavelUpdateDatasource =
-      getIt<ResponsavelUpdateDatasource>();
+      ResponsavelUpdateDatasource();
   final ResponsavelDeleteDatasource responsavelDeleteDatasource =
-      getIt<ResponsavelDeleteDatasource>();
+      ResponsavelDeleteDatasource();
   ResponsavelController() : super(ResponsavelInitialState());
 
   loadPacientes(ResponsavelEntity responsavel) async {

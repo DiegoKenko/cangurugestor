@@ -1,6 +1,4 @@
 import 'package:cangurugestor/const/enum/enum_auth.dart';
-import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/datasource/gestor/gestor_create_datasource.dart';
 import 'package:cangurugestor/datasource/login/login_autenticar.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/gestor_entity.dart';
@@ -63,7 +61,7 @@ class AuthController extends ValueNotifier<AuthState> {
       await cuidadorCreateUsecase(CuidadorEntity.fromPessoa(login.pessoa));
     } else if (classe == EnumClasse.responsavel) {
       await responsavelCreateUsecase(
-          ResponsavelEntity.fromPessoa(login.pessoa));
+          ResponsavelEntity.fromPessoa(login.pessoa),);
     }
   }
 

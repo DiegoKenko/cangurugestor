@@ -57,7 +57,7 @@ class PacienteEntity extends PessoaEntity {
       'ativo': ativo,
       'dataCadastro': DateTime.now().toIso8601String(),
       'idCuidadores': idCuidadores,
-      'idResponsavel': idResponsavel
+      'idResponsavel': idResponsavel,
     };
   }
 }

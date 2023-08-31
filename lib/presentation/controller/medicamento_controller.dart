@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_delete_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_paciente_add_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_update_datasource.dart';
@@ -8,11 +7,11 @@ import 'package:flutter/material.dart';
 
 class MedicamentoController extends ValueNotifier<MedicamentoState> {
   final MedicamentoDeleteDatasource medicamentoDeleteDatasource =
-      getIt<MedicamentoDeleteDatasource>();
+      MedicamentoDeleteDatasource();
   final MedicamentoUpdateDatasource medicamentoUpdateDatasource =
-      getIt<MedicamentoUpdateDatasource>();
+      MedicamentoUpdateDatasource();
   final MedicamentoPacienteAddDatasource medicamentoPacienteAddDatasource =
-      getIt<MedicamentoPacienteAddDatasource>();
+      MedicamentoPacienteAddDatasource();
   MedicamentoController() : super(MedicamentoInitialState());
 
   load() {}

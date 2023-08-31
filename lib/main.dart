@@ -1,10 +1,11 @@
 import 'package:cangurugestor/const/enum/enum_classe.dart';
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/firebase_options.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tooltip_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cangurugestor/presentation/view/telas/tela_login.dart';
+import 'package:cangurugestor/presentation/view/telas/login/tela_login.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -32,6 +33,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    setup();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([

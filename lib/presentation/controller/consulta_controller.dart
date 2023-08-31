@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_create_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_delete_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_update_datasource.dart';
@@ -8,11 +7,11 @@ import 'package:flutter/material.dart';
 
 class ConsultaController extends ValueNotifier<ConsultaState> {
   final ConsultaPacienteDeleteDatasource consultaPacienteDeleteDatasource =
-      getIt<ConsultaPacienteDeleteDatasource>();
+      ConsultaPacienteDeleteDatasource();
   final ConsultaPacienteUpdateDatasource consultaPacienteUpdateDatasource =
-      getIt<ConsultaPacienteUpdateDatasource>();
+      ConsultaPacienteUpdateDatasource();
   final ConsultaPacienteCreateDatasource consultaPacienteCreateDatasource =
-      getIt<ConsultaPacienteCreateDatasource>();
+      ConsultaPacienteCreateDatasource();
   ConsultaController() : super(ConsultaInitialState());
 
   load() {

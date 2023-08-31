@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/atividade_entity.dart';
 import 'package:cangurugestor/domain/entity/consulta_entity.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
@@ -17,11 +16,7 @@ import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/atividade_cadastro.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/consulta_cadastro.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/medicamento_cadastro.dart';
-import 'package:cangurugestor/presentation/controller/atividade_controller.dart';
-import 'package:cangurugestor/presentation/controller/consulta_controller.dart';
-import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
-import 'package:cangurugestor/presentation/controller/medicamento_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -75,7 +70,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
                 },
               );
             },
-          )
+          ),
         ],
         centerTitle: true,
         title: Column(
@@ -135,7 +130,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<PacienteController>(),
+      valueListenable: PacienteController(),
       builder: (context, pacienteState, _) {
         if (pacienteState is PacienteSuccessState) {
           return Column(
@@ -152,7 +147,7 @@ class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
                   },
                 ),
               ),
-              const BotaoAddCuidador()
+              const BotaoAddCuidador(),
             ],
           );
         }
@@ -210,11 +205,11 @@ class BotaoAddCuidador extends StatelessWidget {
                       ),
                     ),
                     ValueListenableBuilder(
-                      valueListenable: getIt<GestorController>(),
+                      valueListenable: GestorController(),
                       builder: (context, gestorState, _) {
                         if (gestorState is GestorSuccessState) {
                           return ValueListenableBuilder(
-                            valueListenable: getIt<PacienteController>(),
+                            valueListenable: PacienteController(),
                             builder: (context, pacienteState, _) {
                               if (pacienteState is PacienteSuccessState) {
                                 return Column(
@@ -328,7 +323,7 @@ class AtividadesPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<PacienteController>(),
+      valueListenable: PacienteController(),
       builder: (context, state, _) {
         if (state is PacienteSuccessState) {
           return Column(
@@ -392,7 +387,7 @@ class ConsultasPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<PacienteController>(),
+      valueListenable: PacienteController(),
       builder: (context, state, _) {
         if (state is PacienteSuccessState) {
           return Column(
@@ -458,7 +453,7 @@ class MedicamentosPaciente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<PacienteController>(),
+      valueListenable: PacienteController(),
       builder: (context, state, _) {
         if (state is PacienteSuccessState) {
           return Column(
@@ -563,7 +558,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ValueListenableBuilder(
-        valueListenable: getIt<PacienteController>(),
+        valueListenable: PacienteController(),
         builder: (context, state, _) {
           if (state is PacienteSuccessState) {
             _cpfController.text = state.paciente.cpf;
@@ -588,7 +583,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
                     MaskTextInputFormatter(
                       mask: '###.###.###-##',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.phone,
                 ),
@@ -617,7 +612,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
                     MaskTextInputFormatter(
                       mask: '#####-###',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.text,
                 ),

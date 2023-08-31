@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/state/responsavel_state.dart';
@@ -12,8 +11,6 @@ import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/utils/cep_api.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/paci_cadastro.dart';
-import 'package:cangurugestor/presentation/controller/auth_controller.dart';
-import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
 import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -73,7 +70,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
             Text(
               'cliente',
               style: kSubtitleAppBarStyle,
-            )
+            ),
           ],
         ),
       ),
@@ -126,7 +123,7 @@ class PacientesResponsavel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<ResponsavelController>(),
+      valueListenable: ResponsavelController(),
       builder: (context, state, _) {
         ResponsavelEntity responsavel = ResponsavelEntity();
         if (state is ResponsavelSuccessState) {
@@ -237,7 +234,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ValueListenableBuilder(
-        valueListenable: getIt<ResponsavelController>(),
+        valueListenable: ResponsavelController(),
         builder: (context, state, _) {
           if (state is ResponsavelSuccessState) {
             _cpfController.text = state.responsavel.cpf;
@@ -259,7 +256,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                     MaskTextInputFormatter(
                       mask: '###.###.###-##',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.phone,
                 ),
@@ -294,7 +291,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                     MaskTextInputFormatter(
                       mask: '## #####-####',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                 ),
                 FormCadastro(
@@ -306,7 +303,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                     MaskTextInputFormatter(
                       mask: '#####-###',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.text,
                 ),

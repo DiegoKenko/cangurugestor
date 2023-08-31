@@ -53,7 +53,7 @@ class DialogConfirmacaoExclusao extends StatelessWidget {
                   },
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

@@ -1,13 +1,9 @@
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/paciente_entity.dart';
-import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
 import 'package:cangurugestor/presentation/state/paciente_tarefas_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
-import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
 import 'package:flutter/material.dart';
 
 class PacienteDashboard extends StatefulWidget {
@@ -96,7 +92,7 @@ class TarefasPeriodo extends StatefulWidget {
 
 class _TarefasPeriodoState extends State<TarefasPeriodo> {
   final PacienteTarefasController pacienteTarefasController =
-      getIt<PacienteTarefasController>();
+      PacienteTarefasController();
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(

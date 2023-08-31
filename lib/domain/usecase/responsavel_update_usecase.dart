@@ -7,7 +7,7 @@ class ResponsavelUpdateUsecase {
   LoginResponsavelUpdateDatasource loginResponsavelUpdateDatasource;
 
   ResponsavelUpdateUsecase(
-      this.reponsavelCreateDatasource, this.loginResponsavelUpdateDatasource);
+      this.reponsavelCreateDatasource, this.loginResponsavelUpdateDatasource,);
 
   call(ResponsavelEntity responsavel) async {
     await reponsavelCreateDatasource(responsavel);

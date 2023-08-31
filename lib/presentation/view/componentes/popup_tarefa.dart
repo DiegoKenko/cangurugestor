@@ -101,7 +101,7 @@ class _PopUpTarefaState extends State<PopUpTarefa> {
             controller: _obsController,
             labelText: 'Observação',
             multiLine: true,
-          )
+          ),
         ],
       ),
       backgroundColor: Colors.white,

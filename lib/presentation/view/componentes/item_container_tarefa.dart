@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/enum/enum_classe.dart';
 import 'package:cangurugestor/const/enum/enum_status.dart';
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
 import 'package:cangurugestor/const/global.dart';
@@ -66,7 +65,7 @@ class _ItemContainerTarefaState extends State<ItemContainerTarefa> {
                   ),
                 ),
               ),
-              wStatus
+              wStatus,
             ],
           ),
         ),
@@ -90,7 +89,7 @@ class TarefaBottomSheet extends StatefulWidget {
 class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
   final TextEditingController _obsController = TextEditingController();
   final AuthController authController = getIt<AuthController>();
-  final ActivityController activityController = getIt<ActivityController>();
+  final ActivityController activityController = ActivityController();
   @override
   void initState() {
     _obsController.text = widget.tarefa.observacao;
@@ -195,7 +194,7 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                           )
                         : Container(),
                   ],
-                )
+                ),
               ],
             );
           },

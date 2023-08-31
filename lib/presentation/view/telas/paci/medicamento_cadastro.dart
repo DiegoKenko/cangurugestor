@@ -1,6 +1,4 @@
 import 'package:cangurugestor/const/enum/enum_intervalo.dart';
-import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/medicamento_entity.dart';
 import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/state/medicamento_state.dart';
@@ -14,13 +12,11 @@ import 'package:cangurugestor/presentation/view/componentes/item_container_taref
 import 'package:cangurugestor/presentation/view/componentes/popup_tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
-import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/medicamento_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // ignore: unnecessary_import
-import 'package:provider/provider.dart';
 
 class CadastroMedicamento extends StatefulWidget {
   const CadastroMedicamento({
@@ -131,7 +127,7 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: ValueListenableBuilder(
-          valueListenable: getIt<PacienteTarefasController>(),
+          valueListenable: PacienteTarefasController(),
           builder: (context, tarefasState, _) {
             var widgetTarefaSalvas = [];
             if (tarefasState is ListaTarefasSuccessState) {
@@ -215,7 +211,7 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<MedicamentoController>(),
+      valueListenable: MedicamentoController(),
       builder: (context, state, _) {
         MedicamentoEntity medicamento = MedicamentoEntity();
         if (state is MedicamentoSuccessState) {

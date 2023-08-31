@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/cuidador/activity/activity_historico_atendimento_datasource.dart';
 import 'package:cangurugestor/datasource/cuidador/activity/activity_historico_login_datasource.dart';
 import 'package:cangurugestor/domain/entity/activity_login_entity.dart';
@@ -17,9 +16,9 @@ class RelatorioGestorAcessosController
 
   final ActivityHistoricoAtendimentoDatasource
       activityHistoricoAtendimentoDatasource =
-      getIt<ActivityHistoricoAtendimentoDatasource>();
+      ActivityHistoricoAtendimentoDatasource();
   final ActivityHistoricoLoginDatasource activityHistoricoLoginDatasource =
-      getIt<ActivityHistoricoLoginDatasource>();
+      ActivityHistoricoLoginDatasource();
   final List<ResponsavelEntity> _clientes = [];
   final List<CuidadorEntity> _cuidadores = [];
   final List<PacienteEntity> _pacientes = [];

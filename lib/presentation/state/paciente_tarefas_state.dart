@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/enum/enum_tarefa.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 

@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
@@ -23,7 +22,7 @@ class CadastroCuidador extends StatefulWidget {
 class _CadastroCuidadorState extends State<CadastroCuidador>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final CuidadorController cuidadorController = getIt<CuidadorController>();
+  final CuidadorController cuidadorController = CuidadorController();
 
   @override
   void initState() {
@@ -80,7 +79,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
                 Text(
                   'cuidador',
                   style: kSubtitleAppBarStyle,
-                )
+                ),
               ],
             ),
           ),
@@ -132,7 +131,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
   final TextEditingController _numeroRuaController = TextEditingController();
-  final CuidadorController cuidadorController = getIt<CuidadorController>();
+  final CuidadorController cuidadorController = CuidadorController();
   final TextEditingController _cidadeController = TextEditingController();
   final TextEditingController _estadoController = TextEditingController();
 
@@ -212,7 +211,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
                     MaskTextInputFormatter(
                       mask: '###.###.###-##',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.phone,
                 ),
@@ -247,7 +246,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
                     MaskTextInputFormatter(
                       mask: '## #####-####',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                 ),
                 FormCadastro(
@@ -259,7 +258,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
                     MaskTextInputFormatter(
                       mask: '#####-###',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.text,
                 ),

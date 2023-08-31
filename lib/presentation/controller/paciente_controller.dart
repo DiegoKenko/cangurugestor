@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_atividade_get_all_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_consulta_get_all_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_create_datasource.dart';
@@ -13,30 +12,27 @@ import 'package:cangurugestor/presentation/state/paciente_state.dart';
 import 'package:flutter/material.dart';
 
 class PacienteController extends ValueNotifier<PacienteState> {
-  final PacienteGetDatasource pacienteGetDatasource =
-      getIt<PacienteGetDatasource>();
+  final PacienteGetDatasource pacienteGetDatasource = PacienteGetDatasource();
 
   final PacienteCuidadorGetAllDatasource pacienteCuidadorGetAllDatasource =
-      getIt<PacienteCuidadorGetAllDatasource>();
+      PacienteCuidadorGetAllDatasource();
   final PacienteMedicamentoGetAllDatasource
       pacienteMedicamentoGetAllDatasource =
-      getIt<PacienteMedicamentoGetAllDatasource>();
+      PacienteMedicamentoGetAllDatasource();
   final PacienteConsultaGetAllDatasource pacienteConsultaGetAllDatasource =
-      getIt<PacienteConsultaGetAllDatasource>();
+      PacienteConsultaGetAllDatasource();
   final PacienteAtividadeGetAllDatasource pacienteAtividageGetAllDatasource =
-      getIt<PacienteAtividadeGetAllDatasource>();
+      PacienteAtividadeGetAllDatasource();
   final PacienteExcluirDatasource pacienteExcluirDatasource =
-      getIt<PacienteExcluirDatasource>();
+      PacienteExcluirDatasource();
   final PacienteUpdateDatasource pacienteUpdateDatasource =
-      getIt<PacienteUpdateDatasource>();
+      PacienteUpdateDatasource();
   final PacienteCreateDatasource pacienteCreateDatasource =
-      getIt<PacienteCreateDatasource>();
+      PacienteCreateDatasource();
 
   PacienteController() : super(PacienteInitialState());
 
-  load(String idPaciente) async {
-    PacienteEntity paciente = await pacienteGetDatasource(idPaciente);
-  }
+  load(String idPaciente) async {}
 
   loadCuidadores(PacienteEntity paciente) async {
     value = PacienteLoadingState();

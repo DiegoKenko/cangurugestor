@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/cuidador/activity/activity_login_datasource.dart';
 import 'package:cangurugestor/datasource/cuidador/activity/activity_tarefa_datasource.dart';
 import 'package:cangurugestor/domain/entity/activity_login_entity.dart';
@@ -13,9 +12,9 @@ import 'package:intl/intl.dart';
 
 class ActivityController extends ValueNotifier<ActivityState> {
   final ActivityLoginDatasource activityLoginDatasource =
-      getIt<ActivityLoginDatasource>();
+      ActivityLoginDatasource();
   final ActivityTarefaDatasource activityTarefaDatasource =
-      getIt<ActivityTarefaDatasource>();
+      ActivityTarefaDatasource();
   ActivityController() : super(InitialActivityState());
 
   addLogin(PessoaEntity user) {

@@ -1,12 +1,8 @@
-import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/activity_entity.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/presentation/state/relatorio_gestor_acesso_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
-import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
 import 'package:cangurugestor/presentation/controller/relatorio_gestor_acesso_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class RelatorioTela extends StatefulWidget {
   const RelatorioTela({Key? key}) : super(key: key);
@@ -40,7 +36,7 @@ class _RelatorioTelaState extends State<RelatorioTela> {
               ),
             ),
             ValueListenableBuilder(
-              valueListenable: getIt<RelatorioGestorAcessosController>(),
+              valueListenable: RelatorioGestorAcessosController(),
               builder: (context, state, _) {
                 if (state is SuccessRelatorioGestorAcessoState) {
                   return Expanded(
@@ -57,7 +53,7 @@ class _RelatorioTelaState extends State<RelatorioTela> {
                 }
                 return Container();
               },
-            )
+            ),
           ],
         ),
       ),

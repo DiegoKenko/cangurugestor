@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/gestor/gestor_clientes_get_all_datasource.dart';
 import 'package:cangurugestor/datasource/gestor/gestor_cuidadores_get_all_datasource.dart';
 import 'package:cangurugestor/domain/entity/gestor_entity.dart';
@@ -7,9 +6,9 @@ import 'package:flutter/material.dart';
 
 class GestorController extends ValueNotifier<GestorState> {
   final GestorCuidadoresGetAllDatasource gestorCuidadoresGetAllDatasource =
-      getIt<GestorCuidadoresGetAllDatasource>();
+      GestorCuidadoresGetAllDatasource();
   final GestorClientesGetAllDatasource gestorClientesGetAllDatasource =
-      getIt<GestorClientesGetAllDatasource>();
+      GestorClientesGetAllDatasource();
   GestorController() : super(GestorInitialState());
 
   loadClientes(GestorEntity gestor) async {
