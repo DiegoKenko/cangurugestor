@@ -1,9 +1,9 @@
-import 'package:cangurugestor/domain/entity/atividade.dart';
-import 'package:cangurugestor/domain/entity/consulta.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/medicamento.dart';
-import 'package:cangurugestor/domain/entity/pessoa.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/atividade_entity.dart';
+import 'package:cangurugestor/domain/entity/consulta_entity.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/medicamento_entity.dart';
+import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
 class PacienteEntity extends PessoaEntity {
   String? dataCadastro;

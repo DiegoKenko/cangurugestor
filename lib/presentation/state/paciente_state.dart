@@ -1,3 +1,5 @@
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+
 abstract class PacienteEvent {
   PacienteEvent();
 }
@@ -8,12 +10,9 @@ class PacienteInitialState extends PacienteState {
   PacienteInitialState() : super();
 }
 
-class PacienteReadyState extends PacienteState {
-  PacienteReadyState() : super();
-}
-
-class PacienteLoadedState extends PacienteState {
-  PacienteLoadedState() : super();
+class PacienteSuccessState extends PacienteState {
+  final PacienteEntity paciente;
+  PacienteSuccessState(this.paciente) : super();
 }
 
 class PacienteLoadingState extends PacienteState {

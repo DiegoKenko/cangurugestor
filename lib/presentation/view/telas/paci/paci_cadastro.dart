@@ -1,7 +1,10 @@
-import 'package:cangurugestor/domain/entity/atividade.dart';
-import 'package:cangurugestor/domain/entity/consulta.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/medicamento.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/atividade_entity.dart';
+import 'package:cangurugestor/domain/entity/consulta_entity.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/medicamento_entity.dart';
+import 'package:cangurugestor/presentation/state/gestor_state.dart';
+import 'package:cangurugestor/presentation/state/paciente_state.dart';
 import 'package:cangurugestor/presentation/utils/cep_api.dart';
 import 'package:cangurugestor/presentation/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
@@ -39,13 +42,7 @@ class _CadastroPacienteState extends State<CadastroPaciente>
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
-    _tabController.addListener(() {
-      if (context.read<PacienteBloc>().state.paciente.id.isEmpty) {
-        if (context.read<AuthBloc>().state.login.editaPaciente) {
-          context.read<PacienteBloc>().add(PacienteUpdateEvent());
-        }
-      }
-    });
+    _tabController.addListener(() {});
     super.initState();
   }
 
@@ -57,83 +54,70 @@ class _CadastroPacienteState extends State<CadastroPaciente>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PacienteBloc, PacienteState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (context.read<AuthBloc>().state.login.editaPaciente) {
-                  context.read<PacienteBloc>().add(PacienteUpdateEvent());
-                }
-                Navigator.of(context).pop();
-              },
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return DialogConfirmacaoExclusao(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            },
+          )
+        ],
+        centerTitle: true,
+        title: Column(
+          children: [
+            Text(
+              '',
+              style: kTitleAppBarStyle,
             ),
-            actions: [
-              context.read<AuthBloc>().state.login.editaPaciente
-                  ? IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return DialogConfirmacaoExclusao(
-                              onConfirm: () {
-                                context
-                                    .read<PacienteBloc>()
-                                    .add(PacienteDeleteEvent());
-                              },
-                            );
-                          },
-                        );
-                      },
-                    )
-                  : const SizedBox(),
-            ],
-            centerTitle: true,
-            title: Column(
-              children: [
-                Text(
-                  state.paciente.nome.toUpperCase(),
-                  style: kTitleAppBarStyle,
-                ),
-                Text(
-                  'paciente',
-                  style: kSubtitleAppBarStyle,
-                ),
-              ],
+            Text(
+              'paciente',
+              style: kSubtitleAppBarStyle,
             ),
-          ),
-          body: SafeArea(
-            child: TabCanguru(
-              tabs: const [
-                Tab(
-                  text: 'Dados',
-                ),
-                Tab(
-                  text: 'Ficha',
-                ),
-                Tab(
-                  text: 'Cuidadores',
-                ),
-              ],
-              views: const [
-                Tab(
-                  child: DadosPaciente(),
-                ),
-                Tab(
-                  child: FichaPaciente(),
-                ),
-                Tab(
-                  child: CuidadoresPaciente(),
-                ),
-              ],
-              controller: _tabController,
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: TabCanguru(
+          tabs: const [
+            Tab(
+              text: 'Dados',
             ),
-          ),
-        );
-      },
+            Tab(
+              text: 'Ficha',
+            ),
+            Tab(
+              text: 'Cuidadores',
+            ),
+          ],
+          views: const [
+            Tab(
+              child: DadosPaciente(),
+            ),
+            Tab(
+              child: FichaPaciente(),
+            ),
+            Tab(
+              child: CuidadoresPaciente(),
+            ),
+          ],
+          controller: _tabController,
+        ),
+      ),
     );
   }
 }
@@ -150,28 +134,29 @@ class CuidadoresPaciente extends StatefulWidget {
 class _CuidadoresPacienteState extends State<CuidadoresPaciente> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PacienteBloc, PacienteState>(
-      builder: (context, pacienteState) {
-        context.read<PacienteBloc>().add(PacienteLoadCuidadoresEvent());
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: pacienteState.paciente.cuidadores.length,
-                itemBuilder: (context, index) {
-                  return ItemContainer(
-                    title: pacienteState.paciente.cuidadores[index].nome,
-                    subtitle:
-                        pacienteState.paciente.cuidadores[index].sobrenome,
-                  );
-                },
+    return ValueListenableBuilder(
+      valueListenable: getIt<PacienteController>(),
+      builder: (context, pacienteState, _) {
+        if (pacienteState is PacienteSuccessState) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: pacienteState.paciente.cuidadores.length,
+                  itemBuilder: (context, index) {
+                    return ItemContainer(
+                      title: pacienteState.paciente.cuidadores[index].nome,
+                      subtitle:
+                          pacienteState.paciente.cuidadores[index].sobrenome,
+                    );
+                  },
+                ),
               ),
-            ),
-            context.read<AuthBloc>().state.login.editaPaciente
-                ? const BotaoAddCuidador()
-                : Container(),
-          ],
-        );
+              const BotaoAddCuidador()
+            ],
+          );
+        }
+        return Container();
       },
     );
   }
@@ -184,8 +169,6 @@ class BotaoAddCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PacienteBloc pacienteBloc = context.read<PacienteBloc>();
-    final GestorBloc gestorBloc = context.read<GestorBloc>();
     return BotaoCadastro(
       onPressed: () {
         showModalBottomSheet(
@@ -226,44 +209,49 @@ class BotaoAddCuidador extends StatelessWidget {
                         ),
                       ),
                     ),
-                    BlocProvider.value(
-                      value: pacienteBloc,
-                      child: BlocProvider.value(
-                        value: gestorBloc,
-                        child: Column(
-                          children: gestorBloc.state.gestor.cuidadores
-                              .map(
-                                (Cuidador e) => ItemContainer(
-                                  onTap: () {},
-                                  title: e.nome,
-                                  trailing: pacienteBloc
-                                          .state.paciente.idCuidadores
-                                          .contains(e.id)
-                                      ? ElevatedButton(
-                                          onPressed: () {
-                                            pacienteBloc.add(
-                                              PacienteRemoveCuidadorEvent(e),
-                                            );
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            'Remover',
-                                          ),
-                                        )
-                                      : ElevatedButton(
-                                          onPressed: () {
-                                            pacienteBloc.add(
-                                              PacienteAddCuidadorEvent(e),
-                                            );
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Adicionar'),
+                    ValueListenableBuilder(
+                      valueListenable: getIt<GestorController>(),
+                      builder: (context, gestorState, _) {
+                        if (gestorState is GestorSuccessState) {
+                          return ValueListenableBuilder(
+                            valueListenable: getIt<PacienteController>(),
+                            builder: (context, pacienteState, _) {
+                              if (pacienteState is PacienteSuccessState) {
+                                return Column(
+                                  children: gestorState.gestor.cuidadores
+                                      .map(
+                                        (CuidadorEntity e) => ItemContainer(
+                                          onTap: () {},
+                                          title: e.nome,
+                                          trailing: pacienteState
+                                                  .paciente.idCuidadores
+                                                  .contains(e.id)
+                                              ? ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text(
+                                                    'Remover',
+                                                  ),
+                                                )
+                                              : ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child:
+                                                      const Text('Adicionar'),
+                                                ),
                                         ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
+                                      )
+                                      .toList(),
+                                );
+                              }
+                              return Container();
+                            },
+                          );
+                        }
+                        return Container();
+                      },
                     ),
                   ],
                 ),
@@ -339,64 +327,58 @@ class AtividadesPaciente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PacienteBloc, PacienteState>(
-      builder: (context, state) {
-        context.read<PacienteBloc>().add(PacienteLoadAtividadesEvent());
-        return Column(
-          children: [
-            Expanded(
-              child: state.paciente.atividades.isEmpty
-                  ? const Center(
-                      child: Text('Nenhuma atividade cadastrada'),
-                    )
-                  : ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.paciente.atividades.length,
-                      itemBuilder: (context, index) {
-                        Atividade atividade = state.paciente.atividades[index];
-                        atividade.paciente = state.paciente;
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              AnimatedPageTransition(
-                                page: BlocProvider<AtividadeBloc>(
-                                  create: (context) => AtividadeBloc(atividade),
-                                  child: const CadastroAtividade(),
+    return ValueListenableBuilder(
+      valueListenable: getIt<PacienteController>(),
+      builder: (context, state, _) {
+        if (state is PacienteSuccessState) {
+          return Column(
+            children: [
+              Expanded(
+                child: state.paciente.atividades.isEmpty
+                    ? const Center(
+                        child: Text('Nenhuma atividade cadastrada'),
+                      )
+                    : ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: state.paciente.atividades.length,
+                        itemBuilder: (context, index) {
+                          AtividadeEntity atividade =
+                              state.paciente.atividades[index];
+                          atividade.paciente = state.paciente;
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                AnimatedPageTransition(
+                                  page: const CadastroAtividade(),
                                 ),
-                              ),
-                            );
-                          },
-                          child: ItemContainer(
-                            title: atividade.descricao,
-                            subtitle: atividade.local,
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            context.read<AuthBloc>().state.login.editaPaciente
-                ? SizedBox(
-                    height: 40,
-                    child: Center(
-                      child: BotaoCadastro(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            AnimatedPageTransition(
-                              page: BlocProvider<AtividadeBloc>(
-                                create: (context) => AtividadeBloc(
-                                  Atividade.initOnAdd(state.paciente),
-                                ),
-                                child: const CadastroAtividade(),
-                              ),
+                              );
+                            },
+                            child: ItemContainer(
+                              title: atividade.descricao,
+                              subtitle: atividade.local,
                             ),
                           );
                         },
                       ),
-                    ),
-                  )
-                : Container(),
-          ],
-        );
+              ),
+              SizedBox(
+                height: 40,
+                child: Center(
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroAtividade(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        return Container();
       },
     );
   }
@@ -409,66 +391,60 @@ class ConsultasPaciente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PacienteBloc, PacienteState>(
-      builder: (context, state) {
-        context.read<PacienteBloc>().add(PacienteLoadConsultasEvent());
-        return Column(
-          children: [
-            Expanded(
-              child: state.paciente.consultas.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'Nenhuma consulta cadastrada',
-                      ),
-                    )
-                  : ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.paciente.consultas.length,
-                      itemBuilder: (context, index) {
-                        Consulta consulta = state.paciente.consultas[index];
-                        consulta.paciente = state.paciente;
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              AnimatedPageTransition(
-                                page: BlocProvider<ConsultaBloc>(
-                                  create: (context) => ConsultaBloc(consulta),
-                                  child: const CadastroConsulta(),
+    return ValueListenableBuilder(
+      valueListenable: getIt<PacienteController>(),
+      builder: (context, state, _) {
+        if (state is PacienteSuccessState) {
+          return Column(
+            children: [
+              Expanded(
+                child: state.paciente.consultas.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Nenhuma consulta cadastrada',
+                        ),
+                      )
+                    : ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: state.paciente.consultas.length,
+                        itemBuilder: (context, index) {
+                          ConsultaEntity consulta =
+                              state.paciente.consultas[index];
+                          consulta.paciente = state.paciente;
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                AnimatedPageTransition(
+                                  page: const CadastroConsulta(),
                                 ),
-                              ),
-                            );
-                          },
-                          child: ItemContainer(
-                            title: consulta.descricao,
-                            subtitle: consulta.medico,
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            context.read<AuthBloc>().state.login.editaPaciente
-                ? SizedBox(
-                    height: 40,
-                    child: Center(
-                      child: BotaoCadastro(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            AnimatedPageTransition(
-                              page: BlocProvider<ConsultaBloc>(
-                                create: (context) => ConsultaBloc(
-                                  Consulta.initOnAdd(state.paciente),
-                                ),
-                                child: const CadastroConsulta(),
-                              ),
+                              );
+                            },
+                            child: ItemContainer(
+                              title: consulta.descricao,
+                              subtitle: consulta.medico,
                             ),
                           );
                         },
                       ),
-                    ),
-                  )
-                : Container(),
-          ],
-        );
+              ),
+              SizedBox(
+                height: 40,
+                child: Center(
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroConsulta(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        return Container();
       },
     );
   }
@@ -481,66 +457,58 @@ class MedicamentosPaciente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PacienteBloc, PacienteState>(
-      builder: (context, state) {
-        context.read<PacienteBloc>().add(PacienteLoadMedicamentosEvent());
-        return Column(
-          children: [
-            Expanded(
-              child: state.paciente.medicamentos.isEmpty
-                  ? const Center(
-                      child: Text('Nenhum medicamento cadastrado'),
-                    )
-                  : ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.paciente.medicamentos.length,
-                      itemBuilder: (context, index) {
-                        Medicamento medicamento =
-                            state.paciente.medicamentos[index];
-                        medicamento.paciente = state.paciente;
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              AnimatedPageTransition(
-                                page: BlocProvider<MedicamentoBloc>(
-                                  create: (context) =>
-                                      MedicamentoBloc(medicamento),
-                                  child: const CadastroMedicamento(),
+    return ValueListenableBuilder(
+      valueListenable: getIt<PacienteController>(),
+      builder: (context, state, _) {
+        if (state is PacienteSuccessState) {
+          return Column(
+            children: [
+              Expanded(
+                child: state.paciente.medicamentos.isEmpty
+                    ? const Center(
+                        child: Text('Nenhum medicamento cadastrado'),
+                      )
+                    : ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: state.paciente.medicamentos.length,
+                        itemBuilder: (context, index) {
+                          MedicamentoEntity medicamento =
+                              state.paciente.medicamentos[index];
+                          medicamento.paciente = state.paciente;
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                AnimatedPageTransition(
+                                  page: const CadastroMedicamento(),
                                 ),
-                              ),
-                            );
-                          },
-                          child: ItemContainer(
-                            title: medicamento.nome,
-                            subtitle: medicamento.observacao,
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            context.read<AuthBloc>().state.login.editaPaciente
-                ? SizedBox(
-                    height: 40,
-                    child: Center(
-                      child: BotaoCadastro(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            AnimatedPageTransition(
-                              page: BlocProvider<MedicamentoBloc>(
-                                create: (context) => MedicamentoBloc(
-                                  Medicamento.initOnAdd(state.paciente),
-                                ),
-                                child: const CadastroMedicamento(),
-                              ),
+                              );
+                            },
+                            child: ItemContainer(
+                              title: medicamento.nome,
+                              subtitle: medicamento.observacao,
                             ),
                           );
                         },
                       ),
-                    ),
-                  )
-                : Container(),
-          ],
-        );
+              ),
+              SizedBox(
+                height: 40,
+                child: Center(
+                  child: BotaoCadastro(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        AnimatedPageTransition(
+                          page: const CadastroMedicamento(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        return Container();
       },
     );
   }
@@ -569,46 +537,11 @@ class _DadosPacienteState extends State<DadosPaciente> {
 
   @override
   void initState() {
-    _cpfController.addListener(() {
-      // Listener para atualizar o CPF do responsável
-      context.read<PacienteBloc>().state.paciente.cpf = _cpfController.text;
-    });
-    _nomeController.addListener(() {
-      // Listener para atualizar o nome do responsável
-      context.read<PacienteBloc>().state.paciente.nome = _nomeController.text;
-    });
-    _nascimentoController.addListener(() {
-      // Listener para atualizar a data de nascimento do responsável
-      context.read<PacienteBloc>().state.paciente.nascimento =
-          _nascimentoController.text;
-    });
-
-    _numeroRuaController.addListener(() {
-      // Listener para atualizar o número da rua do responsável
-      context.read<PacienteBloc>().state.paciente.numeroRua =
-          _numeroRuaController.text;
-    });
-
-    _cepController.addListener(() async {
-      // Listener para atualizar o CEP do responsável
-      context.read<PacienteBloc>().state.paciente.cep = _cepController.text;
-      // Listener para atualizar os campos de endereço
-      if (_cepController.text.length == 9) {
-        Map<dynamic, dynamic> value = await CepAPI.getCep(_cepController.text);
-        if (value['cep'] != null) {
-          _ruaController.text = value['logradouro'];
-          _bairroController.text = value['bairro'];
-          _cidadeController.text = value['localidade'];
-          _estadoController.text = value['uf'];
-          return;
-        } else {
-          _ruaController.text = '';
-          _bairroController.text = '';
-          _cidadeController.text = '';
-          _estadoController.text = '';
-        }
-      }
-    });
+    _cpfController.addListener(() {});
+    _nomeController.addListener(() {});
+    _nascimentoController.addListener(() {});
+    _numeroRuaController.addListener(() {});
+    _cepController.addListener(() async {});
     super.initState();
   }
 
@@ -629,17 +562,20 @@ class _DadosPacienteState extends State<DadosPaciente> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: BlocBuilder<PacienteBloc, PacienteState>(
-        builder: (context, state) {
-          _cpfController.text = state.paciente.cpf;
-          _nomeController.text = state.paciente.nome;
-          _nascimentoController.text = state.paciente.nascimento;
-          _cepController.text = state.paciente.cep;
-          _ruaController.text = state.paciente.rua;
-          _bairroController.text = state.paciente.bairro;
-          _numeroRuaController.text = state.paciente.numeroRua;
-          _cidadeController.text = state.paciente.cidade;
-          _estadoController.text = state.paciente.estado;
+      child: ValueListenableBuilder(
+        valueListenable: getIt<PacienteController>(),
+        builder: (context, state, _) {
+          if (state is PacienteSuccessState) {
+            _cpfController.text = state.paciente.cpf;
+            _nomeController.text = state.paciente.nome;
+            _nascimentoController.text = state.paciente.nascimento;
+            _cepController.text = state.paciente.cep;
+            _ruaController.text = state.paciente.rua;
+            _bairroController.text = state.paciente.bairro;
+            _numeroRuaController.text = state.paciente.numeroRua;
+            _cidadeController.text = state.paciente.cidade;
+            _estadoController.text = state.paciente.estado;
+          }
           return Form(
             child: Column(
               children: [

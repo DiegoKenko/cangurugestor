@@ -1,5 +1,5 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/presentation/state/responsavel_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/drawer.dart';

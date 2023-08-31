@@ -1,6 +1,6 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/gestor.dart';
-import 'package:cangurugestor/domain/entity/login_user.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
+import 'package:cangurugestor/domain/entity/login_user_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginGestorUpdateDatasource {

@@ -7,8 +7,8 @@ import 'package:cangurugestor/datasource/paciente/paciente_excluir_datasource.da
 import 'package:cangurugestor/datasource/paciente/paciente_get_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_medicamento_get_all_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/presentation/state/paciente_state.dart';
 import 'package:flutter/material.dart';
 
@@ -43,25 +43,25 @@ class PacienteController extends ValueNotifier<PacienteState> {
     List<CuidadorEntity> cuidadores =
         await pacienteCuidadorGetAllDatasource(paciente);
     paciente.cuidadores = cuidadores;
-    value = PacienteLoadedState();
+    value = PacienteSuccessState(paciente);
   }
 
   loadMedicamentos(PacienteEntity paciente) async {
     value = PacienteLoadingState();
     paciente.medicamentos = await pacienteMedicamentoGetAllDatasource(paciente);
-    value = PacienteLoadedState();
+    value = PacienteSuccessState(paciente);
   }
 
   loadAtividades(PacienteEntity paciente) async {
     value = PacienteLoadingState();
     paciente.atividades = await pacienteAtividageGetAllDatasource(paciente);
-    value = PacienteLoadedState();
+    value = PacienteSuccessState(paciente);
   }
 
   loadConsultas(PacienteEntity paciente) async {
     value = PacienteLoadingState();
     paciente.consultas = await pacienteConsultaGetAllDatasource(paciente);
-    value = PacienteLoadedState();
+    value = PacienteSuccessState(paciente);
   }
 
   update(PacienteEntity paciente) async {
@@ -72,13 +72,13 @@ class PacienteController extends ValueNotifier<PacienteState> {
       } else {
         await pacienteUpdateDatasource(paciente);
       }
-      value = PacienteReadyState();
+      value = PacienteSuccessState(paciente);
     }
   }
 
   delete(PacienteEntity paciente) async {
     await pacienteExcluirDatasource(paciente);
-    value = PacienteLoadedState();
+    value = PacienteSuccessState(paciente);
   }
 
   removerCuidador(PacienteEntity paciente, CuidadorEntity cuidador) async {
@@ -86,7 +86,7 @@ class PacienteController extends ValueNotifier<PacienteState> {
     if (paciente.idCuidadores.contains(cuidador.id)) {
       paciente.idCuidadores.remove(cuidador.id);
       await pacienteUpdateDatasource(paciente);
-      value = PacienteLoadedState();
+      value = PacienteSuccessState(paciente);
     }
   }
 
@@ -95,7 +95,7 @@ class PacienteController extends ValueNotifier<PacienteState> {
     if (!paciente.idCuidadores.contains(cuidador.id)) {
       paciente.idCuidadores.add(cuidador.id);
       await pacienteUpdateDatasource(paciente);
-      value = PacienteLoadedState();
+      value = PacienteSuccessState(paciente);
     }
   }
 }

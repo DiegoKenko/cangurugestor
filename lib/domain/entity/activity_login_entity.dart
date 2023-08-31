@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/activity.dart';
+import 'package:cangurugestor/domain/entity/activity_entity.dart';
 import 'package:cangurugestor/const/enum/enum_atividade.dart';
 
 class LoginActivityEntity extends ActivityEntity {

@@ -1,6 +1,6 @@
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/pessoa.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
 class GestorEntity extends PessoaEntity {
   List<CuidadorEntity> cuidadores = [];

@@ -11,11 +11,11 @@ import 'package:cangurugestor/datasource/tarefa/tarefa_get_hoje_datasource.dart'
 import 'package:cangurugestor/datasource/tarefa/tarefa_get_ontem_datasource.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_get_semana_datasource.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_paciente_get_all_datasource.dart';
-import 'package:cangurugestor/domain/entity/atividade.dart';
-import 'package:cangurugestor/domain/entity/consulta.dart';
-import 'package:cangurugestor/domain/entity/medicamento.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/domain/entity/atividade_entity.dart';
+import 'package:cangurugestor/domain/entity/consulta_entity.dart';
+import 'package:cangurugestor/domain/entity/medicamento_entity.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/state/paciente_tarefas_state.dart';
 import 'package:flutter/material.dart';
 
@@ -66,7 +66,7 @@ class PacienteTarefasController
         tarefas = await getHojeDatasource(paciente);
     }
 
-    value = ListaTarefasReadyState(paciente, tarefas);
+    value = ListaTarefasSuccessState(paciente, tarefas);
   }
 
   add(PacienteEntity paciente, EnumTarefa tipo, String idTipo) async {
@@ -157,7 +157,7 @@ class PacienteTarefasController
 
     tarefa = await tarefaCreateDatasource(paciente, tarefa);
     tarefas.add(tarefa);
-    value = ListaTarefasReadyState(
+    value = ListaTarefasSuccessState(
       paciente,
       tarefas,
     );
@@ -166,7 +166,7 @@ class PacienteTarefasController
   remove(PacienteEntity paciente, TarefaEntity tarefa) async {
     await tarefaDeleteDatasource(paciente.id, tarefa.id);
     tarefas.remove(tarefa);
-    value = ListaTarefasReadyState(
+    value = ListaTarefasSuccessState(
       paciente,
       tarefas,
     );

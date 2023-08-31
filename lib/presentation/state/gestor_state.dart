@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/gestor.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
 
 abstract class GestorState {}
 
@@ -6,9 +6,9 @@ class GestorInitialState extends GestorState {
   GestorInitialState() : super();
 }
 
-class GestorReadyState extends GestorState {
+class GestorSuccessState extends GestorState {
   GestorEntity gestor;
-  GestorReadyState(this.gestor) : super();
+  GestorSuccessState(this.gestor) : super();
 }
 
 class GestorLoadingState extends GestorState {

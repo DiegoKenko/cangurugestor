@@ -1,5 +1,5 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
 import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';

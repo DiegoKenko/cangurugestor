@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/login.dart';
+import 'package:cangurugestor/domain/entity/login_entity.dart';
 
 abstract class AuthState {}
 

@@ -2,7 +2,7 @@ import 'package:cangurugestor/const/enum/enum_classe.dart';
 import 'package:cangurugestor/const/enum/enum_status.dart';
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/state/auth_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';

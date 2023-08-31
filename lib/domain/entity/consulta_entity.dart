@@ -1,6 +1,6 @@
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
 class ConsultaEntity {
   String id = '';

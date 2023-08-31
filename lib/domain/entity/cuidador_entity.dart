@@ -1,5 +1,5 @@
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/pessoa.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
 
 class CuidadorEntity extends PessoaEntity {
   List<PacienteEntity> pacientes = [];

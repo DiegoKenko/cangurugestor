@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro_data.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro_hora.dart';

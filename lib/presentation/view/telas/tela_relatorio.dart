@@ -1,5 +1,7 @@
-import 'package:cangurugestor/domain/entity/activity.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/activity_entity.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/presentation/state/relatorio_gestor_acesso_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
 import 'package:cangurugestor/presentation/controller/relatorio_gestor_acesso_controller.dart';
@@ -16,9 +18,6 @@ class RelatorioTela extends StatefulWidget {
 class _RelatorioTelaState extends State<RelatorioTela> {
   @override
   Widget build(BuildContext context) {
-    final cubitRelatorio = CubitRelatorioGestorAcessos(
-      gestor: context.read<GestorBloc>().state.gestor,
-    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Relatório'),
@@ -40,21 +39,24 @@ class _RelatorioTelaState extends State<RelatorioTela> {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: cubitRelatorio.cuidadores.length,
-                itemBuilder: (context, index) {
-                  return ChangeNotifierProvider(
-                    create: (context) => RelatorioProviderCuidador(
-                      cuidador: cubitRelatorio.cuidadores[index],
-                    ),
-                    child: ExpansionCuidador(
-                      cuidador: cubitRelatorio.cuidadores[index],
+            ValueListenableBuilder(
+              valueListenable: getIt<RelatorioGestorAcessosController>(),
+              builder: (context, state, _) {
+                if (state is SuccessRelatorioGestorAcessoState) {
+                  return Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: state.cuidadores.length,
+                      itemBuilder: (context, index) {
+                        return ExpansionCuidador(
+                          cuidador: state.cuidadores[index],
+                        );
+                      },
                     ),
                   );
-                },
-              ),
+                }
+                return Container();
+              },
             )
           ],
         ),
@@ -68,7 +70,7 @@ class ExpansionCuidador extends StatefulWidget {
     super.key,
     required this.cuidador,
   });
-  final Cuidador cuidador;
+  final CuidadorEntity cuidador;
 
   @override
   State<ExpansionCuidador> createState() => _ExpansionCuidadorState();
@@ -83,12 +85,10 @@ class _ExpansionCuidadorState extends State<ExpansionCuidador>
 
   @override
   Widget build(BuildContext context) {
-    final RelatorioProviderCuidador provider =
-        context.watch<RelatorioProviderCuidador>();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ExpansionTile(
-        title: Text(provider.cuidador.nome),
+        title: Text(widget.cuidador.nome),
         children: [
           Align(
             alignment: Alignment.centerLeft,
@@ -99,12 +99,12 @@ class _ExpansionCuidadorState extends State<ExpansionCuidador>
               ),
             ),
           ),
-          ...provider.logins
+          /*  ...provider.logins
               .map(
                 (LoginActivity e) =>
                     Text('${e.activityDate} as ${e.activityTime}'),
               )
-              .toList(),
+              .toList(), */
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
@@ -117,18 +117,14 @@ class _ExpansionCuidadorState extends State<ExpansionCuidador>
               ),
             ),
           ),
-          ...provider.atendimentos
+          /*    ...provider.atendimentos
               .map(
                 (TarefaActivity e) =>
                     Text('${e.activityDate} as ${e.activityTime}'),
               )
-              .toList(),
+              .toList(), */
         ],
-        onExpansionChanged: (value) {
-          if (value) {
-            provider.load();
-          }
-        },
+        onExpansionChanged: (value) {},
       ),
     );
   }

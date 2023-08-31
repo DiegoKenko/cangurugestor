@@ -1,5 +1,8 @@
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
+import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
+import 'package:cangurugestor/presentation/state/gestor_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/drawer.dart';
@@ -8,9 +11,6 @@ import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/view/telas/cuid/cuid_cadastro.dart';
 import 'package:cangurugestor/presentation/view/telas/resp/resp_cadastro.dart';
-import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
-import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
-import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:flutter/material.dart';
 
 class PainelGestor extends StatefulWidget {
@@ -23,6 +23,7 @@ class PainelGestor extends StatefulWidget {
 class _PainelGestorState extends State<PainelGestor>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  final GestorController gestorController = getIt<GestorController>();
 
   @override
   void initState() {
@@ -36,14 +37,22 @@ class _PainelGestorState extends State<PainelGestor>
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
-          DrawerListTile(
-            title: Column(
-              children: [
-                Text(gestorState.gestor.nome, style: kTitleAppBarStyle),
-                Text('gestor', style: kSubtitleAppBarStyle),
-              ],
-            ),
-            onTap: null,
+          ValueListenableBuilder(
+            valueListenable: gestorController,
+            builder: (context, state, _) {
+              if (state is GestorSuccessState) {
+                return DrawerListTile(
+                  title: Column(
+                    children: [
+                      Text(state.gestor.nome, style: kTitleAppBarStyle),
+                      Text('gestor', style: kSubtitleAppBarStyle),
+                    ],
+                  ),
+                  onTap: null,
+                );
+              }
+              return Container();
+            },
           ),
         ],
       ),
@@ -85,46 +94,41 @@ class CuidadoresGestor extends StatefulWidget {
 }
 
 class _CuidadoresGestorState extends State<CuidadoresGestor> {
+  final GestorController gestorController = getIt<GestorController>();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: BlocBuilder<GestorBloc, GestorState>(
-            builder: ((context, gestorState) {
-              context.read<GestorBloc>().add(GestorLoadCuidadoresEvent());
-              if (gestorState.gestor.cuidadores.isEmpty) {
-                return const Text('nenhum cuidador cadastrado');
-              } else {
-                return ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: gestorState.gestor.cuidadores.length,
-                  itemBuilder: (context, index) {
-                    Cuidador cuidador = gestorState.gestor.cuidadores[index];
-                    return ItemContainer(
-                      leading: const CircleAvatar(
-                        backgroundImage: AssetImage('assets/avatar.png'),
-                      ),
-                      title: cuidador.nome,
-                      subtitle: cuidador.sobrenome,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          AnimatedPageTransition(
-                            page: BlocProvider<CuidadorBloc>(
-                              create: (context) {
-                                return CuidadorBloc(cuidador);
-                              },
-                              child: const CadastroCuidador(),
+          child: ValueListenableBuilder(
+              valueListenable: gestorController,
+              builder: ((context, gestorState, _) {
+                if (gestorState is GestorSuccessState) {
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: gestorState.gestor.cuidadores.length,
+                    itemBuilder: (context, index) {
+                      CuidadorEntity cuidador =
+                          gestorState.gestor.cuidadores[index];
+                      return ItemContainer(
+                        leading: const CircleAvatar(
+                          backgroundImage: AssetImage('assets/avatar.png'),
+                        ),
+                        title: cuidador.nome,
+                        subtitle: cuidador.sobrenome,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            AnimatedPageTransition(
+                              page: const CadastroCuidador(),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-              }
-            }),
-          ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+                return const Text('nenhum cuidador cadastrado');
+              })),
         ),
         SizedBox(
           height: 50,
@@ -133,16 +137,7 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
               onPressed: () {
                 Navigator.of(context).push(
                   AnimatedPageTransition(
-                    page: BlocProvider<CuidadorBloc>(
-                      create: (context) {
-                        return CuidadorBloc(
-                          Cuidador.initOnAdd(
-                            context.read<GestorBloc>().state.gestor.id,
-                          ),
-                        );
-                      },
-                      child: const CadastroCuidador(),
-                    ),
+                    page: const CadastroCuidador(),
                   ),
                 );
               },
@@ -164,18 +159,16 @@ class ClientesGestor extends StatelessWidget {
     return Column(
       children: <Widget>[
         Expanded(
-          child: BlocBuilder<GestorBloc, GestorState>(
-            builder: (context, gestorState) {
-              context.read<GestorBloc>().add(GestorLoadClientesEvent());
-              if (gestorState.gestor.clientes.isEmpty) {
-                return const Text('nenhum cliente cadastrado');
-              } else {
+          child: ValueListenableBuilder(
+            valueListenable: getIt<GestorController>(),
+            builder: (context, gestorState, _) {
+              if (gestorState is GestorSuccessState) {
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: gestorState.gestor.clientes.length,
                   itemBuilder: (context, index) {
-                    Responsavel responsavel =
+                    ResponsavelEntity responsavel =
                         gestorState.gestor.clientes[index];
                     return ItemContainer(
                       leading: const CircleAvatar(
@@ -185,10 +178,7 @@ class ClientesGestor extends StatelessWidget {
                         Navigator.push(
                           context,
                           AnimatedPageTransition(
-                            page: BlocProvider<ResponsavelBloc>(
-                              create: (context) => ResponsavelBloc(responsavel),
-                              child: const CadastroResponsavel(),
-                            ),
+                            page: const CadastroResponsavel(),
                           ),
                         );
                       },
@@ -197,6 +187,7 @@ class ClientesGestor extends StatelessWidget {
                   },
                 );
               }
+              return const Text('nenhum cliente cadastrado');
             },
           ),
         ),
@@ -207,14 +198,7 @@ class ClientesGestor extends StatelessWidget {
               Navigator.push(
                 context,
                 AnimatedPageTransition(
-                  page: BlocProvider(
-                    create: (context) => ResponsavelBloc(
-                      Responsavel.initOnAdd(
-                        context.read<GestorBloc>().state.gestor.id,
-                      ),
-                    ),
-                    child: const CadastroResponsavel(),
-                  ),
+                  page: const CadastroResponsavel(),
                 ),
               );
             },

@@ -1,5 +1,5 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';

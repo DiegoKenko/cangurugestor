@@ -2,11 +2,11 @@ import 'package:cangurugestor/const/enum/enum_auth.dart';
 import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/gestor/gestor_create_datasource.dart';
 import 'package:cangurugestor/datasource/login/login_autenticar.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/gestor.dart';
-import 'package:cangurugestor/domain/entity/login.dart';
-import 'package:cangurugestor/domain/entity/pessoa.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
+import 'package:cangurugestor/domain/entity/login_entity.dart';
+import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/domain/usecase/cuidador_create_usecase.dart';
 import 'package:cangurugestor/domain/usecase/gestor_create_usecase.dart';
 import 'package:cangurugestor/domain/usecase/responsavel_create_usecase.dart';
@@ -18,12 +18,11 @@ import 'package:flutter/material.dart';
 
 class AuthController extends ValueNotifier<AuthState> {
   final LoginAuntenticarDatasource loginAuntenticarDatasource =
-      getIt<LoginAuntenticarDatasource>();
-  final GestorCreateUsecase gestorCreateUsecase = getIt<GestorCreateUsecase>();
-  final CuidadorCreateUsecase cuidadorCreateUsecase =
-      getIt<CuidadorCreateUsecase>();
+      LoginAuntenticarDatasource();
+  final GestorCreateUsecase gestorCreateUsecase = GestorCreateUsecase();
+  final CuidadorCreateUsecase cuidadorCreateUsecase = CuidadorCreateUsecase();
   final ResponsavelCreateUsecase responsavelCreateUsecase =
-      getIt<ResponsavelCreateUsecase>();
+      ResponsavelCreateUsecase();
 
   AuthController() : super(InitialAtuthState());
 

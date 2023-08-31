@@ -1,5 +1,8 @@
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
+import 'package:cangurugestor/presentation/state/consulta_state.dart';
+import 'package:cangurugestor/presentation/state/paciente_tarefas_state.dart';
 import 'package:cangurugestor/presentation/utils/cep_api.dart';
 import 'package:cangurugestor/presentation/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
@@ -26,15 +29,12 @@ class CadastroConsulta extends StatefulWidget {
 class _CadastroConsultaState extends State<CadastroConsulta>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final ConsultaController consultaController = getIt<ConsultaController>();
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      if (context.read<AuthBloc>().state.login.editaConsulta) {
-        context.read<ConsultaBloc>().add(ConsultaUpdateEvent());
-      }
-    });
+    _tabController.addListener(() {});
     super.initState();
   }
 
@@ -46,78 +46,75 @@ class _CadastroConsultaState extends State<CadastroConsulta>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ConsultaBloc, ConsultaState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (context.read<AuthBloc>().state.login.editaConsulta) {
-                  context.read<ConsultaBloc>().add(ConsultaUpdateEvent());
-                }
-                Navigator.of(context).pop();
-              },
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return DialogConfirmacaoExclusao(
-                        onConfirm: () {
-                          context
-                              .read<ConsultaBloc>()
-                              .add(ConsultaDeleteEvent());
-                        },
-                      );
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return DialogConfirmacaoExclusao(
+                    onConfirm: () {},
                   );
                 },
+              );
+            },
+          ),
+        ],
+        centerTitle: true,
+        title: Column(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: consultaController,
+              builder: (context, state, _) {
+                if (state is ConsultaSuccessState) {
+                  return Text(
+                    state.consulta.descricao.toUpperCase(),
+                    style: kTitleAppBarStyle,
+                  );
+                }
+                return Container();
+              },
+            ),
+            Text(
+              'consulta',
+              style: kSubtitleAppBarStyle,
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30, bottom: 30),
+          child: TabCanguru(
+            controller: _tabController,
+            tabs: const [
+              Tab(
+                text: 'Dados',
+              ),
+              Tab(
+                text: 'Tarefas',
               ),
             ],
-            centerTitle: true,
-            title: Column(
-              children: [
-                Text(
-                  state.consulta.descricao.toUpperCase(),
-                  style: kTitleAppBarStyle,
-                ),
-                Text(
-                  'consulta',
-                  style: kSubtitleAppBarStyle,
-                ),
-              ],
-            ),
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 30),
-              child: TabCanguru(
-                controller: _tabController,
-                tabs: const [
-                  Tab(
-                    text: 'Dados',
-                  ),
-                  Tab(
-                    text: 'Tarefas',
-                  ),
-                ],
-                views: const [
-                  Tab(
-                    child: DadosConsulta(),
-                  ),
-                  Tab(
-                    child: TarefasConsulta(),
-                  ),
-                ],
+            views: const [
+              Tab(
+                child: DadosConsulta(),
               ),
-            ),
+              Tab(
+                child: TarefasConsulta(),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -132,29 +129,19 @@ class TarefasConsulta extends StatefulWidget {
 }
 
 class _TarefasConsultaState extends State<TarefasConsulta> {
-  final ListaTarefasPacienteBloc tarefasBloc = ListaTarefasPacienteBloc();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ListaTarefasPacienteBloc>(
-      create: (context) => tarefasBloc,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child:
-              BlocBuilder<ListaTarefasPacienteBloc, ListaTarefaPacienteState>(
-            bloc: tarefasBloc
-              ..add(
-                ListaTarefasLoadEvent(
-                  paciente:
-                      context.read<ConsultaBloc>().state.consulta.paciente,
-                  tipo: EnumTarefa.consulta,
-                  idTipo: context.read<ConsultaBloc>().state.consulta.id,
-                ),
-              ),
-            builder: (context, tarefasState) {
-              var widgetTarefaSalvas = tarefasState.tarefas
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: ValueListenableBuilder(
+          valueListenable: getIt<PacienteTarefasController>(),
+          builder: (context, tarefasState, _) {
+            var widgetTarefaSalvas = [];
+            if (tarefasState is ListaTarefasSuccessState) {
+              tarefasState.tarefas
                   .map(
-                    (Tarefa tarefa) => ItemContainerTarefa(
+                    (TarefaEntity tarefa) => ItemContainerTarefa(
                       tarefa: tarefa,
                       onTap: () {
                         showDialog(
@@ -169,31 +156,20 @@ class _TarefasConsultaState extends State<TarefasConsulta> {
                     ),
                   )
                   .toList();
-              if (context.read<AuthBloc>().state.login.editaConsulta) {
-                return Column(
-                  children: [
-                    ...widgetTarefaSalvas,
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: BotaoCadastro(
-                        onPressed: () {
-                          tarefasBloc.add(
-                            ListaTarefasAddEvent(
-                              EnumTarefa.consulta,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: widgetTarefaSalvas,
-                );
-              }
-            },
-          ),
+            }
+
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: BotaoCadastro(
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -224,82 +200,19 @@ class _DadosConsultaState extends State<DadosConsulta> {
 
   @override
   void initState() {
-    _descricaoController.addListener(() {
-      // Listener para atualizar a descrição da consulta
-      context.read<ConsultaBloc>().state.consulta.descricao =
-          _descricaoController.text;
-    });
+    _descricaoController.addListener(() {});
 
-    _medicoController.addListener(() {
-      // Listener para atualizar o médico da consulta
-      context.read<ConsultaBloc>().state.consulta.medico =
-          _medicoController.text;
-    });
+    _medicoController.addListener(() {});
 
-    _observacaoController.addListener(() {
-      // Listener para atualizar a observação da consulta
-      context.read<ConsultaBloc>().state.consulta.observacao =
-          _observacaoController.text;
-    });
+    _observacaoController.addListener(() {});
 
-    _ruaController.addListener(() {
-      // Listener para atualizar a rua do responsável
-      context.read<ConsultaBloc>().state.consulta.rua = _ruaController.text;
-    });
-    _bairroController.addListener(() {
-      // Listener para atualizar o bairro do responsável
-      context.read<ConsultaBloc>().state.consulta.bairro =
-          _bairroController.text;
-    });
-    _numeroRuaController.addListener(() {
-      // Listener para atualizar o número da rua do responsável
-      context.read<ConsultaBloc>().state.consulta.numeroRua =
-          _numeroRuaController.text;
-    });
-    _complementoRuaController.addListener(() {
-      // Listener para atualizar o complemento da rua do responsável
-      context.read<ConsultaBloc>().state.consulta.complementoRua =
-          _complementoRuaController.text;
-    });
-    _cidadeController.addListener(() {
-      // Listener para atualizar a cidade do responsável
-      context.read<ConsultaBloc>().state.consulta.cidade =
-          _cidadeController.text;
-    });
-    _estadoController.addListener(() {
-      // Listener para atualizar o estado do responsável
-      context.read<ConsultaBloc>().state.consulta.estado =
-          _estadoController.text;
-    });
-    _cepController.addListener(() {
-      // Listener para atualizar o CEP do responsável
-      context.read<ConsultaBloc>().state.consulta.cep = _cepController.text;
-      // Listener para atualizar os campos de endereço
-      if (_cepController.text.length == 9) {
-        CepAPI.getCep(_cepController.text).then((value) {
-          if (value['cep'] != null) {
-            _ruaController.text = value['logradouro'];
-            _bairroController.text = value['bairro'];
-            _cidadeController.text = value['localidade'];
-            _estadoController.text = value['uf'];
-            context.read<ConsultaBloc>().state.consulta.rua =
-                value['logradouro'];
-            context.read<ConsultaBloc>().state.consulta.bairro =
-                value['bairro'];
-            context.read<ConsultaBloc>().state.consulta.cidade =
-                value['localidade'];
-            context.read<ConsultaBloc>().state.consulta.estado = value['uf'];
-
-            return;
-          } else {
-            _ruaController.text = '';
-            _bairroController.text = '';
-            _cidadeController.text = '';
-            _estadoController.text = '';
-          }
-        });
-      }
-    });
+    _ruaController.addListener(() {});
+    _bairroController.addListener(() {});
+    _numeroRuaController.addListener(() {});
+    _complementoRuaController.addListener(() {});
+    _cidadeController.addListener(() {});
+    _estadoController.addListener(() {});
+    _cepController.addListener(() {});
     super.initState();
   }
 
@@ -320,18 +233,21 @@ class _DadosConsultaState extends State<DadosConsulta> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ConsultaBloc, ConsultaState>(
-      builder: (context, state) {
-        _descricaoController.text = state.consulta.descricao;
-        _medicoController.text = state.consulta.medico;
-        _observacaoController.text = state.consulta.observacao;
-        _ruaController.text = state.consulta.rua;
-        _bairroController.text = state.consulta.bairro;
-        _numeroRuaController.text = state.consulta.numeroRua;
-        _complementoRuaController.text = state.consulta.complementoRua;
-        _cidadeController.text = state.consulta.cidade;
-        _estadoController.text = state.consulta.estado;
-        _cepController.text = state.consulta.cep;
+    return ValueListenableBuilder(
+      valueListenable: getIt<ConsultaController>(),
+      builder: (context, state, _) {
+        if (state is ConsultaSuccessState) {
+          _descricaoController.text = state.consulta.descricao;
+          _medicoController.text = state.consulta.medico;
+          _observacaoController.text = state.consulta.observacao;
+          _ruaController.text = state.consulta.rua;
+          _bairroController.text = state.consulta.bairro;
+          _numeroRuaController.text = state.consulta.numeroRua;
+          _complementoRuaController.text = state.consulta.complementoRua;
+          _cidadeController.text = state.consulta.cidade;
+          _estadoController.text = state.consulta.estado;
+          _cepController.text = state.consulta.cep;
+        }
         return SingleChildScrollView(
           child: Column(
             children: [

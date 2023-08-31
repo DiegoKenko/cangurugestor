@@ -1,6 +1,6 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/activity_tarefa.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/activity_tarefa_entity.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActivityHistoricoAtendimentoDatasource {

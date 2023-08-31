@@ -1,12 +1,12 @@
 import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/cuidador/activity/activity_historico_atendimento_datasource.dart';
 import 'package:cangurugestor/datasource/cuidador/activity/activity_historico_login_datasource.dart';
-import 'package:cangurugestor/domain/entity/activity_login.dart';
-import 'package:cangurugestor/domain/entity/activity_tarefa.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/gestor.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/activity_login_entity.dart';
+import 'package:cangurugestor/domain/entity/activity_tarefa_entity.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/state/relatorio_gestor_acesso_state.dart';
 import 'package:flutter/material.dart';
 

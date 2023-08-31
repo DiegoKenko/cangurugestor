@@ -1,6 +1,10 @@
 import 'package:cangurugestor/const/enum/enum_intervalo.dart';
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/medicamento_entity.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
+import 'package:cangurugestor/presentation/state/medicamento_state.dart';
+import 'package:cangurugestor/presentation/state/paciente_tarefas_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
@@ -34,11 +38,7 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      if (context.read<AuthBloc>().state.login.editaMedicamento) {
-        context.read<MedicamentoBloc>().add(MedicamentoUpdateEvent());
-      }
-    });
+    _tabController.addListener(() {});
     super.initState();
   }
 
@@ -50,78 +50,67 @@ class _CadastroMedicamentoState extends State<CadastroMedicamento>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MedicamentoBloc, MedicamentoState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (context.read<AuthBloc>().state.login.editaMedicamento) {
-                  context.read<MedicamentoBloc>().add(MedicamentoUpdateEvent());
-                }
-                Navigator.pop(context);
-              },
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return DialogConfirmacaoExclusao(
-                        onConfirm: () {
-                          context
-                              .read<MedicamentoBloc>()
-                              .add(MedicamentoDeleteEvent());
-                        },
-                      );
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return DialogConfirmacaoExclusao(
+                    onConfirm: () {},
                   );
                 },
+              );
+            },
+          ),
+        ],
+        centerTitle: true,
+        title: Column(
+          children: [
+            Text(
+              '',
+              style: kTitleAppBarStyle,
+            ),
+            Text(
+              'medicamento',
+              style: kSubtitleAppBarStyle,
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30, bottom: 30),
+          child: TabCanguru(
+            controller: _tabController,
+            tabs: const [
+              Tab(
+                text: 'Dados',
+              ),
+              Tab(
+                text: 'Tarefas',
               ),
             ],
-            centerTitle: true,
-            title: Column(
-              children: [
-                Text(
-                  state.medicamento.nome.toUpperCase(),
-                  style: kTitleAppBarStyle,
-                ),
-                Text(
-                  'medicamento',
-                  style: kSubtitleAppBarStyle,
-                ),
-              ],
-            ),
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 30),
-              child: TabCanguru(
-                controller: _tabController,
-                tabs: const [
-                  Tab(
-                    text: 'Dados',
-                  ),
-                  Tab(
-                    text: 'Tarefas',
-                  ),
-                ],
-                views: const [
-                  Tab(
-                    child: DadosMedicamento(),
-                  ),
-                  Tab(
-                    child: TarefasMedicamento(),
-                  ),
-                ],
+            views: const [
+              Tab(
+                child: DadosMedicamento(),
               ),
-            ),
+              Tab(
+                child: TarefasMedicamento(),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -136,32 +125,19 @@ class TarefasMedicamento extends StatefulWidget {
 }
 
 class _TarefasMedicamentoState extends State<TarefasMedicamento> {
-  final ListaTarefasPacienteBloc tarefasBloc = ListaTarefasPacienteBloc();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ListaTarefasPacienteBloc>(
-      create: (context) => tarefasBloc,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child:
-              BlocBuilder<ListaTarefasPacienteBloc, ListaTarefaPacienteState>(
-            bloc: tarefasBloc
-              ..add(
-                ListaTarefasLoadEvent(
-                  paciente: context
-                      .read<MedicamentoBloc>()
-                      .state
-                      .medicamento
-                      .paciente,
-                  tipo: EnumTarefa.medicamento,
-                  idTipo: context.read<MedicamentoBloc>().state.medicamento.id,
-                ),
-              ),
-            builder: (context, tarefasState) {
-              var widgetTarefaSalvas = tarefasState.tarefas
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: ValueListenableBuilder(
+          valueListenable: getIt<PacienteTarefasController>(),
+          builder: (context, tarefasState, _) {
+            var widgetTarefaSalvas = [];
+            if (tarefasState is ListaTarefasSuccessState) {
+              tarefasState.tarefas
                   .map(
-                    (Tarefa tarefa) => ItemContainerTarefa(
+                    (TarefaEntity tarefa) => ItemContainerTarefa(
                       tarefa: tarefa,
                       onTap: () {
                         showDialog(
@@ -176,31 +152,20 @@ class _TarefasMedicamentoState extends State<TarefasMedicamento> {
                     ),
                   )
                   .toList();
-              if (context.read<AuthBloc>().state.login.editaMedicamento) {
-                return Column(
-                  children: [
-                    ...widgetTarefaSalvas,
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: BotaoCadastro(
-                        onPressed: () {
-                          tarefasBloc.add(
-                            ListaTarefasAddEvent(
-                              EnumTarefa.medicamento,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: widgetTarefaSalvas,
-                );
-              }
-            },
-          ),
+            }
+
+            return Column(
+              children: [
+                ...widgetTarefaSalvas,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: BotaoCadastro(
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -227,40 +192,12 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
 
   @override
   void initState() {
-    _nomeController.addListener(() {
-      context.read<MedicamentoBloc>().state.medicamento.nome =
-          _nomeController.text;
-    });
-    _doseController.addListener(() {
-      context.read<MedicamentoBloc>().state.medicamento.dose = double.parse(
-        _doseController.text.isEmpty ? '0' : _doseController.text,
-      );
-    });
-    _intervaloQtdeController.addListener(() {
-      context.read<MedicamentoBloc>().state.medicamento.intervaloQuantidade =
-          double.parse(
-        _intervaloQtdeController.text.isEmpty
-            ? '0'
-            : _intervaloQtdeController.text,
-      );
-    });
-    _intervaloUMController.addListener(() {
-      context.read<MedicamentoBloc>().state.medicamento.intervalo =
-          EnumIntervalo.values.firstWhere(
-        (EnumIntervalo element) => element.name == _intervaloUMController.text,
-        orElse: () => EnumIntervalo.minutos,
-      );
-    });
-    _inicioController.addListener(() {
-      context.read<MedicamentoBloc>().state.medicamento.dataInicio =
-          DateFormat('dd/MM/yyyy').parse(
-        _inicioController.text.isEmpty ? '01/01/2023' : _inicioController.text,
-      );
-    });
-    _observacaoController.addListener(() {
-      context.read<MedicamentoBloc>().state.medicamento.observacao =
-          _observacaoController.text;
-    });
+    _nomeController.addListener(() {});
+    _doseController.addListener(() {});
+    _intervaloQtdeController.addListener(() {});
+    _intervaloUMController.addListener(() {});
+    _inicioController.addListener(() {});
+    _observacaoController.addListener(() {});
     super.initState();
   }
 
@@ -277,21 +214,26 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MedicamentoBloc, MedicamentoState>(
-      builder: (context, state) {
-        _nomeController.text = state.medicamento.nome;
-        _doseController.text = state.medicamento.dose.toString();
-        _intervaloQtdeController.text =
-            state.medicamento.intervaloQuantidade.toString();
-        _intervaloUMController.text = state.medicamento.intervalo.name.isEmpty
-            ? EnumIntervalo.minutos.name
-            : state.medicamento.intervalo.name;
-        _inicioController.text = DateFormat('dd/MM/yyyy').format(
-          state.medicamento.dataInicio == null
-              ? DateTime.now()
-              : state.medicamento.dataInicio!,
-        );
-        _observacaoController.text = state.medicamento.observacao;
+    return ValueListenableBuilder(
+      valueListenable: getIt<MedicamentoController>(),
+      builder: (context, state, _) {
+        MedicamentoEntity medicamento = MedicamentoEntity();
+        if (state is MedicamentoSuccessState) {
+          medicamento = state.medicamento;
+          _nomeController.text = state.medicamento.nome;
+          _doseController.text = state.medicamento.dose.toString();
+          _intervaloQtdeController.text =
+              state.medicamento.intervaloQuantidade.toString();
+          _intervaloUMController.text = state.medicamento.intervalo.name.isEmpty
+              ? EnumIntervalo.minutos.name
+              : state.medicamento.intervalo.name;
+          _inicioController.text = DateFormat('dd/MM/yyyy').format(
+            state.medicamento.dataInicio == null
+                ? DateTime.now()
+                : state.medicamento.dataInicio!,
+          );
+          _observacaoController.text = state.medicamento.observacao;
+        }
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -326,7 +268,7 @@ class _DadosMedicamentoState extends State<DadosMedicamento> {
                           .map((e) => e.name)
                           .toList(growable: false),
                       controller: _intervaloUMController,
-                      value: state.medicamento.intervalo.name,
+                      value: medicamento.intervalo.name,
                       hintText: 'Intervalo',
                     ),
                   ),

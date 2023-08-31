@@ -1,8 +1,8 @@
 import 'package:cangurugestor/const/enum/enum_classe.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
-import 'package:cangurugestor/domain/entity/gestor.dart';
-import 'package:cangurugestor/domain/entity/pessoa.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
+import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/view/telas/cuid/cuid_painel.dart';
 import 'package:cangurugestor/presentation/view/telas/gest/gest_painel.dart';
 import 'package:cangurugestor/presentation/view/telas/resp/resp_painel.dart';

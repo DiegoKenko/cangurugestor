@@ -2,7 +2,7 @@ import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_delete_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_paciente_add_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/medicamento.dart';
+import 'package:cangurugestor/domain/entity/medicamento_entity.dart';
 import 'package:cangurugestor/presentation/state/medicamento_state.dart';
 import 'package:flutter/material.dart';
 

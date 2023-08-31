@@ -3,7 +3,7 @@ import 'package:cangurugestor/datasource/responsavel/responsavel_create_datasour
 import 'package:cangurugestor/datasource/responsavel/responsavel_delete_datasource.dart';
 import 'package:cangurugestor/datasource/responsavel/responsavel_paciente_get_all_datasource.dart';
 import 'package:cangurugestor/datasource/responsavel/responsavel_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/state/responsavel_state.dart';
 import 'package:flutter/foundation.dart';
 

@@ -1,6 +1,6 @@
 import 'package:cangurugestor/datasource/login/responsavel/login_responsavel_update_datasource.dart';
 import 'package:cangurugestor/datasource/responsavel/responsavel_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
 class ResponsavelUpdateUsecase {
   ResponsavelUpdateDatasource reponsavelCreateDatasource;

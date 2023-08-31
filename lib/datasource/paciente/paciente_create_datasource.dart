@@ -1,5 +1,5 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PacienteCreateDatasource {

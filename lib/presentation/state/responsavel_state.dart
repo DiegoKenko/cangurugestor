@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/responsavel.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
 abstract class ResponsavelState {}
 

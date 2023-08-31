@@ -1,6 +1,6 @@
 import 'package:cangurugestor/const/enum/enum_intervalo.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 // ignore: unused_import
 import 'package:cangurugestor/const/global.dart';
 

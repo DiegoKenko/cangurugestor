@@ -2,7 +2,7 @@ import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_create_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_delete_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/atividade.dart';
+import 'package:cangurugestor/domain/entity/atividade_entity.dart';
 import 'package:cangurugestor/presentation/state/atividade_state.dart';
 import 'package:flutter/material.dart';
 

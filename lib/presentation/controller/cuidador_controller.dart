@@ -1,5 +1,5 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/usecase/cuidador_create_usecase.dart';
 import 'package:cangurugestor/domain/usecase/cuidador_update_usecase.dart';
 import 'package:cangurugestor/presentation/state/cuidador_state.dart';

@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 
 abstract class CuidadorState {
   CuidadorState();

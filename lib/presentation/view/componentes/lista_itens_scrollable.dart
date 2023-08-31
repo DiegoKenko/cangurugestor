@@ -1,4 +1,4 @@
-import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:flutter/material.dart';
 
 class ScrollableLista {

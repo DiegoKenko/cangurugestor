@@ -1,12 +1,14 @@
 import 'package:cangurugestor/datasource/cuidador/cuidador_create_datasource.dart';
 import 'package:cangurugestor/datasource/login/cuidador/login_cuidador_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 
 class CuidadorCreateUsecase {
-  CuidadorCreateDatasource cuidadorCreateDatasource;
-  LoginCuidadorUpdateDatasource loginDatasource;
+  CuidadorCreateDatasource cuidadorCreateDatasource =
+      CuidadorCreateDatasource();
+  LoginCuidadorUpdateDatasource loginDatasource =
+      LoginCuidadorUpdateDatasource();
 
-  CuidadorCreateUsecase(this.cuidadorCreateDatasource, this.loginDatasource);
+  CuidadorCreateUsecase();
 
   call(CuidadorEntity cuidador) async {
     await cuidadorCreateDatasource(cuidador);

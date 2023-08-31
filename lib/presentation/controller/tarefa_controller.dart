@@ -1,8 +1,8 @@
 import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_delete_datasource.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_update_datasource.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
 import 'package:cangurugestor/presentation/state/tarefa_state.dart';
 import 'package:flutter/material.dart';
 

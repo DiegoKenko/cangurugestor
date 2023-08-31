@@ -1,4 +1,7 @@
-import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
+import 'package:cangurugestor/presentation/state/responsavel_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
@@ -31,105 +34,86 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
-    _tabController.addListener(() {
-      if (context.read<AuthBloc>().state.login.editaResponsavel) {
-        context.read<ResponsavelBloc>().add(ResponsavelUpdateEvent());
-      }
-    });
+    _tabController.addListener(() {});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ResponsavelBloc, ResponsavelState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (state.responsavel.nome.isEmpty) {
-                  Navigator.of(context).pop();
-                  return;
-                }
-                if (context.read<AuthBloc>().state.login.editaResponsavel) {
-                  context.read<ResponsavelBloc>().add(ResponsavelUpdateEvent());
-                }
-                Navigator.of(context).pop();
-              },
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return DialogConfirmacaoExclusao(
-                        onConfirm: () {
-                          context
-                              .read<ResponsavelBloc>()
-                              .add(ResponsavelDeleteEvent());
-                        },
-                      );
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return DialogConfirmacaoExclusao(
+                    onConfirm: () {},
                   );
                 },
+              );
+            },
+          ),
+        ],
+        title: Column(
+          children: [
+            Text(
+              '',
+              style: kTitleAppBarStyle,
+            ),
+            Text(
+              'cliente',
+              style: kSubtitleAppBarStyle,
+            )
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: TabCanguru(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              child: Text(
+                'Dados',
               ),
-            ],
-            title: Column(
-              children: [
-                Text(
-                  state.responsavel.nome.toUpperCase(),
-                  style: kTitleAppBarStyle,
-                ),
-                Text(
-                  'cliente',
-                  style: kSubtitleAppBarStyle,
-                )
-              ],
             ),
-          ),
-          body: SafeArea(
-            child: TabCanguru(
-              controller: _tabController,
-              tabs: const [
-                Tab(
-                  child: Text(
-                    'Dados',
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    'Pacientes',
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    'Contrato',
-                  ),
-                ),
-              ],
-              views: const [
-                Tab(
-                  child: DadosResponsavel(),
-                ),
-                Tab(child: PacientesResponsavel()),
-                Tab(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Text('nenhum contrato cadastrado'),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            Tab(
+              child: Text(
+                'Pacientes',
+              ),
             ),
-          ),
-        );
-      },
+            Tab(
+              child: Text(
+                'Contrato',
+              ),
+            ),
+          ],
+          views: const [
+            Tab(
+              child: DadosResponsavel(),
+            ),
+            Tab(child: PacientesResponsavel()),
+            Tab(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text('nenhum contrato cadastrado'),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -141,13 +125,16 @@ class PacientesResponsavel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ResponsavelBloc, ResponsavelState>(
-      bloc: context.read<ResponsavelBloc>()
-        ..add(ResponsavelLoadPacientesEvent()),
-      builder: (context, state) {
+    return ValueListenableBuilder(
+      valueListenable: getIt<ResponsavelController>(),
+      builder: (context, state, _) {
+        ResponsavelEntity responsavel = ResponsavelEntity();
+        if (state is ResponsavelSuccessState) {
+          responsavel = state.responsavel;
+        }
         return Column(
           children: [
-            state.responsavel.pacientes.isEmpty
+            responsavel.pacientes.isEmpty
                 ? const Expanded(
                     child: Center(
                       child: Text('nenhum paciente cadastrado'),
@@ -156,9 +143,9 @@ class PacientesResponsavel extends StatelessWidget {
                 : Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: state.responsavel.pacientes.length,
+                      itemCount: responsavel.pacientes.length,
                       itemBuilder: (context, index) {
-                        Paciente paciente = state.responsavel.pacientes[index];
+                        PacienteEntity paciente = responsavel.pacientes[index];
                         return ItemContainer(
                           leading: const CircleAvatar(
                             backgroundImage: AssetImage('assets/avatar.png'),
@@ -166,10 +153,7 @@ class PacientesResponsavel extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context).push(
                               AnimatedPageTransition(
-                                page: BlocProvider<PacienteBloc>(
-                                  create: (context) => PacienteBloc(paciente),
-                                  child: const CadastroPaciente(),
-                                ),
+                                page: const CadastroPaciente(),
                               ),
                             );
                           },
@@ -185,14 +169,7 @@ class PacientesResponsavel extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).push(
                       AnimatedPageTransition(
-                        page: BlocProvider<PacienteBloc>(
-                          create: (context) => PacienteBloc(
-                            Paciente.initOnAdd(
-                              state.responsavel.id,
-                            ),
-                          ),
-                          child: const CadastroPaciente(),
-                        ),
+                        page: const CadastroPaciente(),
                       ),
                     );
                   },
@@ -231,59 +208,13 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   @override
   void initState() {
     super.initState();
-    _cpfController.addListener(() {
-      // Listener para atualizar o CPF do responsável
-      context.read<ResponsavelBloc>().state.responsavel.cpf =
-          _cpfController.text;
-    });
-    _nomeController.addListener(() {
-      // Listener para atualizar o nome do responsável
-      context.read<ResponsavelBloc>().state.responsavel.nome =
-          _nomeController.text;
-    });
-    _nascimentoController.addListener(() {
-      // Listener para atualizar a data de nascimento do responsável
-      context.read<ResponsavelBloc>().state.responsavel.nascimento =
-          _nascimentoController.text;
-    });
-    _emailController.addListener(() {
-      // Listener para atualizar o email do responsável
-      context.read<ResponsavelBloc>().state.responsavel.email =
-          _emailController.text;
-    });
-    _telefoneController.addListener(() {
-      // Listener para atualizar o telefone do responsável
-      context.read<ResponsavelBloc>().state.responsavel.telefone =
-          _telefoneController.text;
-    });
-
-    _numeroRuaController.addListener(() {
-      // Listener para atualizar o número da rua do responsável
-      context.read<ResponsavelBloc>().state.responsavel.numeroRua =
-          _numeroRuaController.text;
-    });
-
-    _cepController.addListener(() async {
-      // Listener para atualizar o CEP do responsável
-      context.read<ResponsavelBloc>().state.responsavel.cep =
-          _cepController.text;
-      // Listener para atualizar os campos de endereço
-      if (_cepController.text.length == 9) {
-        Map<dynamic, dynamic> value = await CepAPI.getCep(_cepController.text);
-        if (value['cep'] != null) {
-          _ruaController.text = value['logradouro'];
-          _bairroController.text = value['bairro'];
-          _cidadeController.text = value['localidade'];
-          _estadoController.text = value['uf'];
-          return;
-        } else {
-          _ruaController.text = '';
-          _bairroController.text = '';
-          _cidadeController.text = '';
-          _estadoController.text = '';
-        }
-      }
-    });
+    _cpfController.addListener(() {});
+    _nomeController.addListener(() {});
+    _nascimentoController.addListener(() {});
+    _emailController.addListener(() {});
+    _telefoneController.addListener(() {});
+    _numeroRuaController.addListener(() {});
+    _cepController.addListener(() async {});
   }
 
   @override
@@ -305,14 +236,17 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: BlocBuilder<ResponsavelBloc, ResponsavelState>(
-        builder: (context, state) {
-          _cpfController.text = state.responsavel.cpf;
-          _nomeController.text = state.responsavel.nome;
-          _nascimentoController.text = state.responsavel.nascimento;
-          _emailController.text = state.responsavel.email;
-          _telefoneController.text = state.responsavel.telefone;
-          _cepController.text = state.responsavel.cep;
+      child: ValueListenableBuilder(
+        valueListenable: getIt<ResponsavelController>(),
+        builder: (context, state, _) {
+          if (state is ResponsavelSuccessState) {
+            _cpfController.text = state.responsavel.cpf;
+            _nomeController.text = state.responsavel.nome;
+            _nascimentoController.text = state.responsavel.nascimento;
+            _emailController.text = state.responsavel.email;
+            _telefoneController.text = state.responsavel.telefone;
+            _cepController.text = state.responsavel.cep;
+          }
           return Form(
             child: Column(
               children: [

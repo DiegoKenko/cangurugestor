@@ -1,4 +1,9 @@
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/tarefa_entity.dart';
+import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
+import 'package:cangurugestor/presentation/state/paciente_tarefas_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
@@ -90,17 +95,17 @@ class TarefasPeriodo extends StatefulWidget {
 }
 
 class _TarefasPeriodoState extends State<TarefasPeriodo> {
+  final PacienteTarefasController pacienteTarefasController =
+      getIt<PacienteTarefasController>();
   @override
   Widget build(BuildContext context) {
-    final CuidadorBloc cuidadorBloc = context.read<CuidadorBloc>();
-    final PacienteBloc pacienteBloc = context.read<PacienteBloc>();
-    return FutureBuilder(
-      future: getTodasTarefasFiltro(
-        widget.data,
-        context.read<PacienteBloc>().state.paciente,
-      ),
-      builder: (builder, snap) {
-        var tarefas = snap.data ?? [];
+    return ValueListenableBuilder(
+      valueListenable: pacienteTarefasController,
+      builder: (builder, state, _) {
+        var tarefas = [];
+        if (state is ListaTarefasSuccessState) {
+          tarefas = state.tarefas;
+        }
         if (tarefas.isEmpty) {
           return const Center(
             child: Text('Não há tarefas para o período'),
@@ -118,14 +123,8 @@ class _TarefasPeriodoState extends State<TarefasPeriodo> {
                   elevation: 10,
                   context: context,
                   builder: (context) {
-                    return BlocProvider.value(
-                      value: pacienteBloc,
-                      child: BlocProvider.value(
-                        value: cuidadorBloc,
-                        child: TarefaBottomSheet(
-                          tarefa: tarefas[index],
-                        ),
-                      ),
+                    return TarefaBottomSheet(
+                      tarefa: tarefas[index],
                     );
                   },
                 ).then((value) => setState(() {}));
@@ -135,34 +134,5 @@ class _TarefasPeriodoState extends State<TarefasPeriodo> {
         );
       },
     );
-  }
-
-  Future<List<Tarefa>> getTodasTarefasFiltro(
-    EnumFiltroDataTarefa filtro,
-    Paciente paciente,
-  ) async {
-    List<Tarefa> tarefas = [];
-    if (paciente.id.isNotEmpty) {
-      switch (filtro) {
-        case EnumFiltroDataTarefa.ontem:
-          tarefas = await FirestoreTarefa().todasTarefasOntem(paciente);
-          break;
-        case EnumFiltroDataTarefa.hoje:
-          tarefas = await FirestoreTarefa().todasTarefasHoje(paciente);
-          break;
-        case EnumFiltroDataTarefa.amanha:
-          tarefas = await FirestoreTarefa().todasTarefasAmanha(paciente);
-          break;
-        case EnumFiltroDataTarefa.proxSemana:
-          tarefas = await FirestoreTarefa().todasTarefasSemana(paciente);
-          break;
-        default:
-          tarefas = await FirestoreTarefa().todasTarefasOntem(paciente);
-      }
-    } else {
-      tarefas = [];
-    }
-
-    return tarefas;
   }
 }
