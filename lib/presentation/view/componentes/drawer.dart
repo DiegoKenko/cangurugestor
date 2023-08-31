@@ -23,10 +23,17 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      elevation: 20,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(40),
+          bottomRight: Radius.circular(40),
+        ),
+      ),
       backgroundColor: corPad1,
       child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+          padding: const EdgeInsets.only(top: 20),
           child: ValueListenableBuilder(
             valueListenable: authController,
             builder: (context, state, _) {
@@ -130,22 +137,20 @@ class DrawerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-      child: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.white,
-              width: 1,
-            ),
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.white,
+            width: 1,
           ),
         ),
-        child: Center(
-          child: ListTile(
-            title: title,
-            onTap: onTap,
-          ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ListTile(
+          title: title,
+          onTap: onTap,
         ),
       ),
     );
