@@ -1,7 +1,7 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/datasource/consulta/consulta_paciente_create_datasource.dart';
-import 'package:cangurugestor/datasource/consulta/consulta_paciente_delete_datasource.dart';
-import 'package:cangurugestor/datasource/consulta/consulta_paciente_update_datasource.dart';
+import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_create_datasource.dart';
+import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_delete_datasource.dart';
+import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_update_datasource.dart';
 import 'package:cangurugestor/domain/entity/consulta.dart';
 import 'package:cangurugestor/presentation/state/consulta_state.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,9 @@ class ConsultaBloc extends ValueNotifier<ConsultaState> {
       await consultaPacienteUpdateDatasource(consulta, consulta.paciente.id);
     } else {
       consulta = await consultaPacienteCreateDatasource(
-          consulta, consulta.paciente.id);
+        consulta,
+        consulta.paciente.id,
+      );
     }
     value = ConsultaInitialState();
   }

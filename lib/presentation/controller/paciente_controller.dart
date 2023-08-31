@@ -6,13 +6,11 @@ import 'package:cangurugestor/datasource/paciente/paciente_cuidador_get_all_data
 import 'package:cangurugestor/datasource/paciente/paciente_excluir_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_get_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_medicamento_get_all_datasource.dart';
-import 'package:cangurugestor/datasource/paciente/paciente_tarefa_get_all_datasource.dart';
 import 'package:cangurugestor/datasource/paciente/paciente_update_datasource.dart';
 import 'package:cangurugestor/domain/entity/cuidador.dart';
 import 'package:cangurugestor/domain/entity/paciente.dart';
 import 'package:cangurugestor/presentation/state/paciente_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PacienteController extends ValueNotifier<PacienteState> {
   final PacienteGetDatasource pacienteGetDatasource =

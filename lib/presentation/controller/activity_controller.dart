@@ -1,6 +1,6 @@
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/datasource/activity/activity_login_datasource.dart';
-import 'package:cangurugestor/datasource/activity/activity_tarefa_datasource.dart';
+import 'package:cangurugestor/datasource/cuidador/activity/activity_login_datasource.dart';
+import 'package:cangurugestor/datasource/cuidador/activity/activity_tarefa_datasource.dart';
 import 'package:cangurugestor/domain/entity/activity_login.dart';
 import 'package:cangurugestor/domain/entity/activity_tarefa.dart';
 import 'package:cangurugestor/domain/entity/cuidador.dart';

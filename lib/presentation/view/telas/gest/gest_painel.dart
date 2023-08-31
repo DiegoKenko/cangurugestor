@@ -10,9 +10,8 @@ import 'package:cangurugestor/presentation/view/telas/cuid/cuid_cadastro.dart';
 import 'package:cangurugestor/presentation/view/telas/resp/resp_cadastro.dart';
 import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
-import 'package:cangurugestor/presentation/controller/viewModel/bloc_responsavel.dart';
+import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PainelGestor extends StatefulWidget {
   const PainelGestor({Key? key}) : super(key: key);
@@ -34,48 +33,44 @@ class _PainelGestorState extends State<PainelGestor>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GestorBloc, GestorState>(
-      builder: (context, gestorState) {
-        return Scaffold(
-          drawer: CanguruDrawer(
-            profile: [
-              DrawerListTile(
-                title: Column(
-                  children: [
-                    Text(gestorState.gestor.nome, style: kTitleAppBarStyle),
-                    Text('gestor', style: kSubtitleAppBarStyle),
-                  ],
-                ),
-                onTap: null,
-              ),
-            ],
-          ),
-          appBar: AppBar(
-            backgroundColor: corPad1,
-          ),
-          body: SafeArea(
-            child: TabCanguru(
-              controller: _tabController,
-              tabs: const [
-                Tab(
-                  text: 'Clientes',
-                ),
-                Tab(
-                  text: 'Cuidadores',
-                ),
-              ],
-              views: const [
-                Tab(
-                  child: ClientesGestor(),
-                ),
-                Tab(
-                  child: CuidadoresGestor(),
-                ),
+    return Scaffold(
+      drawer: CanguruDrawer(
+        profile: [
+          DrawerListTile(
+            title: Column(
+              children: [
+                Text(gestorState.gestor.nome, style: kTitleAppBarStyle),
+                Text('gestor', style: kSubtitleAppBarStyle),
               ],
             ),
+            onTap: null,
           ),
-        );
-      },
+        ],
+      ),
+      appBar: AppBar(
+        backgroundColor: corPad1,
+      ),
+      body: SafeArea(
+        child: TabCanguru(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              text: 'Clientes',
+            ),
+            Tab(
+              text: 'Cuidadores',
+            ),
+          ],
+          views: const [
+            Tab(
+              child: ClientesGestor(),
+            ),
+            Tab(
+              child: CuidadoresGestor(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

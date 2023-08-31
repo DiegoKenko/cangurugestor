@@ -2,7 +2,7 @@ import 'package:cangurugestor/domain/entity/activity.dart';
 import 'package:cangurugestor/domain/entity/cuidador.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
-import 'package:cangurugestor/presentation/controller/viewModel/cubit_relatorio_gestor_acessos.dart';
+import 'package:cangurugestor/presentation/controller/relatorio_gestor_acesso_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

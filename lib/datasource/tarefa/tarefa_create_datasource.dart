@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TarefaCreateDatasource {
   Future<TarefaEntity> call(
-      PacienteEntity paciente, TarefaEntity tarefa) async {
+    PacienteEntity paciente,
+    TarefaEntity tarefa,
+  ) async {
     if (paciente.id.isNotEmpty) {
       var doc = await getIt<FirebaseFirestore>()
           .collection('pacientes')

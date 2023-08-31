@@ -1,3 +1,6 @@
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/cuidador.dart';
+import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro_data.dart';
@@ -5,9 +8,7 @@ import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/utils/cep_api.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
-import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroCuidador extends StatefulWidget {
@@ -22,36 +23,36 @@ class CadastroCuidador extends StatefulWidget {
 class _CadastroCuidadorState extends State<CadastroCuidador>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final CuidadorController cuidadorController = getIt<CuidadorController>();
 
   @override
   void initState() {
     _tabController = TabController(length: 1, vsync: this, initialIndex: 0);
-    _tabController.addListener(() {
-      if (context.read<AuthBloc>().state.login.editaCuidador) {
-        context.read<CuidadorBloc>().add(CuidadorUpdateEvent());
-      }
-    });
+    _tabController.addListener(() {});
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CuidadorBloc, CuidadorState>(
-      builder: (context, state) {
+    return ValueListenableBuilder(
+      valueListenable: cuidadorController,
+      builder: (context, state, _) {
+        CuidadorEntity cuidador = CuidadorEntity();
+        if (state is CuidadorSuccessState) {
+          cuidador = state.cuidador;
+        }
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                if (state.cuidador.nome.isEmpty) {
+                if (cuidador.nome.isEmpty) {
                   Navigator.of(context).pop();
                   return;
                 }
-                if (context.read<AuthBloc>().state.login.editaCuidador) {
-                  context.read<CuidadorBloc>().add(CuidadorUpdateEvent());
-                }
+
                 Navigator.of(context).pop();
               },
             ),
@@ -63,11 +64,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
                     context: context,
                     builder: (context) {
                       return DialogConfirmacaoExclusao(
-                        onConfirm: () {
-                          context
-                              .read<CuidadorBloc>()
-                              .add(CuidadorDeleteEvent());
-                        },
+                        onConfirm: () {},
                       );
                     },
                   );
@@ -77,7 +74,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
             title: Column(
               children: [
                 Text(
-                  state.cuidador.nome.toUpperCase(),
+                  cuidador.nome.toUpperCase(),
                   style: kTitleAppBarStyle,
                 ),
                 Text(
@@ -97,10 +94,10 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
                   ),
                 ),
                 /*    Tab(
-                  child: Text(
-                    'Pacientes',
-                  ),
-                ), */
+                      child: Text(
+                        'Pacientes',
+                      ),
+                    ), */
               ],
               views: const [
                 Tab(
@@ -115,30 +112,6 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
     );
   }
 }
-
-/* class PacientesCuidador extends StatelessWidget {
-  const PacientesCuidador({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final CuidadorBloc cuidadorBloc = context.watch<CuidadorBloc>();
-    return BlocBuilder<CuidadorBloc, CuidadorState>(
-      bloc: cuidadorBloc,
-      builder: (context, state) {
-        return ListView.builder(
-          itemCount: state.cuidador.pacientes.length,
-          itemBuilder: (context, index) {
-            return ItemContainer(
-              title: state.cuidador.pacientes[index].nome,
-            );
-          },
-        );
-      },
-    );
-  }
-} */
 
 class DadosCuidador extends StatefulWidget {
   const DadosCuidador({
@@ -159,44 +132,19 @@ class _DadosCuidadorState extends State<DadosCuidador> {
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _bairroController = TextEditingController();
   final TextEditingController _numeroRuaController = TextEditingController();
-
+  final CuidadorController cuidadorController = getIt<CuidadorController>();
   final TextEditingController _cidadeController = TextEditingController();
   final TextEditingController _estadoController = TextEditingController();
 
   @override
   void initState() {
-    _cpfController.addListener(() {
-      // Listener para atualizar o CPF do responsável
-      context.read<CuidadorBloc>().state.cuidador.cpf = _cpfController.text;
-    });
-    _nomeController.addListener(() {
-      // Listener para atualizar o nome do responsável
-      context.read<CuidadorBloc>().state.cuidador.nome = _nomeController.text;
-    });
-    _nascimentoController.addListener(() {
-      // Listener para atualizar a data de nascimento do responsável
-      context.read<CuidadorBloc>().state.cuidador.nascimento =
-          _nascimentoController.text;
-    });
-    _emailController.addListener(() {
-      // Listener para atualizar o email do responsável
-      context.read<CuidadorBloc>().state.cuidador.email = _emailController.text;
-    });
-    _telefoneController.addListener(() {
-      // Listener para atualizar o telefone do responsável
-      context.read<CuidadorBloc>().state.cuidador.telefone =
-          _telefoneController.text;
-    });
-
-    _numeroRuaController.addListener(() {
-      // Listener para atualizar o número da rua do responsável
-      context.read<CuidadorBloc>().state.cuidador.numeroRua =
-          _numeroRuaController.text;
-    });
-
+    _cpfController.addListener(() {});
+    _nomeController.addListener(() {});
+    _nascimentoController.addListener(() {});
+    _emailController.addListener(() {});
+    _telefoneController.addListener(() {});
+    _numeroRuaController.addListener(() {});
     _cepController.addListener(() async {
-      // Listener para atualizar o CEP do responsável
-      context.read<CuidadorBloc>().state.cuidador.cep = _cepController.text;
       // Listener para atualizar os campos de endereço
       if (_cepController.text.length == 9) {
         Map<dynamic, dynamic> value = await CepAPI.getCep(_cepController.text);
@@ -236,19 +184,22 @@ class _DadosCuidadorState extends State<DadosCuidador> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: BlocBuilder<CuidadorBloc, CuidadorState>(
-        builder: (context, state) {
-          _cpfController.text = state.cuidador.cpf;
-          _nomeController.text = state.cuidador.nome;
-          _nascimentoController.text = state.cuidador.nascimento;
-          _emailController.text = state.cuidador.email;
-          _telefoneController.text = state.cuidador.telefone;
-          _cepController.text = state.cuidador.cep;
-          _ruaController.text = state.cuidador.rua;
-          _bairroController.text = state.cuidador.bairro;
-          _numeroRuaController.text = state.cuidador.numeroRua;
-          _cidadeController.text = state.cuidador.cidade;
-          _estadoController.text = state.cuidador.estado;
+      child: ValueListenableBuilder(
+        valueListenable: cuidadorController,
+        builder: (context, state, _) {
+          if (state is CuidadorSuccessState) {
+            _cpfController.text = state.cuidador.cpf;
+            _nomeController.text = state.cuidador.nome;
+            _nascimentoController.text = state.cuidador.nascimento;
+            _emailController.text = state.cuidador.email;
+            _telefoneController.text = state.cuidador.telefone;
+            _cepController.text = state.cuidador.cep;
+            _ruaController.text = state.cuidador.rua;
+            _bairroController.text = state.cuidador.bairro;
+            _numeroRuaController.text = state.cuidador.numeroRua;
+            _cidadeController.text = state.cuidador.cidade;
+            _estadoController.text = state.cuidador.estado;
+          }
           return Form(
             child: Column(
               children: [

@@ -1,10 +1,10 @@
+import 'package:cangurugestor/const/enum/enum_auth.dart';
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
-import 'package:cangurugestor/presentation/controller/bloc/bloc_auth_event.dart';
-import 'package:cangurugestor/datasource/firebase_auth_constants.dart';
+import 'package:cangurugestor/presentation/state/auth_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/circular_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({Key? key}) : super(key: key);
@@ -43,16 +43,24 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 }
 
-class LoginButtons extends StatelessWidget {
+class LoginButtons extends StatefulWidget {
   const LoginButtons({
     super.key,
   });
 
   @override
+  State<LoginButtons> createState() => _LoginButtonsState();
+}
+
+class _LoginButtonsState extends State<LoginButtons> {
+  final AuthController authController = getIt<AuthController>();
+
+  @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        if (context.read<AuthBloc>().state.loading) {
+    return ValueListenableBuilder(
+      valueListenable: authController,
+      builder: (context, state, _) {
+        if (state is LoadingAuthState) {
           return const CircularProgressCanguru();
         } else {
           return const Column(
@@ -135,13 +143,7 @@ class _ButtonLoginState extends State<ButtonLogin> {
             ),
           ),
         ),
-        onPressed: () {
-          context.read<AuthBloc>().add(
-                LoginEvent(
-                  widget.methodAuthID,
-                ),
-              );
-        },
+        onPressed: () {},
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(

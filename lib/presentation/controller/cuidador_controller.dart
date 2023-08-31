@@ -6,13 +6,13 @@ import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 
 import 'package:flutter/material.dart';
 
-class CuidadorBloc extends ValueNotifier<CuidadorState> {
+class CuidadorController extends ValueNotifier<CuidadorState> {
   final CuidadorCreateUsecase cuidadorCreateUsecase =
       getIt<CuidadorCreateUsecase>();
   final CuidadorUpdateUsecase cuidadorUpdateUsecase =
       getIt<CuidadorUpdateUsecase>();
 
-  CuidadorBloc() : super(CuidadorInitialState());
+  CuidadorController() : super(CuidadorInitialState());
 
   update(CuidadorEntity cuidador) async {
     value = CuidadorLoadingState();
@@ -21,7 +21,7 @@ class CuidadorBloc extends ValueNotifier<CuidadorState> {
     } else {
       await cuidadorUpdateUsecase(cuidador);
     }
-    value = CuidadorReadyState(cuidador);
+    value = CuidadorSuccessState(cuidador);
   }
 
   delete(CuidadorEntity cuidador) async {}

@@ -1,4 +1,6 @@
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/presentation/state/responsavel_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/drawer.dart';
 import 'package:cangurugestor/presentation/view/componentes/item_container.dart';
@@ -6,10 +8,8 @@ import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/view/componentes/tooltip_help.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/paci_dashboard.dart';
-import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
-import 'package:cangurugestor/presentation/controller/viewModel/bloc_responsavel.dart';
+import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PainelResponsavel extends StatefulWidget {
   const PainelResponsavel({Key? key}) : super(key: key);
@@ -21,6 +21,8 @@ class PainelResponsavel extends StatefulWidget {
 class _PainelResponsavelState extends State<PainelResponsavel>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final ResponsavelController responsavelController =
+      getIt<ResponsavelController>();
 
   @override
   void initState() {
@@ -30,21 +32,28 @@ class _PainelResponsavelState extends State<PainelResponsavel>
 
   @override
   Widget build(BuildContext context) {
-    final ResponsavelBloc responsavelBloc = context.watch<ResponsavelBloc>();
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
-          DrawerListTile(
-            title: Column(
-              children: [
-                Text(
-                  responsavelBloc.state.responsavel.nome,
-                  style: kTitleAppBarStyle,
-                ),
-                Text('responsavel', style: kSubtitleAppBarStyle),
-              ],
-            ),
-            onTap: null,
+          ValueListenableBuilder(
+            valueListenable: responsavelController,
+            builder: (context, state, _) {
+              if (state is ResponsavelSuccessState) {
+                return DrawerListTile(
+                  title: Column(
+                    children: [
+                      Text(
+                        state.responsavel.nome,
+                        style: kTitleAppBarStyle,
+                      ),
+                      Text('responsavel', style: kSubtitleAppBarStyle),
+                    ],
+                  ),
+                  onTap: null,
+                );
+              }
+              return Container();
+            },
           ),
         ],
       ),
@@ -88,11 +97,12 @@ class PacientesCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ResponsavelBloc responsavelBloc = context.watch<ResponsavelBloc>();
-    return Builder(
-      builder: (context) {
-        responsavelBloc.add(ResponsavelLoadPacientesEvent());
-        if (responsavelBloc.state.responsavel.pacientes.isEmpty) {
+    final ResponsavelController responsavelController =
+        getIt<ResponsavelController>();
+    return ValueListenableBuilder(
+      valueListenable: responsavelController,
+      builder: (context, state, _) {
+        if (state is ResponsavelEmptyState) {
           return const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: TooltipHelp(
@@ -102,25 +112,27 @@ class PacientesCuidador extends StatelessWidget {
             ),
           );
         }
-        return ListView.builder(
-          itemCount: responsavelBloc.state.responsavel.pacientes.length,
-          itemBuilder: ((context, index) {
-            Paciente paciente =
-                responsavelBloc.state.responsavel.pacientes[index];
-            return ItemContainer(
-              title: paciente.nome,
-              onTap: () {
-                Navigator.of(context).push(
-                  AnimatedPageTransition(
-                    page: BlocProvider<PacienteBloc>(
-                      create: (context) => PacienteBloc(paciente),
-                      child: const PacienteDashboard(),
+        if (state is ResponsavelSuccessState) {
+          return ListView.builder(
+            itemCount: state.responsavel.pacientes.length,
+            itemBuilder: ((context, index) {
+              PacienteEntity paciente = state.responsavel.pacientes[index];
+              return ItemContainer(
+                title: paciente.nome,
+                onTap: () {
+                  Navigator.of(context).push(
+                    AnimatedPageTransition(
+                      page: const PacienteDashboard(),
                     ),
-                  ),
-                );
-              },
-            );
-          }),
+                  );
+                },
+              );
+            }),
+          );
+        }
+
+        return const Center(
+          child: CircularProgressIndicator(),
         );
       },
     );

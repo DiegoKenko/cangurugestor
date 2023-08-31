@@ -2,7 +2,7 @@ import 'package:cangurugestor/domain/entity/paciente.dart';
 import 'package:flutter/material.dart';
 
 class ScrollableLista {
-  mostraListaPacientes(BuildContext context, List<Paciente> pacientes) {
+  mostraListaPacientes(BuildContext context, List<PacienteEntity> pacientes) {
     showModalBottomSheet(
       context: context,
       builder: (context) {

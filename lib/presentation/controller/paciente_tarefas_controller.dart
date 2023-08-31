@@ -1,9 +1,9 @@
 import 'package:cangurugestor/const/enum/enum_intervalo.dart';
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/datasource/atividade/atividade_paciente_get_datasource.dart';
-import 'package:cangurugestor/datasource/consulta/consulta_paciente_get_datasource.dart';
-import 'package:cangurugestor/datasource/medicamento/medicamento_paciente_get_datasource.dart';
+import 'package:cangurugestor/datasource/paciente/atividade/atividade_paciente_get_datasource.dart';
+import 'package:cangurugestor/datasource/paciente/consulta/consulta_paciente_get_datasource.dart';
+import 'package:cangurugestor/datasource/paciente/medicamento/medicamento_paciente_get_datasource.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_create_datasource.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_delete_datasource.dart';
 import 'package:cangurugestor/datasource/tarefa/tarefa_get_amanha_datasource.dart';

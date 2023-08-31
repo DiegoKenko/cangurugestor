@@ -21,7 +21,6 @@ import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
 import 'package:cangurugestor/presentation/controller/medicamento_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroPaciente extends StatefulWidget {

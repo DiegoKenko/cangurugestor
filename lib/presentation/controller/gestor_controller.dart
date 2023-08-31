@@ -4,7 +4,6 @@ import 'package:cangurugestor/datasource/gestor/gestor_cuidadores_get_all_dataso
 import 'package:cangurugestor/domain/entity/gestor.dart';
 import 'package:cangurugestor/presentation/state/gestor_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GestorController extends ValueNotifier<GestorState> {
   final GestorCuidadoresGetAllDatasource gestorCuidadoresGetAllDatasource =

@@ -11,9 +11,8 @@ import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/paci_cadastro.dart';
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
-import 'package:cangurugestor/presentation/controller/viewModel/bloc_responsavel.dart';
+import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroResponsavel extends StatefulWidget {

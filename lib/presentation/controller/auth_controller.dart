@@ -43,45 +43,41 @@ class AuthController extends ValueNotifier<AuthState> {
     if (method == EnumMethodAuthID.google) {
       final GoogleLogin googleLogin = GoogleLogin();
       user = await googleLogin.loadUser();
-      login = LoginEntity.init(login.pessoa, value.login.user);
+      login = LoginEntity.init(login.pessoa, login.user);
     } else if (method == EnumMethodAuthID.apple) {}
 
     if (user == null) {
-      value = ErrorAuthState('Não foi possível fazer o login!', value.login);
+      value = ErrorAuthState();
     } else {
       login.pessoa = await loginAuntenticarDatasource(user.email!);
       if (login.pessoa.id.isEmpty) {
         login.pessoa = PessoaEntity.fromUser(user);
-        value = FirstLoginAuthState(login);
-      } else {
-        value = LoggedInAuthState(login);
       }
     }
   }
 
-  createLogin(EnumClasse classe) async {
+  createLogin(EnumClasse classe, LoginEntity login) async {
     value = LoadingAuthState();
     if (classe == EnumClasse.gestor) {
-      await gestorCreateUsecase(GestorEntity.fromPessoa(value.login.pessoa));
+      await gestorCreateUsecase(GestorEntity.fromPessoa(login.pessoa));
     } else if (classe == EnumClasse.cuidador) {
-      await cuidadorCreateUsecase(
-          CuidadorEntity.fromPessoa(value.login.pessoa));
+      await cuidadorCreateUsecase(CuidadorEntity.fromPessoa(login.pessoa));
     } else if (classe == EnumClasse.responsavel) {
       await responsavelCreateUsecase(
-          ResponsavelEntity.fromPessoa(value.login.pessoa));
+          ResponsavelEntity.fromPessoa(login.pessoa));
     }
   }
 
   logout() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      value = ErrorAuthState('Não foi possível fazer o logout!', value.login);
+      value = ErrorAuthState();
     } else {
       if (user.providerData[0].methodLogin == EnumMethodAuthID.google) {
         await GoogleLogin().logout();
       } else if (user.providerData[0].methodLogin == EnumMethodAuthID.apple) {
       } else {
-        value = ErrorAuthState('Não foi possível fazer o logout!', value.login);
+        value = ErrorAuthState();
       }
       value = NotLoggedInAuthState();
     }

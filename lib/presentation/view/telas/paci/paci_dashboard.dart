@@ -1,14 +1,9 @@
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
-import 'package:cangurugestor/datasource/tarefa/fire_tarefa.dart';
-import 'package:cangurugestor/domain/entity/paciente.dart';
-import 'package:cangurugestor/domain/entity/tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/item_container_tarefa.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
-import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PacienteDashboard extends StatefulWidget {
   const PacienteDashboard({Key? key}) : super(key: key);

@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MedicamentoPacienteGetAllDatasource {
   Future<List<MedicamentoEntity>> todosMedicamentosPaciente(
-      String idPaciente) async {
+    String idPaciente,
+  ) async {
     List<MedicamentoEntity> meds = [];
     if (idPaciente.isEmpty) {
       return meds;

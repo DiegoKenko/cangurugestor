@@ -1,14 +1,14 @@
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/paciente.dart';
+import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
+import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/drawer.dart';
 import 'package:cangurugestor/presentation/view/componentes/item_container.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
 import 'package:cangurugestor/presentation/view/telas/paci/paci_dashboard.dart';
-import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
-import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PainelCuidador extends StatefulWidget {
   const PainelCuidador({Key? key}) : super(key: key);
@@ -20,6 +20,7 @@ class PainelCuidador extends StatefulWidget {
 class _PainelCuidadorState extends State<PainelCuidador>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final CuidadorController cuidadorController = getIt<CuidadorController>();
 
   @override
   void initState() {
@@ -29,21 +30,28 @@ class _PainelCuidadorState extends State<PainelCuidador>
 
   @override
   Widget build(BuildContext context) {
-    final CuidadorBloc cuidadorBloc = context.watch<CuidadorBloc>();
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
-          DrawerListTile(
-            title: Column(
-              children: [
-                Text(
-                  cuidadorBloc.state.cuidador.nome,
-                  style: kTitleAppBarStyle,
-                ),
-                Text('cuidador', style: kSubtitleAppBarStyle),
-              ],
-            ),
-            onTap: null,
+          ValueListenableBuilder(
+            valueListenable: cuidadorController,
+            builder: (context, state, _) {
+              if (state is CuidadorSuccessState) {
+                return DrawerListTile(
+                  title: Column(
+                    children: [
+                      Text(
+                        state.cuidador.nome,
+                        style: kTitleAppBarStyle,
+                      ),
+                      Text('cuidador', style: kSubtitleAppBarStyle),
+                    ],
+                  ),
+                  onTap: null,
+                );
+              }
+              return Container();
+            },
           ),
         ],
       ),
@@ -67,36 +75,43 @@ class _PainelCuidadorState extends State<PainelCuidador>
   }
 }
 
-class PacientesCuidador extends StatelessWidget {
+class PacientesCuidador extends StatefulWidget {
   const PacientesCuidador({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<PacientesCuidador> createState() => _PacientesCuidadorState();
+}
+
+class _PacientesCuidadorState extends State<PacientesCuidador> {
+  final CuidadorController cuidadorController = getIt<CuidadorController>();
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CuidadorBloc, CuidadorState>(
-      builder: (context, state) {
-        context.read<CuidadorBloc>().add(CuidadorLoadPacientesEvent());
-        return ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: state.cuidador.pacientes.length,
-          itemBuilder: ((context, index) {
-            Paciente paciente = state.cuidador.pacientes[index];
-            return ItemContainer(
-              title: paciente.nome,
-              onTap: () {
-                Navigator.of(context).push(
-                  AnimatedPageTransition(
-                    page: BlocProvider<PacienteBloc>(
-                      create: (context) => PacienteBloc(paciente),
-                      child: const PacienteDashboard(),
+    return ValueListenableBuilder(
+      valueListenable: cuidadorController,
+      builder: (context, state, _) {
+        if (state is CuidadorSuccessState) {
+          return ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: state.cuidador.pacientes.length,
+            itemBuilder: ((context, index) {
+              PacienteEntity paciente = state.cuidador.pacientes[index];
+              return ItemContainer(
+                title: paciente.nome,
+                onTap: () {
+                  Navigator.of(context).push(
+                    AnimatedPageTransition(
+                      page: const PacienteDashboard(),
                     ),
-                  ),
-                );
-              },
-            );
-          }),
-        );
+                  );
+                },
+              );
+            }),
+          );
+        }
+        return Container();
       },
     );
   }

@@ -12,7 +12,6 @@ import 'package:cangurugestor/presentation/controller/consulta_controller.dart';
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroConsulta extends StatefulWidget {

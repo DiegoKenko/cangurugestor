@@ -14,7 +14,6 @@ import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/medicamento_controller.dart';
 import 'package:cangurugestor/presentation/controller/paciente_tarefas_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 // ignore: unnecessary_import
 import 'package:provider/provider.dart';

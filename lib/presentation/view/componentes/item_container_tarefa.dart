@@ -1,19 +1,18 @@
+import 'package:cangurugestor/const/enum/enum_classe.dart';
 import 'package:cangurugestor/const/enum/enum_status.dart';
 import 'package:cangurugestor/const/enum/enum_tarefa.dart';
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/tarefa.dart';
+import 'package:cangurugestor/presentation/state/auth_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/controller/activity_controller.dart';
-import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
-import 'package:cangurugestor/presentation/controller/paciente_controller.dart';
-import 'package:cangurugestor/presentation/controller/tarefa_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class ItemContainerTarefa extends StatefulWidget {
-  final Tarefa tarefa;
+  final TarefaEntity tarefa;
   final Function()? onTap;
 
   const ItemContainerTarefa({
@@ -82,7 +81,7 @@ class TarefaBottomSheet extends StatefulWidget {
     required this.tarefa,
   });
 
-  final Tarefa tarefa;
+  final TarefaEntity tarefa;
 
   @override
   State<TarefaBottomSheet> createState() => _TarefaBottomSheetState();
@@ -90,7 +89,8 @@ class TarefaBottomSheet extends StatefulWidget {
 
 class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
   final TextEditingController _obsController = TextEditingController();
-
+  final AuthController authController = getIt<AuthController>();
+  final ActivityController activityController = getIt<ActivityController>();
   @override
   void initState() {
     _obsController.text = widget.tarefa.observacao;
@@ -104,102 +104,101 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.5,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              color: corPad1,
-              width: double.infinity,
-              height: 40,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                widget.tarefa.nome,
-                style: kEditTarefaTextStyle,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${widget.tarefa.date} as ${widget.tarefa.time}',
-              ),
-            ),
-            FormCadastro(
-              enabled: true,
-              multiLine: true,
-              obrigatorio: true,
-              onChanged: (p0) {
-                widget.tarefa.observacao = p0;
-              },
-              controller: _obsController,
-              labelText: 'Observação',
-              textInputType: TextInputType.name,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  widget.tarefa.concluida
-                      ? Text(
-                          'realizado em ${widget.tarefa.dataConclusao} as ${widget.tarefa.horaConclusao}',
-                        )
-                      : const Text('em aberto'),
-                ],
-              ),
-            ),
-            Row(
+        child: ValueListenableBuilder(
+          valueListenable: authController,
+          builder: (context, state, _) {
+            bool isCuidador = false;
+            if (state is SuccessAuthState) {
+              isCuidador = state.login.realizaTarefa;
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: FilledButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
-                        'Voltar',
-                      ),
-                    ),
+                Container(
+                  color: corPad1,
+                  width: double.infinity,
+                  height: 40,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.tarefa.nome,
+                    style: kEditTarefaTextStyle,
                   ),
                 ),
-                context.read<AuthBloc>().state.login.realizaTarefa
-                    ? Expanded(
-                        flex: 1,
-                        child: Center(
-                          child: FilledButton(
-                            onPressed: () {
-                              Tarefa t = widget.tarefa;
-                              if (!t.concluida) {
-                                t.dataConclusao = DateFormat('dd/MM/yyyy')
-                                    .format(DateTime.now());
-                                t.horaConclusao =
-                                    DateFormat('HH:mm').format(DateTime.now());
-                                t.concluida = true;
-                                ActivityViewModel.tarefaCuidador(
-                                  t,
-                                  context.read<CuidadorBloc>().state.cuidador,
-                                  context.read<PacienteBloc>().state.paciente,
-                                );
-                              }
-                              TarefaViewModel(
-                                t,
-                                context.read<PacienteBloc>().state.paciente,
-                              ).update();
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              widget.tarefa.concluida
-                                  ? 'Atualizar'
-                                  : 'Realizar tarefa',
-                            ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '${widget.tarefa.date} as ${widget.tarefa.time}',
+                  ),
+                ),
+                FormCadastro(
+                  enabled: true,
+                  multiLine: true,
+                  obrigatorio: true,
+                  onChanged: (p0) {
+                    widget.tarefa.observacao = p0;
+                  },
+                  controller: _obsController,
+                  labelText: 'Observação',
+                  textInputType: TextInputType.name,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      widget.tarefa.concluida
+                          ? Text(
+                              'realizado em ${widget.tarefa.dataConclusao} as ${widget.tarefa.horaConclusao}',
+                            )
+                          : const Text('em aberto'),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: FilledButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text(
+                            'Voltar',
                           ),
                         ),
-                      )
-                    : Container(),
+                      ),
+                    ),
+                    isCuidador
+                        ? Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: FilledButton(
+                                onPressed: () {
+                                  TarefaEntity t = widget.tarefa;
+                                  if (!t.concluida) {
+                                    t.dataConclusao = DateFormat('dd/MM/yyyy')
+                                        .format(DateTime.now());
+                                    t.horaConclusao = DateFormat('HH:mm')
+                                        .format(DateTime.now());
+                                    t.concluida = true;
+                                  }
+                                },
+                                child: Text(
+                                  widget.tarefa.concluida
+                                      ? 'Atualizar'
+                                      : 'Realizar tarefa',
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(),
+                  ],
+                )
               ],
-            )
-          ],
+            );
+          },
         ),
       ),
     );

@@ -23,7 +23,7 @@ class ResponsavelController extends ValueNotifier<ResponsavelState> {
     value = ResponsavelLoadingState();
     responsavel.pacientes =
         await responsavelPacienteGetAllDatasource(responsavel);
-    value = ResponsavelReadyState();
+    value = ResponsavelSuccessState(responsavel);
   }
 
   update(ResponsavelEntity responsavel) async {
@@ -33,12 +33,12 @@ class ResponsavelController extends ValueNotifier<ResponsavelState> {
     } else {
       await responsavelUpdateDatasource(responsavel);
     }
-    value = ResponsavelReadyState();
+    value = ResponsavelSuccessState(responsavel);
   }
 
   delete(ResponsavelEntity responsavel) async {
     value = ResponsavelLoadingState();
     await responsavelDeleteDatasource(responsavel);
-    value = ResponsavelReadyState();
+    value = ResponsavelSuccessState(responsavel);
   }
 }

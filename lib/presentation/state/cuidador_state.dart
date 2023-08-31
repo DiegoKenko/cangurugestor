@@ -8,9 +8,9 @@ class CuidadorInitialState extends CuidadorState {
   CuidadorInitialState() : super();
 }
 
-class CuidadorReadyState extends CuidadorState {
+class CuidadorSuccessState extends CuidadorState {
   CuidadorEntity cuidador;
-  CuidadorReadyState(this.cuidador) : super();
+  CuidadorSuccessState(this.cuidador) : super();
 }
 
 class CuidadorLoadingState extends CuidadorState {
