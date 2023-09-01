@@ -1,23 +1,28 @@
+import 'package:cangurugestor/const/enum/enum_classe.dart';
 import 'package:cangurugestor/const/global.dart';
-import 'package:cangurugestor/domain/entity/login_user_entity.dart';
+import 'package:cangurugestor/domain/entity/default_error_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
+import 'package:cangurugestor/domain/entity/user_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:result_dart/result_dart.dart';
 
 class LoginResponsavelUpdateDatasource {
-  Future<void> call(ResponsavelEntity responsavel) async {
-    final LoginUserEntity user = LoginUserEntity.fromResponsavel(responsavel);
-    if (user.doc.isNotEmpty && user.email.isNotEmpty) {
-      await getIt<FirebaseFirestore>()
-          .collection('login')
-          .where('doc', isEqualTo: user.doc)
-          .get()
-          .then((value) {
-        if (value.docs.isNotEmpty) {
-          value.docs.first.reference.update(user.toMap());
-        } else {
-          getIt<FirebaseFirestore>().collection('login').add(user.toMap());
-        }
-      });
+  Future<Result<UserEntity, DefaultErrorEntity>> call(
+    ResponsavelEntity responsavel,
+  ) async {
+    if (responsavel.id.isEmpty && responsavel.email.isNotEmpty) {
+      QuerySnapshot<Map<String, dynamic>> snap =
+          await getIt<FirebaseFirestore>()
+              .collection('login')
+              .where('funcaoId', isEqualTo: responsavel.id)
+              .where('funcao', isEqualTo: EnumClasse.responsavel.name)
+              .get();
+
+      if (snap.docs.isEmpty) {
+        return UserEntity.fromMap(snap.docs.first.data()).toSuccess();
+      }
+      return Failure(DefaultErrorEntity('Error ao fazer login'));
     }
+    return Failure(DefaultErrorEntity('Error ao fazer login'));
   }
 }

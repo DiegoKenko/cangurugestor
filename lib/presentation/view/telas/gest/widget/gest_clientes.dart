@@ -42,7 +42,9 @@ class _ClientesGestorState extends State<ClientesGestor> {
                         Navigator.push(
                           context,
                           AnimatedPageTransition(
-                            page: const CadastroResponsavel(),
+                            page: CadastroResponsavel(
+                              responsavel: gestorState.gestor.clientes[index],
+                            ),
                           ),
                         );
                       },
@@ -62,7 +64,9 @@ class _ClientesGestorState extends State<ClientesGestor> {
               Navigator.push(
                 context,
                 AnimatedPageTransition(
-                  page: const CadastroResponsavel(),
+                  page: CadastroResponsavel(
+                    responsavel: ResponsavelEntity(),
+                  ),
                 ),
               );
             },

@@ -1,3 +1,6 @@
+import 'package:cangurugestor/const/global.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
+import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tab.dart';
@@ -6,9 +9,9 @@ import 'package:cangurugestor/presentation/view/telas/resp/widget/resp_pacientes
 import 'package:flutter/material.dart';
 
 class CadastroResponsavel extends StatefulWidget {
-  const CadastroResponsavel({
-    Key? key,
-  }) : super(key: key);
+  const CadastroResponsavel({Key? key, required this.responsavel})
+      : super(key: key);
+  final ResponsavelEntity responsavel;
 
   @override
   State<CadastroResponsavel> createState() => _CadastroResponsavelState();
@@ -17,11 +20,13 @@ class CadastroResponsavel extends StatefulWidget {
 class _CadastroResponsavelState extends State<CadastroResponsavel>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final ResponsavelController _responsavelController =
+      getIt<ResponsavelController>();
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
-
+    _responsavelController.init(widget.responsavel);
     super.initState();
   }
 
@@ -79,11 +84,17 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
               ),
             ),
           ],
-          views: const [
+          views: [
             Tab(
-              child: DadosResponsavel(),
+              child: DadosResponsavel(
+                responsavelController: _responsavelController,
+              ),
             ),
-            Tab(child: PacientesResponsavel()),
+            Tab(
+              child: PacientesResponsavel(
+                responsavelController: _responsavelController,
+              ),
+            ),
           ],
         ),
       ),

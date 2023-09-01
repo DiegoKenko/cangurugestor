@@ -25,7 +25,7 @@ class _TelaInitialRouterState extends State<TelaInitialRouter> {
       }
       if (authController.role == EnumClasse.gestor) {
         return PainelGestor(
-          gestor: GestorEntity.fromPessoa(authController.current!.pessoa),
+          gestor: GestorEntity.fromPessoa(authController.current!),
         );
       }
       if (authController.role == EnumClasse.responsavel) {

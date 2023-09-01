@@ -1,8 +1,9 @@
 import 'package:cangurugestor/const/enum/enum_auth.dart';
-import 'package:cangurugestor/datasource/login/login_autenticar.dart';
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/default_error_entity.dart';
-import 'package:cangurugestor/domain/entity/login_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:cangurugestor/domain/entity/user_entity.dart';
+import 'package:cangurugestor/domain/usecase/auth_login_usecase.dart';
 import 'package:cangurugestor/service/autentication/auth_login.dart';
 import 'package:cangurugestor/presentation/state/auth_state.dart';
 import 'package:cangurugestor/const/enum/enum_classe.dart';
@@ -11,33 +12,49 @@ import 'package:flutter/material.dart';
 import 'package:result_dart/result_dart.dart';
 
 class AuthController extends ValueNotifier<AuthState> {
-  final LoginAuntenticarDatasource _loginAuntenticarDatasource =
-      LoginAuntenticarDatasource();
+  final AuthLoginUseCase authLoginUseCase = AuthLoginUseCase();
 
+  PessoaEntity? _pessoaEntity;
   AuthController() : super(InitialAtuthState());
 
   EnumClasse? get role {
-    if (value is SuccessAuthState) {
-      return (value as SuccessAuthState).login.classe;
+    if (_pessoaEntity != null) {
+      if (_pessoaEntity is CuidadorEntity) {
+        return EnumClasse.cuidador;
+      }
+      if (_pessoaEntity is CuidadorEntity) {
+        return EnumClasse.responsavel;
+      }
+      if (_pessoaEntity is CuidadorEntity) {
+        return EnumClasse.gestor;
+      }
     }
     return null;
   }
 
-  LoginEntity? get current {
-    if (value is SuccessAuthState) {
-      return (value as SuccessAuthState).login;
-    }
-    return null;
+  PessoaEntity? get current {
+    return _pessoaEntity;
   }
 
-  Future<Result<LoginEntity, DefaultErrorEntity>> getLogin() async {
-    User? user = await _getUser().fold((success) => success, (error) => null);
+  checkLogin() async {
+    value = LoadingAuthState();
+    final GoogleLogin googleLogin = GoogleLogin();
+    final User? user = googleLogin.currentUser();
     if (user == null) {
-      return Failure(DefaultErrorEntity('Erro ao carregar usuário'));
+      value = UnauthenticatedAuthState();
+      return;
     }
+    value = await _getLogin(user).fold((success) {
+      _pessoaEntity = success;
+      return AuthenticatedAuthState(UserEntity.fromPessoa(success));
+    }, (error) {
+      return UnauthenticatedAuthState();
+    });
+  }
 
+  Future<Result<PessoaEntity, DefaultErrorEntity>> _getLogin(User user) async {
     PessoaEntity? pessoa =
-        await _loginAuntenticarDatasource(user.email!).fold((success) {
+        await authLoginUseCase(PessoaEntity.fromUser(user)).fold((success) {
       return success;
     }, (error) {
       return null;
@@ -45,17 +62,7 @@ class AuthController extends ValueNotifier<AuthState> {
     if (pessoa == null) {
       return Failure(DefaultErrorEntity('Erro ao carregar usuário'));
     } else {
-      return LoginEntity.init(pessoa, user).toSuccess();
-    }
-  }
-
-  Future<Result<User, DefaultErrorEntity>> _getUser() async {
-    final GoogleLogin googleLogin = GoogleLogin();
-    User? user = await googleLogin.loadUser();
-    if (user == null) {
-      return Failure(DefaultErrorEntity('Erro ao carregar usuário'));
-    } else {
-      return user.toSuccess();
+      return pessoa.toSuccess();
     }
   }
 
@@ -69,8 +76,8 @@ class AuthController extends ValueNotifier<AuthState> {
     if (user == null) {
       value = ErrorAuthState();
     } else {
-      await _loginAuntenticarDatasource(user.email!).fold((success) {
-        value = SuccessAuthState(LoginEntity.init(success, user));
+      await authLoginUseCase(PessoaEntity.fromUser(user)).fold((success) {
+        value = AuthenticatedAuthState(UserEntity.fromPessoa(success));
       }, (error) {
         value = ErrorAuthState();
       });

@@ -1,4 +1,3 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
@@ -12,12 +11,14 @@ import 'package:flutter/material.dart';
 class PacientesResponsavel extends StatelessWidget {
   const PacientesResponsavel({
     Key? key,
+    required this.responsavelController,
   }) : super(key: key);
+  final ResponsavelController responsavelController;
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: getIt<ResponsavelController>(),
+      valueListenable: responsavelController,
       builder: (context, state, _) {
         ResponsavelEntity responsavel = ResponsavelEntity();
         if (state is ResponsavelSuccessState) {

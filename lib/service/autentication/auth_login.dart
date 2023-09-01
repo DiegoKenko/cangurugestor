@@ -7,6 +7,10 @@ class GoogleLogin {
   Stream<User?> stateChange() => _auth.authStateChanges();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  User? currentUser() {
+    return _auth.currentUser;
+  }
+
   Future<UserCredential> getCredentials() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();

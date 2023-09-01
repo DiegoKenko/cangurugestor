@@ -14,3 +14,8 @@ class GestorSuccessState extends GestorState {
 class GestorLoadingState extends GestorState {
   GestorLoadingState() : super();
 }
+
+class GestorErrorState extends GestorState {
+  String message;
+  GestorErrorState(this.message) : super();
+}

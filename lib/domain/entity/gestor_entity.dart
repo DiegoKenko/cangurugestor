@@ -30,7 +30,7 @@ class GestorEntity extends PessoaEntity {
     sobrenome = map['sobrenome'];
     sexo = map['sexo'];
     email = map['email'];
-    /*   telefone = map['telefone'];
+    telefone = map['telefone'];
     nascimento = map['nascimento'];
     rua = map['rua'];
     numeroRua = map['numeroRua'];
@@ -38,7 +38,7 @@ class GestorEntity extends PessoaEntity {
     bairro = map['bairro'];
     cidade = map['cidade'];
     cep = map['cep'];
-    estado = map['estado']; */
+    estado = map['estado'];
   }
 
   @override
@@ -49,7 +49,7 @@ class GestorEntity extends PessoaEntity {
       'sobrenome': sobrenome,
       'sexo': sexo,
       'email': email,
-      /* 'telefone': telefone,
+      'telefone': telefone,
       'nascimento': nascimento,
       'rua': rua,
       'numeroRua': numeroRua,
@@ -57,7 +57,9 @@ class GestorEntity extends PessoaEntity {
       'bairro': bairro,
       'cidade': cidade,
       'cep': cep,
-      'estado': estado, */
+      'estado': estado,
+      'cuidadores': cuidadores.map((e) => e.id).toList(),
+      'clientes': clientes.map((e) => e.id).toList(),
     };
   }
 }

@@ -107,8 +107,8 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
           valueListenable: authController,
           builder: (context, state, _) {
             bool isCuidador = false;
-            if (state is SuccessAuthState) {
-              isCuidador = state.login.realizaTarefa;
+            if (state is AuthenticatedAuthState) {
+              isCuidador = state.user.realizaTarefa;
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,

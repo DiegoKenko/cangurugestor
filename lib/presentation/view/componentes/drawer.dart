@@ -37,7 +37,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
           child: ValueListenableBuilder(
             valueListenable: authController,
             builder: (context, state, _) {
-              if (state is SuccessAuthState) {
+              if (state is AuthenticatedAuthState) {
                 return Column(
                   children: [
                     Expanded(
@@ -48,7 +48,7 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: state.login.gerarRelatorioCuidador
+                      child: state.user.gerarRelatorioCuidador
                           ? DrawerListTile(
                               title: const Text(
                                 'Relatórios',

@@ -19,6 +19,14 @@ class TelaLogin extends StatefulWidget {
 }
 
 class _TelaLoginState extends State<TelaLogin> {
+  final AuthController authController = getIt<AuthController>();
+
+  @override
+  void initState() {
+    authController.checkLogin();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +46,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   height: MediaQuery.of(context).size.height * 0.6,
                   fit: BoxFit.fitWidth,
                 ),
-                const LoginButtons(),
+                LoginButtons(authController: authController),
               ],
             ),
           ),
@@ -48,17 +56,12 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 }
 
-class LoginButtons extends StatefulWidget {
+class LoginButtons extends StatelessWidget {
   const LoginButtons({
     super.key,
+    required this.authController,
   });
-
-  @override
-  State<LoginButtons> createState() => _LoginButtonsState();
-}
-
-class _LoginButtonsState extends State<LoginButtons> {
-  final AuthController authController = getIt<AuthController>();
+  final AuthController authController;
 
   @override
   Widget build(BuildContext context) {
@@ -67,21 +70,38 @@ class _LoginButtonsState extends State<LoginButtons> {
       builder: (context, state, _) {
         if (state is LoadingAuthState) {
           return const CircularProgressCanguru();
-        } else if (state is SuccessAuthState) {
-          return Center(
-            child: ButtonLogin(
-              image: const Icon(Icons.login),
-              text: 'Entrar',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  AnimatedPageTransition(
-                    page: const TelaInitialRouter(),
+        } else if (state is AuthenticatedAuthState) {
+          return Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: ButtonLogin(
+                    image: const Icon(Icons.login),
+                    text: 'Entrar',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        AnimatedPageTransition(
+                          page: const TelaInitialRouter(),
+                        ),
+                      );
+                    },
+                    methodAuthID: EnumMethodAuthID.nenhum,
                   ),
-                );
-              },
-              methodAuthID: EnumMethodAuthID.nenhum,
-            ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: ButtonLogin(
+                  image: const Icon(Icons.logout_outlined),
+                  text: 'Trocar de conta',
+                  onPressed: () {
+                    authController.logout();
+                  },
+                  methodAuthID: EnumMethodAuthID.nenhum,
+                ),
+              )
+            ],
           );
         } else {
           return Column(

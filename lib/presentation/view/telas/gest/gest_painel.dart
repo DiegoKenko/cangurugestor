@@ -25,7 +25,7 @@ class _PainelGestorState extends State<PainelGestor>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    gestorController.load(widget.gestor);
+    gestorController.init(widget.gestor.id);
     super.initState();
   }
 

@@ -1,6 +1,4 @@
-import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/presentation/controller/responsavel_controller.dart';
-import 'package:cangurugestor/presentation/state/responsavel_state.dart';
 import 'package:cangurugestor/presentation/utils/cep_api.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro.dart';
 import 'package:cangurugestor/presentation/view/componentes/form_cadastro_data.dart';
@@ -10,7 +8,10 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 class DadosResponsavel extends StatefulWidget {
   const DadosResponsavel({
     Key? key,
+    required this.responsavelController,
   }) : super(key: key);
+
+  final ResponsavelController responsavelController;
 
   @override
   State<DadosResponsavel> createState() => _DadosResponsavelState();
@@ -32,6 +33,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   @override
   void initState() {
     super.initState();
+
     _cpfController.addListener(() {});
     _nomeController.addListener(() {});
     _nascimentoController.addListener(() {});
@@ -59,18 +61,25 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
 
   @override
   Widget build(BuildContext context) {
+    _cpfController.text = widget.responsavelController.responsavel.cpf;
+    _nomeController.text = widget.responsavelController.responsavel.nome;
+    _nascimentoController.text =
+        widget.responsavelController.responsavel.nascimento;
+    _emailController.text = widget.responsavelController.responsavel.email;
+    _telefoneController.text =
+        widget.responsavelController.responsavel.telefone;
+    _cepController.text = widget.responsavelController.responsavel.cep;
+    _ruaController.text = widget.responsavelController.responsavel.rua;
+    _bairroController.text = widget.responsavelController.responsavel.bairro;
+    _numeroRuaController.text =
+        widget.responsavelController.responsavel.numeroRua;
+    _cidadeController.text = widget.responsavelController.responsavel.cidade;
+    _estadoController.text = widget.responsavelController.responsavel.estado;
+
     return SingleChildScrollView(
       child: ValueListenableBuilder(
-        valueListenable: getIt<ResponsavelController>(),
+        valueListenable: widget.responsavelController,
         builder: (context, state, _) {
-          if (state is ResponsavelSuccessState) {
-            _cpfController.text = state.responsavel.cpf;
-            _nomeController.text = state.responsavel.nome;
-            _nascimentoController.text = state.responsavel.nascimento;
-            _emailController.text = state.responsavel.email;
-            _telefoneController.text = state.responsavel.telefone;
-            _cepController.text = state.responsavel.cep;
-          }
           return Form(
             child: Column(
               children: [
