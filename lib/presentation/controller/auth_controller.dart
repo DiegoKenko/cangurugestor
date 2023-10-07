@@ -61,7 +61,7 @@ class AuthController extends ValueNotifier<AuthState> {
     return await authLoginUseCase(user: user, classe: classe).fold(
       (success) {
         LoginEntity loginEntity =
-            LoginEntity.fromPessoa(success, funcao: classe);
+            LoginEntity.fromPessoa(success, classe: classe);
         value = AuthenticatedAuthState(loginEntity);
         if (classe == EnumClasse.cuidador) {
           pessoaEntity = CuidadorEntity.fromPessoa(success);
@@ -80,7 +80,8 @@ class AuthController extends ValueNotifier<AuthState> {
   }
 
   Future<Result<PessoaEntity, DefaultErrorEntity>> _checkLogin(
-      User user) async {
+    User user,
+  ) async {
     PessoaEntity? pessoa = await authLoginUseCase(user: user).fold((success) {
       return success;
     }, (error) {

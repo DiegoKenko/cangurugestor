@@ -102,7 +102,7 @@ final kSubtitleReportStyle = TextStyle(
 );
 final kTitleDescription = TextStyle(
   color: corPreto,
-  fontSize: 16,
+  fontSize: 14,
   decoration: TextDecoration.none,
   wordSpacing: 2,
   letterSpacing: 2,

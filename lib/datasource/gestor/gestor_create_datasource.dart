@@ -9,11 +9,18 @@ class GestorCreateDatasource {
     GestorEntity gestor,
   ) async {
     try {
-      DocumentReference<Map<String, dynamic>> doc =
-          await getIt<FirebaseFirestore>()
-              .collection('gestores')
-              .add(gestor.toMap());
-      gestor.id = doc.id;
+      if (gestor.id.isNotEmpty) {
+        await getIt<FirebaseFirestore>()
+            .collection('gestores')
+            .doc(gestor.id)
+            .set(gestor.toMap());
+      } else {
+        DocumentReference<Map<String, dynamic>> doc =
+            await getIt<FirebaseFirestore>()
+                .collection('gestores')
+                .add(gestor.toMap());
+        gestor.id = doc.id;
+      }
 
       return gestor.toSuccess();
     } catch (e) {

@@ -15,25 +15,22 @@ class LoginEntity {
   EnumClasse funcao = EnumClasse.naoDefinido;
   String funcaoId = '';
 
-  LoginEntity.fromPessoa(PessoaEntity pessoa, {EnumClasse? funcao}) {
-    uid = pessoa.id;
+  LoginEntity.fromPessoa(PessoaEntity pessoa, {EnumClasse? classe}) {
     email = pessoa.email;
-    if (funcao == EnumClasse.gestor) {
+    if (classe == EnumClasse.gestor) {
       funcao = EnumClasse.gestor;
-    } else if (funcao == EnumClasse.responsavel) {
+    } else if (classe == EnumClasse.responsavel) {
       funcao = EnumClasse.responsavel;
-    } else if (funcao == EnumClasse.cuidador) {
+    } else if (classe == EnumClasse.cuidador) {
       funcao = EnumClasse.cuidador;
     } else {
       funcao = EnumClasse.naoDefinido;
     }
-
     funcaoId = pessoa.id;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'uid': uid,
       'email': email,
       'funcao': funcao.collection,
       'funcaoId': funcaoId,
@@ -41,10 +38,10 @@ class LoginEntity {
   }
 
   LoginEntity.fromMap(Map<String, dynamic> map) {
-    uid = map['uid'];
-    email = map['email'];
-    funcao = map['funcao'];
-    funcaoId = map['funcaoId'];
+    uid = map['uid'] ?? '';
+    email = map['email'] ?? '';
+    funcao = map['funcao'] ?? EnumClasse.naoDefinido;
+    funcaoId = map['funcaoId'] ?? ' ';
   }
 
   bool get _isGestor => funcao == EnumClasse.gestor;

@@ -9,11 +9,18 @@ class ResponsavelCreateDatasource {
     ResponsavelEntity responsavel,
   ) async {
     try {
-      DocumentReference<Map<String, dynamic>> doc =
-          await getIt<FirebaseFirestore>()
-              .collection('resposaveis')
-              .add(responsavel.toMap());
-      responsavel.id = doc.id;
+      if (responsavel.id.isNotEmpty) {
+        await getIt<FirebaseFirestore>()
+            .collection('resposaveis')
+            .doc(responsavel.id)
+            .set(responsavel.toMap());
+      } else {
+        DocumentReference<Map<String, dynamic>> doc =
+            await getIt<FirebaseFirestore>()
+                .collection('resposaveis')
+                .add(responsavel.toMap());
+        responsavel.id = doc.id;
+      }
 
       return responsavel.toSuccess();
     } catch (e) {

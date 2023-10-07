@@ -44,10 +44,14 @@ class AuthLoginUseCase {
     );
     if (pessoa == null) {
       if (classe != null) {
-        await _criarRole(user, classe)
-            .fold((success) {}, (error) => pessoa = null);
+        await _criarRole(user, classe).fold(
+          (success) {
+            pessoa = success;
+          },
+          (error) {},
+        );
         if (pessoa != null) {
-          await _criarLogin(pessoa!);
+          await _criarLogin(pessoa!, classe);
           return pessoa!.toSuccess();
         } else {
           return Failure(DefaultErrorEntity(''));
@@ -88,8 +92,13 @@ class AuthLoginUseCase {
     }
   }
 
-  Future<LoginEntity?> _criarLogin(PessoaEntity pessoa) async {
-    return await _loginCreateDatasource(LoginEntity.fromPessoa(pessoa)).fold(
+  Future<LoginEntity?> _criarLogin(
+    PessoaEntity pessoa,
+    EnumClasse classe,
+  ) async {
+    return await _loginCreateDatasource(
+      LoginEntity.fromPessoa(pessoa, classe: classe),
+    ).fold(
       (success) => success,
       (error) => null,
     );

@@ -34,13 +34,30 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
   void initState() {
     super.initState();
 
-    _cpfController.addListener(() {});
-    _nomeController.addListener(() {});
-    _nascimentoController.addListener(() {});
-    _emailController.addListener(() {});
-    _telefoneController.addListener(() {});
-    _numeroRuaController.addListener(() {});
-    _cepController.addListener(() async {});
+    _cpfController.addListener(() {
+      widget.responsavelController.responsavel.cpf = _cpfController.text;
+    });
+    _nomeController.addListener(() {
+      widget.responsavelController.responsavel.nome = _nomeController.text;
+    });
+    _nascimentoController.addListener(() {
+      widget.responsavelController.responsavel.nascimento =
+          _nascimentoController.text;
+    });
+    _emailController.addListener(() {
+      widget.responsavelController.responsavel.email = _emailController.text;
+    });
+    _telefoneController.addListener(() {
+      widget.responsavelController.responsavel.telefone =
+          _telefoneController.text;
+    });
+    _numeroRuaController.addListener(() {
+      widget.responsavelController.responsavel.numeroRua =
+          _numeroRuaController.text;
+    });
+    _cepController.addListener(() async {
+      widget.responsavelController.responsavel.cep = _cepController.text;
+    });
   }
 
   @override

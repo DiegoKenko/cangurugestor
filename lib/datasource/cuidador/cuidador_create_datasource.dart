@@ -9,11 +9,18 @@ class CuidadorCreateDatasource {
     CuidadorEntity cuidador,
   ) async {
     try {
-      DocumentReference<Map<String, dynamic>> doc =
-          await getIt<FirebaseFirestore>()
-              .collection('cuidadores')
-              .add(cuidador.toMap());
-      cuidador.id = doc.id;
+      if (cuidador.id.isNotEmpty) {
+        await getIt<FirebaseFirestore>()
+            .collection('cuidadores')
+            .doc(cuidador.id)
+            .set(cuidador.toMap());
+      } else {
+        DocumentReference<Map<String, dynamic>> doc =
+            await getIt<FirebaseFirestore>()
+                .collection('cuidadores')
+                .add(cuidador.toMap());
+        cuidador.id = doc.id;
+      }
 
       return cuidador.toSuccess();
     } catch (e) {

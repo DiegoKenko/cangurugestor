@@ -38,23 +38,26 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            _responsavelController.update();
             Navigator.of(context).pop();
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return DialogConfirmacaoExclusao(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
-          ),
+          widget.responsavel.id.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return DialogConfirmacaoExclusao(
+                          onConfirm: () {},
+                        );
+                      },
+                    );
+                  },
+                )
+              : Container(),
         ],
         title: Column(
           children: [

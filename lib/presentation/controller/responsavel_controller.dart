@@ -9,13 +9,13 @@ import 'package:result_dart/result_dart.dart';
 
 class ResponsavelController extends ValueNotifier<ResponsavelState> {
   final ResponsavelPacienteGetAllDatasource
-      responsavelPacienteGetAllDatasource =
+      _responsavelPacienteGetAllDatasource =
       ResponsavelPacienteGetAllDatasource();
-  final ResponsavelCreateDatasource responsavelCreateDatasource =
+  final ResponsavelCreateDatasource _responsavelCreateDatasource =
       ResponsavelCreateDatasource();
-  final ResponsavelUpdateDatasource responsavelUpdateDatasource =
+  final ResponsavelUpdateDatasource _responsavelUpdateDatasource =
       ResponsavelUpdateDatasource();
-  final ResponsavelDeleteDatasource responsavelDeleteDatasource =
+  final ResponsavelDeleteDatasource _responsavelDeleteDatasource =
       ResponsavelDeleteDatasource();
   ResponsavelController() : super(ResponsavelInitialState());
 
@@ -29,28 +29,28 @@ class ResponsavelController extends ValueNotifier<ResponsavelState> {
   loadPacientes(ResponsavelEntity responsavel) async {
     value = ResponsavelLoadingState();
     responsavel.pacientes =
-        await responsavelPacienteGetAllDatasource(responsavel);
+        await _responsavelPacienteGetAllDatasource(responsavel);
     value = ResponsavelSuccessState(responsavel);
   }
 
-  update(ResponsavelEntity responsavel) async {
+  update() async {
     value = ResponsavelLoadingState();
     if (responsavel.id.isEmpty) {
-      await responsavelCreateDatasource(responsavel).fold(
+      await _responsavelCreateDatasource(responsavel).fold(
         (success) {
           responsavel = success;
         },
         (error) => null,
       );
     } else {
-      await responsavelUpdateDatasource(responsavel);
+      await _responsavelUpdateDatasource(responsavel);
     }
     value = ResponsavelSuccessState(responsavel);
   }
 
   delete(ResponsavelEntity responsavel) async {
     value = ResponsavelLoadingState();
-    await responsavelDeleteDatasource(responsavel);
+    await _responsavelDeleteDatasource(responsavel);
     value = ResponsavelSuccessState(responsavel);
   }
 }
