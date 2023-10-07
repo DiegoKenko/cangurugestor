@@ -2,6 +2,7 @@ import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/gestor_entity.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ResponsavelEntity extends PessoaEntity {
   List<CuidadorEntity> cuidadores = [];
@@ -58,6 +59,12 @@ class ResponsavelEntity extends PessoaEntity {
     cep = pessoa.cep;
     estado = pessoa.estado;
   }
+  ResponsavelEntity.fromUser(User user) {
+    id = user.uid;
+    email = user.email ?? '';
+    nome = user.displayName ?? '';
+  }
+
   ResponsavelEntity.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     ativo = map['ativo'];
     bairro = map['bairro'];

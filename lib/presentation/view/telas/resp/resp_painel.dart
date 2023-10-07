@@ -1,4 +1,5 @@
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/state/responsavel_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/drawer.dart';
@@ -11,7 +12,9 @@ import 'package:cangurugestor/presentation/controller/responsavel_controller.dar
 import 'package:flutter/material.dart';
 
 class PainelResponsavel extends StatefulWidget {
-  const PainelResponsavel({Key? key}) : super(key: key);
+  const PainelResponsavel({Key? key, required this.responsavel})
+      : super(key: key);
+  final ResponsavelEntity responsavel;
 
   @override
   State<PainelResponsavel> createState() => _PainelResponsavelState();
@@ -33,25 +36,17 @@ class _PainelResponsavelState extends State<PainelResponsavel>
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
-          ValueListenableBuilder(
-            valueListenable: responsavelController,
-            builder: (context, state, _) {
-              if (state is ResponsavelSuccessState) {
-                return DrawerListTile(
-                  title: Column(
-                    children: [
-                      Text(
-                        state.responsavel.nome,
-                        style: kTitleAppBarStyle,
-                      ),
-                      Text('responsavel', style: kSubtitleAppBarStyle),
-                    ],
-                  ),
-                  onTap: null,
-                );
-              }
-              return Container();
-            },
+          DrawerListTile(
+            title: Column(
+              children: [
+                Text(
+                  widget.responsavel.nome,
+                  style: kTitleAppBarStyle,
+                ),
+                Text('responsavel', style: kSubtitleAppBarStyle),
+              ],
+            ),
+            onTap: null,
           ),
         ],
       ),

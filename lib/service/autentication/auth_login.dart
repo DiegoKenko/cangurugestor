@@ -11,21 +11,25 @@ class GoogleLogin {
     return _auth.currentUser;
   }
 
-  Future<UserCredential> getCredentials() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  Future<UserCredential?> getCredentials() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
-    // Create a new credential
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    // Once signed in, return the UserCredential
-    return await _auth.signInWithCredential(credential);
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      // Once signed in, return the UserCredential
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> logout() async {
@@ -34,7 +38,10 @@ class GoogleLogin {
   }
 
   Future<User?> loadUser() async {
-    var cred = await getCredentials();
+    UserCredential? cred = await getCredentials();
+    if (cred == null) {
+      return null;
+    }
     return cred.user;
   }
 }

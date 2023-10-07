@@ -1,16 +1,14 @@
 import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/default_error_entity.dart';
-import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:result_dart/result_dart.dart';
 
 class ResponsavelCreateDatasource {
   Future<Result<ResponsavelEntity, DefaultErrorEntity>> call(
-    PessoaEntity pessoa,
+    ResponsavelEntity responsavel,
   ) async {
     try {
-      ResponsavelEntity responsavel = ResponsavelEntity.fromPessoa(pessoa);
       DocumentReference<Map<String, dynamic>> doc =
           await getIt<FirebaseFirestore>()
               .collection('resposaveis')

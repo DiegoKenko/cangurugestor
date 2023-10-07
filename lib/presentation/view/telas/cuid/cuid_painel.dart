@@ -1,3 +1,4 @@
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
 import 'package:cangurugestor/presentation/state/cuidador_state.dart';
@@ -10,7 +11,8 @@ import 'package:cangurugestor/presentation/view/telas/paci/paci_dashboard.dart';
 import 'package:flutter/material.dart';
 
 class PainelCuidador extends StatefulWidget {
-  const PainelCuidador({Key? key}) : super(key: key);
+  const PainelCuidador({Key? key, required this.cuidador}) : super(key: key);
+  final CuidadorEntity cuidador;
 
   @override
   State<PainelCuidador> createState() => _PainelCuidadorState();
@@ -32,25 +34,17 @@ class _PainelCuidadorState extends State<PainelCuidador>
     return Scaffold(
       drawer: CanguruDrawer(
         profile: [
-          ValueListenableBuilder(
-            valueListenable: cuidadorController,
-            builder: (context, state, _) {
-              if (state is CuidadorSuccessState) {
-                return DrawerListTile(
-                  title: Column(
-                    children: [
-                      Text(
-                        state.cuidador.nome,
-                        style: kTitleAppBarStyle,
-                      ),
-                      Text('cuidador', style: kSubtitleAppBarStyle),
-                    ],
-                  ),
-                  onTap: null,
-                );
-              }
-              return Container();
-            },
+          DrawerListTile(
+            title: Column(
+              children: [
+                Text(
+                  widget.cuidador.nome,
+                  style: kTitleAppBarStyle,
+                ),
+                Text('cuidador', style: kSubtitleAppBarStyle),
+              ],
+            ),
+            onTap: null,
           ),
         ],
       ),

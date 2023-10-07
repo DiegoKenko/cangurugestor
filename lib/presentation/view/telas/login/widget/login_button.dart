@@ -22,7 +22,8 @@ class ButtonLogin extends StatefulWidget {
 class _ButtonLoginState extends State<ButtonLogin> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      width: MediaQuery.of(context).size.width / 1.5,
       padding: const EdgeInsets.all(8.0),
       child: OutlinedButton(
         style: ButtonStyle(
@@ -40,12 +41,13 @@ class _ButtonLoginState extends State<ButtonLogin> {
         onPressed: () => widget.onPressed(),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               widget.image,
               Padding(
-                padding: const EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.only(left: 10, top: 5),
                 child: Text(
                   widget.text,
                   style: const TextStyle(

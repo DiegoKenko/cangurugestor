@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
-class PessoaEntity {
+abstract class PessoaEntity {
   String id = '';
   String nome = '';
   String sobrenome = '';
@@ -41,13 +40,6 @@ class PessoaEntity {
     this.estado = '',
     this.cep = '',
   });
-
-  PessoaEntity.fromUser(User user) {
-    id = user.uid;
-    nome = user.displayName ?? '';
-    email = user.email ?? '';
-    telefone = user.phoneNumber ?? '';
-  }
 
   Map<String, dynamic> toMap() {
     return {

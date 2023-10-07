@@ -1,11 +1,8 @@
 import 'package:cangurugestor/const/enum/enum_classe.dart';
-import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
-import 'package:cangurugestor/domain/entity/gestor_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
-import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
-class UserEntity {
-  UserEntity(
+class LoginEntity {
+  LoginEntity(
     this.docId,
     this.uid,
     this.email,
@@ -18,18 +15,19 @@ class UserEntity {
   EnumClasse funcao = EnumClasse.naoDefinido;
   String funcaoId = '';
 
-  UserEntity.fromPessoa(PessoaEntity pessoa) {
+  LoginEntity.fromPessoa(PessoaEntity pessoa, {EnumClasse? funcao}) {
     uid = pessoa.id;
     email = pessoa.email;
-    if (pessoa is GestorEntity) {
+    if (funcao == EnumClasse.gestor) {
       funcao = EnumClasse.gestor;
-    } else if (pessoa is ResponsavelEntity) {
+    } else if (funcao == EnumClasse.responsavel) {
       funcao = EnumClasse.responsavel;
-    } else if (pessoa is CuidadorEntity) {
+    } else if (funcao == EnumClasse.cuidador) {
       funcao = EnumClasse.cuidador;
     } else {
       funcao = EnumClasse.naoDefinido;
     }
+
     funcaoId = pessoa.id;
   }
 
@@ -37,12 +35,12 @@ class UserEntity {
     return {
       'uid': uid,
       'email': email,
-      'funcao': funcao,
+      'funcao': funcao.collection,
       'funcaoId': funcaoId,
     };
   }
 
-  UserEntity.fromMap(Map<String, dynamic> map) {
+  LoginEntity.fromMap(Map<String, dynamic> map) {
     uid = map['uid'];
     email = map['email'];
     funcao = map['funcao'];

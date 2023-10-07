@@ -1,7 +1,9 @@
 import 'package:cangurugestor/const/enum/enum_auth.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/default_error_entity.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/domain/entity/user_entity.dart';
 import 'package:cangurugestor/domain/usecase/auth_login_usecase.dart';
 import 'package:cangurugestor/service/autentication/auth_login.dart';
@@ -36,31 +38,56 @@ class AuthController extends ValueNotifier<AuthState> {
     return _pessoaEntity;
   }
 
-  checkLogin() async {
+  Future<PessoaEntity?> checkLogin() async {
     value = LoadingAuthState();
     final GoogleLogin googleLogin = GoogleLogin();
     final User? user = googleLogin.currentUser();
     if (user == null) {
-      value = UnauthenticatedAuthState();
-      return;
+      value = UnauthenticatedAuthState(user);
+      return null;
     }
-    value = await _getLogin(user).fold((success) {
+    return await _checkLogin(user).fold((success) {
       _pessoaEntity = success;
-      return AuthenticatedAuthState(UserEntity.fromPessoa(success));
+      value = AuthenticatedAuthState(LoginEntity.fromPessoa(success));
+      return success;
     }, (error) {
-      return UnauthenticatedAuthState();
+      value = UnauthenticatedAuthState(user);
+      return null;
     });
   }
 
-  Future<Result<PessoaEntity, DefaultErrorEntity>> _getLogin(User user) async {
-    PessoaEntity? pessoa =
-        await authLoginUseCase(PessoaEntity.fromUser(user)).fold((success) {
+  Future<PessoaEntity?> createLogin(User user, EnumClasse classe) async {
+    PessoaEntity? pessoaEntity;
+    return await authLoginUseCase(user: user, classe: classe).fold(
+      (success) {
+        LoginEntity loginEntity =
+            LoginEntity.fromPessoa(success, funcao: classe);
+        value = AuthenticatedAuthState(loginEntity);
+        if (classe == EnumClasse.cuidador) {
+          pessoaEntity = CuidadorEntity.fromPessoa(success);
+        }
+        if (classe == EnumClasse.responsavel) {
+          pessoaEntity = ResponsavelEntity.fromPessoa(success);
+        }
+        if (classe == EnumClasse.gestor) {
+          pessoaEntity = GestorEntity.fromPessoa(success);
+        }
+
+        return pessoaEntity;
+      },
+      (error) => null,
+    );
+  }
+
+  Future<Result<PessoaEntity, DefaultErrorEntity>> _checkLogin(
+      User user) async {
+    PessoaEntity? pessoa = await authLoginUseCase(user: user).fold((success) {
       return success;
     }, (error) {
       return null;
     });
     if (pessoa == null) {
-      return Failure(DefaultErrorEntity('Erro ao carregar usuário'));
+      return Failure(DefaultErrorEntity(''));
     } else {
       return pessoa.toSuccess();
     }
@@ -76,25 +103,33 @@ class AuthController extends ValueNotifier<AuthState> {
     if (user == null) {
       value = ErrorAuthState();
     } else {
-      await authLoginUseCase(PessoaEntity.fromUser(user)).fold((success) {
-        value = AuthenticatedAuthState(UserEntity.fromPessoa(success));
+      await authLoginUseCase(user: user).fold((success) {
+        value = AuthenticatedAuthState(LoginEntity.fromPessoa(success));
       }, (error) {
         value = ErrorAuthState();
       });
     }
+    if (user == null) {
+      value = UnauthenticatedAuthState(user);
+      return;
+    } else {
+      await _checkLogin(user).fold((success) {
+        _pessoaEntity = success;
+        value = AuthenticatedAuthState(LoginEntity.fromPessoa(success));
+      }, (error) {
+        value = UnauthenticatedAuthState(user);
+      });
+    }
   }
 
-  logout() async {
+  Future<void> logout() async {
+    await Future.delayed(const Duration(milliseconds: 500));
     User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      value = ErrorAuthState();
-    } else {
+    if (user != null) {
       if (user.providerData[0].methodLogin == EnumMethodAuthID.google) {
         await GoogleLogin().logout();
       } else if (user.providerData[0].methodLogin == EnumMethodAuthID.apple) {
-      } else {
-        value = ErrorAuthState();
-      }
+      } else {}
     }
   }
 }

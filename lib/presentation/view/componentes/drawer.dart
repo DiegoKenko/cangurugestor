@@ -3,6 +3,7 @@ import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/state/auth_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
+import 'package:cangurugestor/presentation/view/telas/login/splash_screen.dart';
 import 'package:cangurugestor/presentation/view/telas/tela_relatorio.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
@@ -108,7 +109,15 @@ class _CanguruDrawerState extends State<CanguruDrawer> {
                           'Sair',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          authController.logout();
+                          Navigator.pushReplacement(
+                            context,
+                            AnimatedPageTransition(
+                              page: const SplashScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

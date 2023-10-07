@@ -4,9 +4,11 @@ import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/state/auth_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/animated_page_transition.dart';
 import 'package:cangurugestor/presentation/view/componentes/circular_progress.dart';
+import 'package:cangurugestor/presentation/view/telas/login/splash_screen.dart';
 import 'package:cangurugestor/presentation/view/telas/login/widget/login_button.dart';
 import 'package:cangurugestor/presentation/view/telas/login/widget/login_button_apple.dart';
 import 'package:cangurugestor/presentation/view/telas/login/widget/login_button_google.dart';
+import 'package:cangurugestor/presentation/view/telas/login/widget/login_role_selection.dart';
 import 'package:cangurugestor/presentation/view/telas/tela_initital_router.dart';
 import 'package:flutter/material.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
@@ -19,14 +21,6 @@ class TelaLogin extends StatefulWidget {
 }
 
 class _TelaLoginState extends State<TelaLogin> {
-  final AuthController authController = getIt<AuthController>();
-
-  @override
-  void initState() {
-    authController.checkLogin();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +40,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   height: MediaQuery.of(context).size.height * 0.6,
                   fit: BoxFit.fitWidth,
                 ),
-                LoginButtons(authController: authController),
+                const LoginButtons(),
               ],
             ),
           ),
@@ -56,12 +50,17 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 }
 
-class LoginButtons extends StatelessWidget {
+class LoginButtons extends StatefulWidget {
   const LoginButtons({
     super.key,
-    required this.authController,
   });
-  final AuthController authController;
+
+  @override
+  State<LoginButtons> createState() => _LoginButtonsState();
+}
+
+class _LoginButtonsState extends State<LoginButtons> {
+  final AuthController authController = getIt<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -73,36 +72,79 @@ class LoginButtons extends StatelessWidget {
         } else if (state is AuthenticatedAuthState) {
           return Column(
             children: [
-              Expanded(
-                child: Center(
-                  child: ButtonLogin(
-                    image: const Icon(Icons.login),
-                    text: 'Entrar',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        AnimatedPageTransition(
-                          page: const TelaInitialRouter(),
-                        ),
-                      );
-                    },
-                    methodAuthID: EnumMethodAuthID.nenhum,
-                  ),
-                ),
+              ButtonLogin(
+                image: const Icon(Icons.login),
+                text: 'Entrar',
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    AnimatedPageTransition(
+                      page: TelaInitialRouter(pessoa: authController.current!),
+                    ),
+                  );
+                },
+                methodAuthID: EnumMethodAuthID.nenhum,
               ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: ButtonLogin(
-                  image: const Icon(Icons.logout_outlined),
-                  text: 'Trocar de conta',
-                  onPressed: () {
-                    authController.logout();
-                  },
-                  methodAuthID: EnumMethodAuthID.nenhum,
-                ),
-              )
+              Container(
+                alignment: Alignment.center,
+                height: 30,
+                child: const Text('ou'),
+              ),
+              ButtonLogin(
+                image: const Icon(Icons.switch_right),
+                text: 'Alterar conta',
+                onPressed: () async {
+                  authController.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    AnimatedPageTransition(
+                      page: const SplashScreen(),
+                    ),
+                  );
+                },
+                methodAuthID: EnumMethodAuthID.nenhum,
+              ),
             ],
           );
+        } else if (state is UnauthenticatedAuthState) {
+          if (state.user == null) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(height: 20.0),
+                ButtonLoginGoogle(
+                  onPressed: () async =>
+                      await authController.login(EnumMethodAuthID.google),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 30,
+                  child: const Text('ou'),
+                ),
+                ButtonLoginApple(
+                  onPressed: () {},
+                ),
+              ],
+            );
+          } else {
+            return Center(
+              child: LoginRoleSelection(
+                callback: (p0) async {
+                  authController.createLogin(state.user!, p0).then(
+                        (pessoa) => pessoa != null
+                            ? Navigator.pushReplacement(
+                                context,
+                                AnimatedPageTransition(
+                                  page: TelaInitialRouter(pessoa: pessoa),
+                                ),
+                              )
+                            : null,
+                      );
+                },
+              ),
+            );
+          }
         } else {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -110,7 +152,13 @@ class LoginButtons extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 20.0),
               ButtonLoginGoogle(
-                onPressed: () => authController.login(EnumMethodAuthID.google),
+                onPressed: () async =>
+                    await authController.login(EnumMethodAuthID.google),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: 30,
+                child: const Text('ou'),
               ),
               ButtonLoginApple(
                 onPressed: () {},

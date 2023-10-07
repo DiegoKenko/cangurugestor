@@ -1,5 +1,5 @@
-import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
 import 'package:cangurugestor/domain/entity/user_entity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthState {}
 
@@ -8,11 +8,12 @@ class InitialAtuthState extends AuthState {
 }
 
 class UnauthenticatedAuthState extends AuthState {
-  UnauthenticatedAuthState() : super();
+  User? user;
+  UnauthenticatedAuthState(this.user) : super();
 }
 
 class AuthenticatedAuthState extends AuthState {
-  UserEntity user;
+  LoginEntity user;
   AuthenticatedAuthState(this.user) : super();
 }
 

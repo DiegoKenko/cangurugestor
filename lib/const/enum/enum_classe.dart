@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 enum EnumClasse { gestor, responsavel, cuidador, paciente, naoDefinido }
 
 extension ClasseDescricao on EnumClasse {
-  String get name => describeEnum(this);
+  String get description => describeEnum(this);
   String get collection {
     switch (this) {
       case EnumClasse.gestor:

@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:result_dart/result_dart.dart';
 
 class LoginResponsavelUpdateDatasource {
-  Future<Result<UserEntity, DefaultErrorEntity>> call(
+  Future<Result<LoginEntity, DefaultErrorEntity>> call(
     ResponsavelEntity responsavel,
   ) async {
     if (responsavel.id.isEmpty && responsavel.email.isNotEmpty) {
@@ -19,7 +19,7 @@ class LoginResponsavelUpdateDatasource {
               .get();
 
       if (snap.docs.isEmpty) {
-        return UserEntity.fromMap(snap.docs.first.data()).toSuccess();
+        return LoginEntity.fromMap(snap.docs.first.data()).toSuccess();
       }
       return Failure(DefaultErrorEntity('Error ao fazer login'));
     }

@@ -3,9 +3,9 @@ import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/firebase_options.dart';
 import 'package:cangurugestor/presentation/view/componentes/styles.dart';
 import 'package:cangurugestor/presentation/view/componentes/tooltip_login.dart';
+import 'package:cangurugestor/presentation/view/telas/login/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cangurugestor/presentation/view/telas/login/tela_login.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -101,7 +101,7 @@ class _MyAppState extends State<MyApp> {
           surface: corBranco,
         ),
       ),
-      home: const TelaLogin(),
+      home: const SplashScreen(),
     );
   }
 

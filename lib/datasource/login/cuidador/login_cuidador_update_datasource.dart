@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:result_dart/result_dart.dart';
 
 class LoginCuidadorUpdateDatasource {
-  Future<Result<UserEntity, DefaultErrorEntity>> call(
+  Future<Result<LoginEntity, DefaultErrorEntity>> call(
     CuidadorEntity cuidador,
   ) async {
     if (cuidador.id.isEmpty && cuidador.email.isNotEmpty) {
@@ -19,7 +19,7 @@ class LoginCuidadorUpdateDatasource {
               .get();
 
       if (snap.docs.isEmpty) {
-        return UserEntity.fromMap(snap.docs.first.data()).toSuccess();
+        return LoginEntity.fromMap(snap.docs.first.data()).toSuccess();
       }
       return Failure(DefaultErrorEntity('Error ao fazer login'));
     }

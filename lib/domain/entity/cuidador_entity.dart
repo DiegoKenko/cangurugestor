@@ -1,5 +1,6 @@
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/domain/entity/pessoa_entity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CuidadorEntity extends PessoaEntity {
   List<PacienteEntity> pacientes = [];
@@ -52,6 +53,12 @@ class CuidadorEntity extends PessoaEntity {
     cidade = pessoa.cidade;
     cep = pessoa.cep;
     estado = pessoa.estado;
+  }
+
+  CuidadorEntity.fromUser(User user) {
+    id = user.uid;
+    email = user.email ?? '';
+    nome = user.displayName ?? '';
   }
 
   CuidadorEntity.fromMap(Map<String, dynamic> map) : super.fromMap(map) {

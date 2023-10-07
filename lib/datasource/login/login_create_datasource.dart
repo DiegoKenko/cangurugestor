@@ -5,8 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:result_dart/result_dart.dart';
 
 class LoginCreateDatasource {
-  Future<Result<UserEntity, DefaultErrorEntity>> call(
-    UserEntity user,
+  Future<Result<LoginEntity, DefaultErrorEntity>> call(
+    LoginEntity user,
   ) async {
     try {
       DocumentReference doc = await getIt<FirebaseFirestore>()
