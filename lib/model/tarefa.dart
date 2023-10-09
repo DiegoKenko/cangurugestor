@@ -67,7 +67,7 @@ class Tarefa {
       'observacao': observacao,
       'concluida': concluida,
       'dataConclusao': dataConclusao,
-      'horaConclusao': horaConclusao
+      'horaConclusao': horaConclusao,
     };
   }
 

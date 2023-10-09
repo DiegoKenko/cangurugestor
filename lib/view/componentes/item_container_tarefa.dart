@@ -67,7 +67,7 @@ class _ItemContainerTarefaState extends State<ItemContainerTarefa> {
                   ),
                 ),
               ),
-              wStatus
+              wStatus,
             ],
           ),
         ),
@@ -198,7 +198,7 @@ class _TarefaBottomSheetState extends State<TarefaBottomSheet> {
                       )
                     : Container(),
               ],
-            )
+            ),
           ],
         ),
       ),

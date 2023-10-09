@@ -77,7 +77,7 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
                 Text(
                   'cliente',
                   style: kSubtitleAppBarStyle,
-                )
+                ),
               ],
             ),
           ),
@@ -315,7 +315,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                     MaskTextInputFormatter(
                       mask: '###.###.###-##',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.phone,
                 ),
@@ -350,7 +350,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                     MaskTextInputFormatter(
                       mask: '## #####-####',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                 ),
                 FormCadastro(
@@ -362,7 +362,7 @@ class _DadosResponsavelState extends State<DadosResponsavel> {
                     MaskTextInputFormatter(
                       mask: '#####-###',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.text,
                 ),

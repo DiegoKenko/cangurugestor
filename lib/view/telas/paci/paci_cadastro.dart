@@ -297,7 +297,7 @@ class _FichaPacienteState extends State<FichaPaciente>
               kIconMedicamento,
               Text(
                 'Medicamentos',
-              )
+              ),
             ],
           ),
         ),
@@ -307,7 +307,7 @@ class _FichaPacienteState extends State<FichaPaciente>
               kIconConsulta,
               Text(
                 'Consultas',
-              )
+              ),
             ],
           ),
         ),
@@ -317,7 +317,7 @@ class _FichaPacienteState extends State<FichaPaciente>
               kIconAtividade,
               Text(
                 'Atividades',
-              )
+              ),
             ],
           ),
         ),
@@ -654,7 +654,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
                     MaskTextInputFormatter(
                       mask: '###.###.###-##',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.phone,
                 ),
@@ -683,7 +683,7 @@ class _DadosPacienteState extends State<DadosPaciente> {
                     MaskTextInputFormatter(
                       mask: '#####-###',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.text,
                 ),

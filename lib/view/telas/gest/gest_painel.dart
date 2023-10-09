@@ -3,6 +3,7 @@ import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/animated_page_transition.dart';
+import 'package:cangurugestor/view/componentes/circular_progress.dart';
 import 'package:cangurugestor/view/componentes/drawer.dart';
 import 'package:cangurugestor/view/componentes/item_container.dart';
 import 'package:cangurugestor/view/componentes/styles.dart';
@@ -64,7 +65,7 @@ class _PainelGestorState extends State<PainelGestor>
                     children: [
                       Text('Clientes'),
                       SizedBox(width: 10),
-                      clienteIcon
+                      clienteIcon,
                     ],
                   ),
                 ),
@@ -74,7 +75,7 @@ class _PainelGestorState extends State<PainelGestor>
                     children: [
                       Text('Cuidadores'),
                       SizedBox(width: 10),
-                      cuidadorIcon
+                      cuidadorIcon,
                     ],
                   ),
                 ),
@@ -113,6 +114,9 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
           child: BlocBuilder<GestorBloc, GestorState>(
             builder: ((context, gestorState) {
               context.read<GestorBloc>().add(GestorLoadCuidadoresEvent());
+              if (gestorState is GesttorLoadingState) {
+                return const Center(child: CircularProgressCanguru());
+              }
               if (gestorState.gestor.cuidadores.isEmpty) {
                 return const Text('nenhum cuidador cadastrado');
               } else {
@@ -186,6 +190,9 @@ class ClientesGestor extends StatelessWidget {
           child: BlocBuilder<GestorBloc, GestorState>(
             builder: (context, gestorState) {
               context.read<GestorBloc>().add(GestorLoadClientesEvent());
+              if (gestorState is GesttorLoadingState) {
+                return const Center(child: CircularProgressCanguru());
+              }
               if (gestorState.gestor.clientes.isEmpty) {
                 return const Text('nenhum cliente cadastrado');
               } else {

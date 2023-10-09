@@ -55,7 +55,7 @@ class _RelatorioTelaState extends State<RelatorioTela> {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

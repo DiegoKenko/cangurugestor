@@ -355,7 +355,7 @@ class _DadosConsultaState extends State<DadosConsulta> {
                   MaskTextInputFormatter(
                     mask: '#####-###',
                     filter: {'#': RegExp(r'[0-9]')},
-                  )
+                  ),
                 ],
                 textInputType: TextInputType.text,
               ),

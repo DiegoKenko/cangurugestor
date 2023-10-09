@@ -72,7 +72,7 @@ class _CadastroCuidadorState extends State<CadastroCuidador>
                 Text(
                   'cuidador',
                   style: kSubtitleAppBarStyle,
-                )
+                ),
               ],
             ),
           ),
@@ -250,7 +250,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
                     MaskTextInputFormatter(
                       mask: '###.###.###-##',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.phone,
                 ),
@@ -285,7 +285,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
                     MaskTextInputFormatter(
                       mask: '## #####-####',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                 ),
                 FormCadastro(
@@ -297,7 +297,7 @@ class _DadosCuidadorState extends State<DadosCuidador> {
                     MaskTextInputFormatter(
                       mask: '#####-###',
                       filter: {'#': RegExp(r'[0-9]')},
-                    )
+                    ),
                   ],
                   textInputType: TextInputType.text,
                 ),

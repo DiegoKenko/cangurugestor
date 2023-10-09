@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const int opcaoInclusao = 1;
 const int opcaoAlteracao = 2;
