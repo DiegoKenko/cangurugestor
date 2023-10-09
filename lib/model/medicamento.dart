@@ -1,7 +1,5 @@
-import 'package:cangurugestor/enum/enum_intervalo.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
-// ignore: unused_import
 import 'package:cangurugestor/global.dart';
 
 class Medicamento {

@@ -6,11 +6,11 @@ class CircularProgressCanguru extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       height: 100,
       width: double.infinity,
       child: Column(
-        children: [
+        children: const [
           CircularProgressIndicator(
             color: corPad1,
             strokeWidth: 10,

@@ -1,9 +1,8 @@
-import 'package:cangurugestor/enum/enum_intervalo.dart';
-import 'package:cangurugestor/enum/enum_tarefa.dart';
 import 'package:cangurugestor/firebaseUtils/fire_atividade.dart';
 import 'package:cangurugestor/firebaseUtils/fire_consulta.dart';
 import 'package:cangurugestor/firebaseUtils/fire_medicamento.dart';
 import 'package:cangurugestor/firebaseUtils/fire_tarefa.dart';
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/medicamento.dart';

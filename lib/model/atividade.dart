@@ -1,4 +1,4 @@
-import 'package:cangurugestor/enum/enum_intervalo.dart';
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/responsavel.dart';

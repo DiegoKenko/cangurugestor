@@ -1,4 +1,4 @@
-import 'package:cangurugestor/enum/enum_tarefa.dart';
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/paciente.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

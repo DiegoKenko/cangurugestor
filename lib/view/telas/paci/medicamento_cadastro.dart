@@ -1,5 +1,4 @@
-import 'package:cangurugestor/enum/enum_intervalo.dart';
-import 'package:cangurugestor/enum/enum_tarefa.dart';
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/tarefa.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
 import 'package:cangurugestor/view/componentes/form_cadastro.dart';

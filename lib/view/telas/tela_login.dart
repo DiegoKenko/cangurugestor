@@ -55,10 +55,10 @@ class LoginButtons extends StatelessWidget {
         if (context.read<AuthBloc>().state.loading) {
           return const CircularProgressCanguru();
         } else {
-          return const Column(
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               SizedBox(height: 20.0),
               ButtonLoginGoogle(),
               ButtonLoginApple(),

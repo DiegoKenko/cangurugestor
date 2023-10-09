@@ -1,4 +1,4 @@
-import 'package:cangurugestor/enum/enum_tarefa.dart';
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/atividade.dart';
 import 'package:cangurugestor/model/consulta.dart';
 import 'package:cangurugestor/model/cuidador.dart';
