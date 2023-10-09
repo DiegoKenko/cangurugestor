@@ -1,12 +1,12 @@
 import 'package:cangurugestor/autentication/auth_login.dart';
 import 'package:cangurugestor/bloc/bloc_auth_event.dart';
 import 'package:cangurugestor/bloc/bloc_auth_state.dart';
+import 'package:cangurugestor/enum/enum_classe.dart';
 import 'package:cangurugestor/firebaseUtils/fire_cuidador.dart';
 import 'package:cangurugestor/firebaseUtils/fire_gestor.dart';
 import 'package:cangurugestor/firebaseUtils/fire_login.dart';
 import 'package:cangurugestor/firebaseUtils/fire_responsavel.dart';
 import 'package:cangurugestor/firebaseUtils/firebase_auth_constants.dart';
-import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/login.dart';
 import 'package:cangurugestor/model/pessoa.dart';

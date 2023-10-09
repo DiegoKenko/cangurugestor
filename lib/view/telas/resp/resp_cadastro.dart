@@ -101,15 +101,15 @@ class _CadastroResponsavelState extends State<CadastroResponsavel>
                   ),
                 ),
               ],
-              views: [
-                const Tab(
+              views: const [
+                Tab(
                   child: DadosResponsavel(),
                 ),
-                const Tab(child: PacientesResponsavel()),
+                Tab(child: PacientesResponsavel()),
                 Tab(
                   child: SingleChildScrollView(
                     child: Column(
-                      children: const [
+                      children: [
                         Text('nenhum contrato cadastrado'),
                       ],
                     ),

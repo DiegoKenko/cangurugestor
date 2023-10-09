@@ -1,4 +1,5 @@
-import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/enum/enum_status.dart';
+import 'package:cangurugestor/enum/enum_tarefa.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

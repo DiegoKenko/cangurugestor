@@ -1,4 +1,4 @@
-import 'package:cangurugestor/global.dart';
+import 'package:cangurugestor/enum/enum_classe.dart';
 import 'package:cangurugestor/model/activity.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,7 +45,8 @@ class FirestoreActivity {
   }
 
   Future<List<TarefaActivity>> historicoAtendimentoCuidador(
-      Cuidador cuidador,) async {
+    Cuidador cuidador,
+  ) async {
     final List<TarefaActivity> list = <TarefaActivity>[];
     QuerySnapshot<Map<String, dynamic>> doc = await firestore
         .collection('cuidadores')
