@@ -7,7 +7,7 @@ import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 
 class PacienteEntity extends PessoaEntity {
   String? dataCadastro;
-  ResponsavelEntity responsavel = ResponsavelEntity();
+  ResponsavelEntity? responsavel;
   List<ConsultaEntity> consultas = [];
   List<MedicamentoEntity> medicamentos = [];
   List<AtividadeEntity> atividades = [];
@@ -22,6 +22,7 @@ class PacienteEntity extends PessoaEntity {
     String nascimento = '',
     String id = '',
     bool ativo = false,
+    this.idResponsavel = '',
     this.dataCadastro = '',
     this.consultas = const [],
     this.atividades = const [],

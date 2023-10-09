@@ -1,3 +1,4 @@
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/presentation/state/cuidador_state.dart';
 import 'package:cangurugestor/presentation/view/componentes/dialog_confirmacao_exclusao.dart';
@@ -21,7 +22,7 @@ class CadastroCuidador extends StatefulWidget {
 class _CadastroCuidadorState extends State<CadastroCuidador>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final CuidadorController cuidadorController = CuidadorController();
+  final CuidadorController cuidadorController = getIt.get<CuidadorController>();
 
   @override
   void initState() {

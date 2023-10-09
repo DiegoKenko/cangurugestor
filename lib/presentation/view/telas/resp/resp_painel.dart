@@ -1,3 +1,4 @@
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/state/responsavel_state.dart';
@@ -23,8 +24,8 @@ class PainelResponsavel extends StatefulWidget {
 class _PainelResponsavelState extends State<PainelResponsavel>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final ResponsavelController responsavelController = ResponsavelController();
-
+  final ResponsavelController responsavelController =
+      getIt.get<ResponsavelController>();
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -90,7 +91,8 @@ class PacientesCuidador extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ResponsavelController responsavelController = ResponsavelController();
+    final ResponsavelController responsavelController =
+        getIt.get<ResponsavelController>();
     return ValueListenableBuilder(
       valueListenable: responsavelController,
       builder: (context, state, _) {

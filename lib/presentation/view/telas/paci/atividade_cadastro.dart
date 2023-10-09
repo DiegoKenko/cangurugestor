@@ -184,7 +184,9 @@ class _TarefasAtividadeState extends State<TarefasAtividade> {
 class DadosAtividade extends StatefulWidget {
   const DadosAtividade({
     Key? key,
+    this.atividade,
   }) : super(key: key);
+  final AtividadeEntity atividade;
 
   @override
   State<DadosAtividade> createState() => _DadosAtividadeState();
@@ -232,7 +234,6 @@ class _DadosAtividadeState extends State<DadosAtividade> {
       child: ValueListenableBuilder(
         valueListenable: AtividadeController(),
         builder: (context, state, _) {
-          AtividadeEntity atividade = AtividadeEntity();
           if (state is AtividadeSuccessState) {
             atividade = state.atividade;
             _descricaoController.text = state.atividade.descricao;

@@ -17,9 +17,9 @@ class ResponsavelController extends ValueNotifier<ResponsavelState> {
       ResponsavelUpdateDatasource();
   final ResponsavelDeleteDatasource _responsavelDeleteDatasource =
       ResponsavelDeleteDatasource();
-  ResponsavelController() : super(ResponsavelInitialState());
+  ResponsavelController(this.responsavel) : super(ResponsavelInitialState());
 
-  ResponsavelEntity responsavel = ResponsavelEntity();
+  ResponsavelEntity responsavel;
 
   init(ResponsavelEntity responsavel) {
     this.responsavel = responsavel;

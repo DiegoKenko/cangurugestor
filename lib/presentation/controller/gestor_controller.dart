@@ -12,8 +12,8 @@ class GestorController extends ValueNotifier<GestorState> {
   final GestorClientesGetAllDatasource _gestorClientesGetAllDatasource =
       GestorClientesGetAllDatasource();
   final GestorGetUsecase _gestorGetUsecase = GestorGetUsecase();
-  GestorController() : super(GestorInitialState());
-  GestorEntity gestor = GestorEntity();
+  GestorEntity gestor;
+  GestorController(this.gestor) : super(GestorInitialState());
 
   init(String id) {
     _load(id);

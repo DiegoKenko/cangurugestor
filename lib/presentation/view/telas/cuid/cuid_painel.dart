@@ -1,3 +1,4 @@
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
 import 'package:cangurugestor/domain/entity/paciente_entity.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
@@ -21,7 +22,7 @@ class PainelCuidador extends StatefulWidget {
 class _PainelCuidadorState extends State<PainelCuidador>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final CuidadorController cuidadorController = CuidadorController();
+  final CuidadorController cuidadorController = getIt.get<CuidadorController>();
 
   @override
   void initState() {
@@ -78,7 +79,7 @@ class PacientesCuidador extends StatefulWidget {
 }
 
 class _PacientesCuidadorState extends State<PacientesCuidador> {
-  final CuidadorController cuidadorController = CuidadorController();
+  final CuidadorController cuidadorController = getIt.get<CuidadorController>();
 
   @override
   Widget build(BuildContext context) {

@@ -18,7 +18,8 @@ class AtividadeEntity {
   bool ativo = true;
   PacienteEntity paciente = PacienteEntity();
   CuidadorEntity cuidador = CuidadorEntity();
-  ResponsavelEntity responsavel = ResponsavelEntity();
+  ResponsavelEntity? responsavel;
+  String responsavelId = '';
 
   AtividadeEntity({
     this.descricao = '',
@@ -31,16 +32,16 @@ class AtividadeEntity {
     this.duracaoMedida = EnumIntervalo.minutos,
     this.frequenciaQuantidade = 0,
     this.frequenciaMedida = EnumIntervalo.minutos,
+    required this.responsavelId,
   });
 
-  AtividadeEntity.initOnAdd(this.paciente);
+  AtividadeEntity.initOnAdd(this.paciente, this.responsavelId);
 
   AtividadeEntity.fromMap(Map<String, dynamic> map) {
     descricao = map['descricao'];
     tipo = map['tipo'];
     duracaoQuantidade = map['duracaoQuantidade'];
     local = map['local'];
-
     observacao = map['observacao'];
     status = map['status'];
     intensidade = map['intensidade'];
@@ -53,6 +54,7 @@ class AtividadeEntity {
       (element) => element.name == map['frequenciaMedida'],
       orElse: () => EnumIntervalo.minutos,
     );
+    responsavelId = map['responsavelId'] ?? '';
   }
 
   Map<String, dynamic> toMap() {
@@ -67,6 +69,7 @@ class AtividadeEntity {
       'frequenciaQuantidade': frequenciaQuantidade,
       'duracaoMedida': duracaoMedida.toString().split('.').last,
       'frequenciaMedida': frequenciaMedida.toString().split('.').last,
+      'responsavelId': responsavelId,
     };
   }
 }

@@ -24,7 +24,7 @@ class _ClientesGestorState extends State<ClientesGestor> {
       children: <Widget>[
         Expanded(
           child: ValueListenableBuilder(
-            valueListenable: getIt<GestorController>(),
+            valueListenable: getIt<GestorController>()..loadClientes(),
             builder: (context, gestorState, _) {
               if (gestorState is GestorSuccessState) {
                 return ListView.builder(
@@ -46,7 +46,9 @@ class _ClientesGestorState extends State<ClientesGestor> {
                               responsavel: gestorState.gestor.clientes[index],
                             ),
                           ),
-                        );
+                        ).then((value) {
+                          getIt<GestorController>().loadClientes();
+                        });
                       },
                       title: responsavel.nome,
                     );

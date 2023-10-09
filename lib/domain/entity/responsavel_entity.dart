@@ -25,6 +25,7 @@ class ResponsavelEntity extends PessoaEntity {
     String bairro = '',
     String cidade = '',
     String estado = '',
+    required this.idGestor,
     this.idContrato = '',
   }) : super(
           cpf: cpf,

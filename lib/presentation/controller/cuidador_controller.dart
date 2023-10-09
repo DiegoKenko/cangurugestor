@@ -10,8 +10,8 @@ class CuidadorController extends ValueNotifier<CuidadorState> {
   final CuidadorCreateUsecase cuidadorCreateUsecase = CuidadorCreateUsecase();
   final CuidadorUpdateUsecase cuidadorUpdateUsecase = CuidadorUpdateUsecase();
   final CuidadorGetUsecase cuidadorGetUsecase = CuidadorGetUsecase();
-
-  CuidadorController() : super(CuidadorInitialState());
+  CuidadorEntity cuidador;
+  CuidadorController(this.cuidador) : super(CuidadorInitialState());
 
   Future<void> load(String cuidadorId) async {
     await cuidadorGetUsecase(cuidadorId);

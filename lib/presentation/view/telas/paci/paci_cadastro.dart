@@ -1,3 +1,4 @@
+import 'package:cangurugestor/const/global.dart';
 import 'package:cangurugestor/domain/entity/atividade_entity.dart';
 import 'package:cangurugestor/domain/entity/consulta_entity.dart';
 import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
@@ -205,7 +206,7 @@ class BotaoAddCuidador extends StatelessWidget {
                       ),
                     ),
                     ValueListenableBuilder(
-                      valueListenable: GestorController(),
+                      valueListenable: getIt.get<GestorController>(),
                       builder: (context, gestorState, _) {
                         if (gestorState is GestorSuccessState) {
                           return ValueListenableBuilder(

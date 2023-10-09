@@ -1,3 +1,6 @@
+import 'package:cangurugestor/domain/entity/cuidador_entity.dart';
+import 'package:cangurugestor/domain/entity/gestor_entity.dart';
+import 'package:cangurugestor/domain/entity/responsavel_entity.dart';
 import 'package:cangurugestor/presentation/controller/auth_controller.dart';
 import 'package:cangurugestor/presentation/controller/cuidador_controller.dart';
 import 'package:cangurugestor/presentation/controller/gestor_controller.dart';
@@ -19,12 +22,12 @@ void setup() {
     () => AuthController(),
   );
   getIt.registerLazySingleton<GestorController>(
-    () => GestorController(),
+    () => GestorController(GestorEntity()),
   );
   getIt.registerLazySingleton<ResponsavelController>(
-    () => ResponsavelController(),
+    () => ResponsavelController(ResponsavelEntity(idGestor: '')),
   );
   getIt.registerLazySingleton<CuidadorController>(
-    () => CuidadorController(),
+    () => CuidadorController(CuidadorEntity()),
   );
 }

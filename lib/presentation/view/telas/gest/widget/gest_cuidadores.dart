@@ -63,11 +63,15 @@ class _CuidadoresGestorState extends State<CuidadoresGestor> {
           child: Center(
             child: BotaoCadastro(
               onPressed: () {
-                Navigator.of(context).push(
+                Navigator.of(context)
+                    .push(
                   AnimatedPageTransition(
                     page: CadastroCuidador(cuidador: CuidadorEntity()),
                   ),
-                );
+                )
+                    .then((value) {
+                  getIt<GestorController>().loadCuidadores();
+                });
               },
             ),
           ),

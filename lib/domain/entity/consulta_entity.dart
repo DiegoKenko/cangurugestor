@@ -8,7 +8,8 @@ class ConsultaEntity {
   String observacao = '';
   CuidadorEntity cuidador = CuidadorEntity();
   PacienteEntity paciente = PacienteEntity();
-  ResponsavelEntity responsavel = ResponsavelEntity();
+  ResponsavelEntity? responsavel;
+  ResponsavelEntity? responsavelId;
   String medico = '';
   String rua = '';
   String numeroRua = '';
@@ -19,10 +20,11 @@ class ConsultaEntity {
   String complementoRua = '';
   bool ativo = true;
   DateTime dataRealizada = DateTime.now();
+  DateTime dataMarcada = DateTime.now();
 
   ConsultaEntity({
     this.observacao = '',
-    this.descricao = '',
+    required this.descricao,
     this.rua = '',
     this.numeroRua = '',
     this.bairro = '',
@@ -31,6 +33,8 @@ class ConsultaEntity {
     this.cep = '',
     this.complementoRua = '',
     this.medico = '',
+    required this.responsavelId,
+    required this.dataRealizada,
   });
 
   ConsultaEntity.initOnAdd(this.paciente);
