@@ -1,3 +1,4 @@
+import 'package:cangurugestor/global.dart';
 import 'package:cangurugestor/model/cuidador.dart';
 import 'package:cangurugestor/model/responsavel.dart';
 import 'package:cangurugestor/view/componentes/adicionar_botao_rpc.dart';
@@ -58,10 +59,24 @@ class _PainelGestorState extends State<PainelGestor>
               controller: _tabController,
               tabs: const [
                 Tab(
-                  text: 'Clientes',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Clientes'),
+                      SizedBox(width: 10),
+                      clienteIcon
+                    ],
+                  ),
                 ),
                 Tab(
-                  text: 'Cuidadores',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Cuidadores'),
+                      SizedBox(width: 10),
+                      cuidadorIcon
+                    ],
+                  ),
                 ),
               ],
               views: const [

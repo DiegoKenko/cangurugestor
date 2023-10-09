@@ -15,7 +15,7 @@ class _BotaoCadastroState extends State<BotaoCadastro> {
     return GestureDetector(
       onTap: widget.onPressed,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.3,
         decoration: BoxDecoration(
           border: Border.all(
             color: corPad1,
